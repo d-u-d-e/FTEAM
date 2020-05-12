@@ -100,5 +100,4 @@
         app:layout_constraintTop_toBottomOf="@id/logPsw"
         app:layout_constraintVertical_bias="0.573" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,14 +24,14 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <EditText
-    android:id="@+id/regNome"
-    android:layout_width="350dp"
-    android:layout_height="40dp"
-    android:hint="Nome"
-    app:layout_constraintBottom_toTopOf="@id/regCognome"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/title" />
+        android:id="@+id/regNome"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:hint="Nome"
+        app:layout_constraintBottom_toTopOf="@id/regCognome"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
 
     <EditText
         android:id="@+id/regCognome"

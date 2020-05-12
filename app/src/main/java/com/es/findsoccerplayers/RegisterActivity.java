@@ -1,4 +1,4 @@
-package com.example.singingoogletest;
+package com.es.findsoccerplayers;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +23,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
@@ -31,7 +30,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class RegisterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     private EditText edNome, edCognome, edEmail, edConfEmail, edPsw, edConfPsw;
     private TextView txSelect;
@@ -42,11 +41,11 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
     private Toolbar toolbar;
     private String nome, cognome, email, confEmail, psw, confPsw, birthDate, uid;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
         edNome=findViewById(R.id.regNome);
         edCognome=findViewById(R.id.regCognome);
         edEmail=findViewById(R.id.regEmail);
@@ -62,7 +61,6 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         database=FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
                 .build();
         database.setFirestoreSettings(settings);
 
@@ -172,7 +170,6 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         datePickerDialog.show();
     }
 
-    @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         month+=1;
         birthDate = dayOfMonth+"/"+month+"/"+year;

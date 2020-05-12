@@ -1,4 +1,4 @@
-package com.example.singingoogletest;
+package com.es.findsoccerplayers;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,11 +32,11 @@ public class AccountActivity extends AppCompatActivity {
     private ImageView photo;
     private Toolbar toolbar;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
+
         btnLogOut=findViewById(R.id.btnLogOut);
         mAuth=FirebaseAuth.getInstance();
         acct = FirebaseAuth.getInstance().getCurrentUser();

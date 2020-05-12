@@ -1,4 +1,4 @@
-package com.example.singingoogletest;
+package com.es.findsoccerplayers;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,9 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -47,9 +45,9 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.w("LoginAct","Act Startata");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.w("LoginAct","Act Startata");
         btnGoogle=findViewById(R.id.btnGoogle);
         btnGoogle.setSize(SignInButton.SIZE_STANDARD);
         logEmail=findViewById(R.id.logEmail);
@@ -116,7 +114,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
