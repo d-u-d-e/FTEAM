@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "618913199411",
+    "firebase_url": "https://singintest-32bae.firebaseio.com",
+    "project_id": "singintest-32bae",
+    "storage_bucket": "singintest-32bae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618913199411:android:981bd73a8c6006b5a87a46",
+        "android_client_info": {
+          "package_name": "com.example.singingoogletest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618913199411-6h3ft420hf7jk08cn6r1b71tlt6t4jes.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.singingoogletest",
+            "certificate_hash": "a33fc568133b8934e3a2c4a2e9f2f76e66046a4e"
+          }
+        },
+        {
+          "client_id": "618913199411-e90q9l1kj2cqtv61f5urj2sa980th58r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJ8ZEqT7EWG56VmBhlrKM51nB0CHlNcfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618913199411-e90q9l1kj2cqtv61f5urj2sa980th58r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
