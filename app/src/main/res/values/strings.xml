@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">FindSoccerPlayers</string>
+    <string name="todoCAPS">DA IMPLEMENTARE</string>
+    <string name="double_back">Premi due volte per uscire</string>
+    <string name="error">Error :</string>
+    <string name="loggato">Loggato con successo!</string>
+    <string name="acc_act_title">SIGNED IN WITH:</string>
+    <string name="logoutCAPS">LOG OUT</string>
+    <string name="login_act_title">LOG IN:</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="loginCAPS">LOGIN</string>
+    <string name="registratiCAPS">REGISTRATI</string>
+    <string name="non_sei_registrato">Non sei registrato?</string>
+    <string name="register_act_title">REGISTER:</string>
+    <string name="nome">Nome</string>
+    <string name="cognome">Cognome</string>
+    <string name="data_di_nascita_obbligatorio">Data di nascita (obbligatorio):</string>
+    <string name="seleziona">Seleziona</string>
+    <string name="email_obbligatorio">Email (obbligatorio)</string>
+    <string name="conferma_email_obbligatorio">Conferma Email (obbligatorio)</string>
+    <string name="password_obbligatorio">Password (obbligatorio)</string>
+    <string name="conferma_password_obbligatorio">Conferma Password (obbligatorio)</string>
+
 </resources>

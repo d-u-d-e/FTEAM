@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "Main Activity";
+    private static final String TAG = "MainActivity";
     private long backPressedTime;
     private Toast backToast;
 
@@ -33,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
-    //Visualizzo a schermo la barra con il menu
+    /**
+     * Visualizzo a schermo la barra con il menu
+     *
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -41,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Gestisce i listener del menu
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -50,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             //Se viene premuto il tasto "Impostazioni" nel menu, viene lanciata ....
             case R.id.settings:
-                Toast.makeText(getApplicationContext(), "DA IMPLEMENTARE", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.todoCAPS, Toast.LENGTH_SHORT).show();
                 //Todo: creare entity delle impostazioni
                 return true;
             default:
@@ -58,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Viene richiesto un doppio tap a distanza di 2 secondi sul tasto back per uscire dall'app
+    /**
+     * Viene richiesto un doppio tap a distanza di 2 secondi sul tasto back per uscire dall'app
+     */
     @Override
     public void onBackPressed() {
         //backPressedTime è settato a 0 per default
@@ -67,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             backToast.cancel();
             finishAffinity();
         }else{
-            backToast=Toast.makeText(getApplicationContext(), "Press back again to exit", Toast.LENGTH_SHORT);
+            backToast=Toast.makeText(getApplicationContext(), R.string.double_back, Toast.LENGTH_SHORT);
             backToast.show();
         }
         backPressedTime=System.currentTimeMillis();

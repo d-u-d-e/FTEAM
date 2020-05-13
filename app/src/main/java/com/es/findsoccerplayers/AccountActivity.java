@@ -60,8 +60,16 @@ public class AccountActivity extends AppCompatActivity {
         btnLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signOut();
+                //Faccio il log out dall'account firebase attualmente collegato
+                mAuth.signOut();
+
+                //Faccio il log out dall'account google attualmente collegato.
+                //Questo fa in modo che, quando voglio loggarmi nuovamente con un
+                //account google, non uso l'account precendete ma mi si apre di nuovo
+                //la lista degli account google
+                mGoogleSignInClient.signOut();
                 startActivity(new Intent(AccountActivity.this, LoginActivity.class));
+                finish();
             }
         });
     }
@@ -75,17 +83,9 @@ public class AccountActivity extends AppCompatActivity {
         nome.setText("nome: "+acct.getDisplayName());
     }
 
-    private void signOut() {
-        //Faccio il log out dall'account firebase attualmente collegato
-        mAuth.signOut();
-
-        //Faccio il log out dall'account google attualmente collegato.
-        //Questo fa in modo che, quando voglio loggarmi nuovamente con un
-        //account google, non uso l'account precendete ma mi si apre di nuovo
-        //la lista degli account google
-        mGoogleSignInClient.signOut();
-    }
-
+    /**
+     * Se viene premuto il tasto back, torno alla MainActivity
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();

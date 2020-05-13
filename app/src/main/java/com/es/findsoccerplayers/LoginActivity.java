@@ -30,6 +30,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
+    private static final String TAG = "LoginActivity";
     private EditText logPsw;
     private EditText logEmail;
     private GoogleSignInClient mGoogleSignInClient;
@@ -43,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Log.w("LoginAct","Act Startata");
+        Log.w(TAG,"Activity Creata");
         mAuth = FirebaseAuth.getInstance();
         acct = mAuth.getCurrentUser();
 
@@ -86,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(psw)){
                     logPsw.setError("Campo obbligatorio");
                 }
-                if ((logEmail.getError()!= null) && (logPsw.getError()!= null)) {
+                if ((logEmail.getError()!= null) || (logPsw.getError()!= null)) {
                     return;
                 }
 
@@ -121,9 +122,13 @@ public class LoginActivity extends AppCompatActivity {
         //Se viene premuto il pulsante btnGoogle, viene lanciata la funzione signIn() che mi permette di loggarmi
         //con Google
         btnGoogle.setOnClickListener(new View.OnClickListener() {
+            //Effettuo il login
             @Override
             public void onClick(View v) {
-                signIn();
+                prgBar.setVisibility(View.VISIBLE);
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                //Chiama la funzione onActivityResult
+                startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
     }
@@ -131,17 +136,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.w("LoginAct","Act Creata");
+        Log.w(TAG, "Activity Startata");
     }
 
-    private void signIn() {
-        prgBar.setVisibility(View.VISIBLE);
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        //Chiama la funzione onActivityResult
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
 
-    //Funzione che gestisce il tentativo di login
+    /**
+     * Funzione che gestisce il tentativo di login
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -150,7 +151,20 @@ public class LoginActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account.getIdToken());
+                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                mAuth.signInWithCredential(credential)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                    finish();
+                                } else {
+                                    prgBar.setVisibility(View.INVISIBLE);
+                                    Toast.makeText(LoginActivity.this, (CharSequence) task.getException(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                 Toast.makeText(LoginActivity.this, "Loggato con successo", Toast.LENGTH_SHORT).show();
             } catch (ApiException e) {
                 Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
@@ -159,25 +173,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    //Funzione che effettua il login con Google: se ha successo viene lanciata la MainActivity, altrimenti
-    //viene visualizzato un messaggio d'errore
-    private void firebaseAuthWithGoogle(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                        } else {
-                            prgBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(LoginActivity.this, (CharSequence) task.getException(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
 
-    //Viene richiesto un doppio tap a distanza di 2 secondi sul tasto back per uscire dall'app
+    /**
+     * Viene richiesto un doppio tap a distanza di 2 secondi sul tasto back per uscire dall'app
+     */
     @Override
     public void onBackPressed() {
         if(backPressedTime + 2000 > System.currentTimeMillis()){
@@ -185,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
             backToast.cancel();
             finishAffinity();
         }else{
-            backToast = Toast.makeText(getApplicationContext(), "Press back again to exit", Toast.LENGTH_SHORT);
+            backToast = Toast.makeText(getApplicationContext(), R.string.double_back, Toast.LENGTH_SHORT);
             backToast.show();
         }
         backPressedTime=System.currentTimeMillis();

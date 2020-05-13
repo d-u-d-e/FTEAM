@@ -20,7 +20,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:textSize="30dp"
         android:textStyle="bold"
-        android:text="SIGNED IN WITH:"/>
+        android:text="@string/acc_act_title"/>
 
     <TextView
         android:id="@+id/id"
@@ -53,7 +53,7 @@
         android:id="@+id/btnLogOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="LOG OUT"
+        android:text="@string/logoutCAPS"
         app:layout_constraintTop_toBottomOf="@id/email"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -74,42 +74,32 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
                 confPsw = edConfPsw.getText().toString();
 
                 //Effettuo i controlli per vedere se i campi obbligatori sono compilati correttamente
-                if(txSelect.getText().toString().equals("Seleziona")){
-                    Toast.makeText(RegisterActivity.this, "Seleziana la data di nascita", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(TextUtils.isEmpty(email)){
+                if(txSelect.getText().toString().equals("Seleziona"))
+                    Toast.makeText(RegisterActivity.this, "Seleziona la data di nascita", Toast.LENGTH_SHORT).show();
+
+                if(TextUtils.isEmpty(email))
                     edEmail.setError("Campo obbligatorio");
-                    return;
-                }
-                if(TextUtils.isEmpty(confEmail)){
+
+                if(TextUtils.isEmpty(confEmail))
                     edConfEmail.setError("Campo obbligatorio");
-                    return;
-                }
-                if(TextUtils.isEmpty(psw)){
+
+                if(TextUtils.isEmpty(psw))
                     edPsw.setError("Campo obbligatorio");
-                    return;
-                }
-                if(TextUtils.isEmpty(confPsw)){
+
+                if(TextUtils.isEmpty(confPsw))
                     edConfPsw.setError("Campo obbligatorio");
-                    return;
-                }
-                if(!email.equals(confEmail)){
-                    edEmail.setError("Le email non coincidono");
-                    return;
-                }else{
-                    edEmail.setError(null);
-                }
-                if(psw.length() < 6) {
+
+                if(psw.length() < 6)
                     edPsw.setError("La password deve avere minimo 6 caratteri");
-                    return;
-                }
-                if(!psw.equals(confPsw)){
+
+                if(!email.equals(confEmail))
+                    edEmail.setError("Le email non coincidono");
+
+                if(!psw.equals(confPsw))
                     edPsw.setError("Le password non coincidono");
+
+                if (edEmail.getError()!=null || edPsw.getError()!=null || edConfEmail.getError()!=null || edConfPsw.getError()!=null )
                     return;
-                }else{
-                    edPsw.setError(null);
-                }
 
                 prgBar.setVisibility(View.VISIBLE);
 
@@ -118,11 +108,11 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
                     @Override
                     public void onComplete(Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(RegisterActivity.this, "User Created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, R.string.loggato, Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         }else{
                             prgBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(RegisterActivity.this, "Error: "+ task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(RegisterActivity.this, R.string.error + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -130,7 +120,9 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         });
     }
 
-    //Visualizzo a schermo il selettore della data se la textView 'Seleziona' viene premuta
+    /**
+     * Visualizza a schermo il selettore della data se la textView 'Seleziona' viene premuta
+     */
     private void showDatePickerDialog(){
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
@@ -141,7 +133,10 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         datePickerDialog.show();
     }
 
-    //Funzione che viene lanciata quando viene scelta la data di nascita e ne legge il valore
+    /**
+     * Funzione che viene lanciata quando viene scelta la data di nascita e ne legge il valore
+     *
+     */
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         month+=1;
         birthDate = dayOfMonth+"/"+month+"/"+year;
@@ -149,7 +144,9 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         txSelect.setText(birthDate);
     }
 
-    //Se viene premuto il tasto back, torno alla LoginActivity
+    /**
+     * Se viene premuto il tasto back, torno alla LoginActivity
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
