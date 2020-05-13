@@ -4,13 +4,21 @@
 			"nickname": "dude",
 			"nome": "marco",
 			"cognome": "mariotto",
-			"data_nascita": "04/10/1998"
+			"data_nascita": "04/10/1998",
+			"matches":{
+				"1": true,
+				"2": true
+				}
 			},
 		"b":{
 			"nickname": "potato",
 			"nome": "mario",
 			"cognome": "rossi",
-			"data_nascita": "02/05/1997"
+			"data_nascita": "02/05/1997",
+			"matches":{
+				"1": true,
+				"2": true
+				}
 			}
 	},
 
