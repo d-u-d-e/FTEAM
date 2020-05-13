@@ -27,21 +27,25 @@
 			"luogo": "treviso",
 			"longitudine": 123.456,
 			"latitudine": 654.321,
+			"giocatori" : 3,
 			"members":{
 				"a": true,
 				"b": true
 			},
 			"data": "12/07/2020",
+			"descrizione": "Colleziono tibie e peroni",
 			"orario": "5:50 PM"
 		},
 		"2":{
 			"luogo": "vicenza",
 			"longitudine": 789.456,
 			"latitudine": 654.789,
+			"giocatori" : 4,
 			"members":{
 				"a": true,
 				"b": true
 			},
+			"descrizione": "O il pallone, o la vita",			
 			"data": "13/07/2020",
 			"orario": "3:20 PM"
 		}
