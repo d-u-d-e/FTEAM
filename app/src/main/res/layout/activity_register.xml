@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <TextView
+        android:id="@+id/registerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register_act_title"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/regNome"
+        app:layout_constraintHorizontal_bias="0.18"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <EditText
+        android:id="@+id/regNome"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:hint="@string/nome"
+        app:layout_constraintBottom_toTopOf="@id/regCognome"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/registerLabel" />
+
+    <EditText
+        android:id="@+id/regCognome"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:hint="@string/cognome"
+        app:layout_constraintBottom_toTopOf="@id/dateBirth"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/regNome" />
+
+
+    <TextView
+        android:id="@+id/dateBirth"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        android:text="@string/data_di_nascita_obbligatorio"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toTopOf="@id/regEmail"
+        app:layout_constraintHorizontal_bias="0.181"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/regCognome" />
+
+    <TextView
+        android:id="@+id/selectDate"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="@string/seleziona"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toTopOf="@id/regEmail"
+        app:layout_constraintHorizontal_bias="0.158"
+        app:layout_constraintLeft_toRightOf="@id/dateBirth"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/regCognome"
+        app:layout_constraintVertical_bias="0.49" />
+
+    <EditText
+        android:id="@+id/regEmail"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:hint="@string/email_obbligatorio"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toTopOf="@id/regConfEmail"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dateBirth" />
+
+    <EditText
+        android:id="@+id/regConfEmail"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:hint="@string/conferma_email_obbligatorio"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toTopOf="@id/regPsw"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/regEmail" />
+
+    <EditText
+        android:id="@+id/regPsw"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:hint="@string/password_obbligatorio"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@id/regConfPsw"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/regConfEmail" />
+
+    <EditText
+        android:id="@+id/regConfPsw"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:hint="@string/conferma_password_obbligatorio"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@id/regPsw"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnRegister" />
+
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/registratiCAPS"
+        app:layout_constraintBottom_toTopOf="@id/progBar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/regConfPsw" />
+
+    <ProgressBar
+        android:id="@+id/progBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnRegister" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
