@@ -17,8 +17,8 @@
 		"1":{
 			"luogo": "treviso",
 			"members":{
-				"1": true,
-				"2": true
+				"a": true,
+				"b": true
 			},
 			"data": "12/07/2020",
 			"orario": "5:50 PM"
