@@ -25,6 +25,8 @@
 	"matches":{
 		"1":{
 			"luogo": "treviso",
+			"longitudine": 123.456,
+			"latitudine": 654.321,
 			"members":{
 				"a": true,
 				"b": true
@@ -34,6 +36,8 @@
 		},
 		"2":{
 			"luogo": "vicenza",
+			"longitudine": 789.456,
+			"latitudine": 654.789,
 			"members":{
 				"a": true,
 				"b": true
