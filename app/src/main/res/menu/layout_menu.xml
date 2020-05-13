@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/setting"
+        android:id="@+id/settings"
         android:title="Impostazioni"
         app:showAsAction="never"
         />

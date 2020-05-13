@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -18,8 +17,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main Activity";
-    private FirebaseAuth mAuth;
-    private Toolbar toolbar;
     private long backPressedTime;
     private Toast backToast;
 
@@ -28,39 +25,43 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.w(TAG,"Activity Creata");
-        mAuth=FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if(user==null) {
-            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-        }
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser acct = mAuth.getCurrentUser();
+
         setContentView(R.layout.activity_main);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
+    //Visualizzo a schermo la barra con il menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.lytmenu, menu);
+        inflater.inflate(R.menu.layout_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            //Se viene premuta l'icona account, lancio AccountActivity
             case R.id.account:
                 startActivity(new Intent(getApplicationContext(),AccountActivity.class));
                 return true;
-            case R.id.setting:
+            //Se viene premuto il tasto "Impostazioni" nel menu, viene lanciata ....
+            case R.id.settings:
                 Toast.makeText(getApplicationContext(), "DA IMPLEMENTARE", Toast.LENGTH_SHORT).show();
+                //Todo: creare entity delle impostazioni
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    //Viene richiesto un doppio tap a distanza di 2 secondi sul tasto back per uscire dall'app
     @Override
     public void onBackPressed() {
+        //backPressedTime è settato a 0 per default
         if(backPressedTime + 2000 > System.currentTimeMillis()){
             super.onBackPressed();
             backToast.cancel();

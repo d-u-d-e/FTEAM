@@ -8,10 +8,10 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbat" />
+        layout="@layout/toolbar" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/registerLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="LOG IN:"
@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toTopOf="@id/logPsw"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/registerLabel" />
 
     <EditText
         android:id="@+id/logPsw"
@@ -48,7 +48,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:text="LOGIN"
-        app:layout_constraintBottom_toTopOf="@id/frase"
+        app:layout_constraintBottom_toTopOf="@id/registerQuestion"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:text="REGISTRATI"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/btnGoogle"
+        app:layout_constraintLeft_toRightOf="@id/googleSignInBtn"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logPsw"
         app:layout_constraintVertical_bias="0.57" />
@@ -78,7 +78,7 @@
         app:layout_constraintVertical_bias="0.686" />
 
     <TextView
-        android:id="@+id/frase"
+        android:id="@+id/registerQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Non sei registrato?"
@@ -91,7 +91,7 @@
         app:layout_constraintVertical_bias="0.984" />
 
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/btnGoogle"
+        android:id="@+id/googleSignInBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
