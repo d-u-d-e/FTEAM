@@ -1,10 +1,3 @@
-/*
-ACCOUNT ACTIVITY
-
-Questa classe serve a visualizzare i dati dell'account attualmente loggato
- */
-
-
 package com.es.findsoccerplayers;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,54 +15,55 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
+/**
+ * shows the account info for the current user
+ * */
 public class AccountActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
     private FirebaseUser acct;
-    private GoogleSignInClient mGoogleSignInClient;
     private TextView id;
     private TextView email;
-    private TextView nome;
+    private TextView name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
-
-        Button btnLogOut = findViewById(R.id.btnLogOut);
-        id = (TextView) findViewById(R.id.id);
-        email = (TextView) findViewById(R.id.email);
-        nome = (TextView) findViewById(R.id.nome);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        mAuth = FirebaseAuth.getInstance();
-        acct = FirebaseAuth.getInstance().getCurrentUser();
+        Toolbar toolbar = findViewById(R.id.acc_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Creo l'oggetto gso che tramite il parametro DEFAULT_SIGN_IN mi permette di creare un oggetto
-        //mGoogleSignInClient nel quale vengono memorizzate le informazioni di base dell'utente google
-        //loggato
+        Button btnLogOut = findViewById(R.id.acc_btnLogOut);
+        name = (TextView) findViewById(R.id.acc_username);
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        id = (TextView) findViewById(R.id.acc_userId);
+        email = (TextView) findViewById(R.id.acc_email);
+        acct = FirebaseAuth.getInstance().getCurrentUser();
+
+        //options required to log in with Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        //Se viene premuto il pulsante log out, viene chiamata la funzione singOut() e si
-        //torna alla LoginActivity
+        //if log out button is clicked go back to the login activity
         btnLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Faccio il log out dall'account firebase attualmente collegato
-                mAuth.signOut();
+                //log out the current user
+                auth.signOut();
 
-                //Faccio il log out dall'account google attualmente collegato.
-                //Questo fa in modo che, quando voglio loggarmi nuovamente con un
-                //account google, non uso l'account precendete ma mi si apre di nuovo
-                //la lista degli account google
-                mGoogleSignInClient.signOut();
-                startActivity(new Intent(AccountActivity.this, LoginActivity.class));
-                finish();
+                //google log out: this does nothing if the user did not log in with google
+                //however in the other case, it clears the previous selected account, so next time the
+                //user is asked to select a new account
+                googleSignInClient.signOut();
+                //back to login activity
+                finishAffinity();
+                Intent i = new Intent(AccountActivity.this, LoginActivity.class);
+                startActivity(i);
             }
         });
     }
@@ -77,19 +71,20 @@ public class AccountActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //Visualizzo a schermo le informazioni dell'account
-        id.setText("ID: "+acct.getUid());
-        email.setText("email: "+acct.getEmail());
-        nome.setText("nome: "+acct.getDisplayName());
+        //shows user info
+        id.setText(String.format(getString(R.string.act_account_id), acct.getUid()));
+        email.setText(String.format(getString(R.string.act_account_email), acct.getEmail()));
+        name.setText(String.format(getString(R.string.act_account_username), acct.getDisplayName()));
     }
 
     /**
-     * Se viene premuto il tasto back, torno alla MainActivity
+     * hitting back will return to MainActivity
      */
     @Override
     public void onBackPressed() {
+        Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(i);
         super.onBackPressed();
-        //Dall'activity account, se viene premuto back, torno alla MainActivity
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 }

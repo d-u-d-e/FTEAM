@@ -7,99 +7,113 @@
     tools:context=".LoginActivity">
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        android:id="@+id/log_toolbar"
+        layout="@layout/toolbar"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <TextView
-        android:id="@+id/registerLabel"
+        android:id="@+id/log_loginLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login_act_title"
-        android:textSize="30dp"
+        android:layout_marginTop="100dp"
+        android:text="@string/act_login_title"
+        android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/logEmail"
-        app:layout_constraintHorizontal_bias="0.18"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.172"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/log_toolbar" />
 
     <EditText
-        android:id="@+id/logEmail"
+        android:id="@+id/log_email"
         android:layout_width="300dp"
-        android:layout_height="40dp"
-        android:hint="@string/email"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:autofillHints="email"
+        android:hint="@string/act_login_email"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@id/logPsw"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/registerLabel" />
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_loginLabel" />
 
     <EditText
-        android:id="@+id/logPsw"
+        android:id="@+id/log_pass"
         android:layout_width="300dp"
-        android:layout_height="40dp"
-        android:hint="@string/password"
+        android:layout_height="wrap_content"
+        android:autofillHints="password"
+        android:hint="@string/act_login_pass"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="@id/btnLogin"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logEmail" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_email"
+        android:layout_marginTop="20dp"
+        />
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/log_loginBtn"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="@string/loginCAPS"
-        app:layout_constraintBottom_toTopOf="@id/registerQuestion"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logPsw" />
-
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/registratiCAPS"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/googleSignInBtn"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logPsw"
-        app:layout_constraintVertical_bias="0.57" />
+        android:layout_marginTop="20dp"
+        android:text="@string/act_login_log_button"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_pass" />
 
     <ProgressBar
-        android:id="@+id/progBar"
+        android:id="@+id/log_progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnRegister"
-        app:layout_constraintVertical_bias="0.686" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_loginBtn" />
 
     <TextView
-        android:id="@+id/registerQuestion"
+        android:id="@+id/log_registerQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/non_sei_registrato"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toTopOf="@id/btnRegister"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.984" />
+        android:layout_marginTop="70dp"
+        android:text="@string/act_login_label1"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_progressBar" />
+
+    <Button
+        android:id="@+id/log_registerBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/act_login_reg_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_registerQuestion"
+        android:layout_marginTop="15dp"
+        />
+
+    <TextView
+        android:id="@+id/log_otherLoginTypeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/act_login_label2"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_registerBtn" />
 
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/googleSignInBtn"
+        android:id="@+id/log_googleSignInBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btnRegister"
-        app:layout_constraintTop_toBottomOf="@id/logPsw"
-        app:layout_constraintVertical_bias="0.573" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_otherLoginTypeLabel"
+        android:layout_marginTop="15dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

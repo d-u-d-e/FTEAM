@@ -7,13 +7,13 @@
     tools:context=".MainActivity">
 
     <include
-        android:id="@+id/toolbar"
+        android:id="@+id/main_toolbar"
         layout="@layout/toolbar" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MAIN ACTIVITY"
+        android:text="@string/act_main_title"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

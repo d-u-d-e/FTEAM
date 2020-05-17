@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -18,9 +19,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
+
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,80 +32,79 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final int RC_SIGN_IN = 100;
+    private static final int RC_GOOGLE_SIGN_IN = 100;
     private static final String TAG = "LoginActivity";
-    private EditText logPsw;
-    private EditText logEmail;
-    private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuth mAuth;
-    private FirebaseUser acct;
+    private FirebaseAuth auth;
     private long backPressedTime;
     private Toast backToast;
-    private ProgressBar prgBar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.w(TAG, "LoginActivity creata");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Log.w(TAG,"Activity Creata");
-        mAuth = FirebaseAuth.getInstance();
-        acct = mAuth.getCurrentUser();
-
-        //Se c'è gia un utente loggato, lancio MainActivity
-        if(acct!=null) {
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-            finish();
-        }
-        SignInButton btnGoogle = findViewById(R.id.googleSignInBtn);
-        btnGoogle.setSize(SignInButton.SIZE_STANDARD);
-        logEmail = findViewById(R.id.logEmail);
-        logPsw = findViewById(R.id.logPsw);
-        Button btnRegister = findViewById(R.id.btnRegister);
-        prgBar = findViewById(R.id.progBar);
-        Button btnLogin = findViewById(R.id.btnLogin);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.log_toolbar);
         setSupportActionBar(toolbar);
-        prgBar.setVisibility(View.INVISIBLE);
 
-        //Creo l'oggetto gso che tramite il parametro DEFAULT_SIGN_IN mi permette di creare un oggetto
-        //mGoogleSignInClient nel quale vengono memorizzate le informazioni di base dell'utente google
-        //loggato
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser acct = auth.getCurrentUser();
+        //if someone has already logged, start MainActivity
+        if(acct !=null) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+            return;
+        }
+
+        //set the text of sign in google button to common long
+        SignInButton btnGoogle = findViewById(R.id.log_googleSignInBtn);
+        btnGoogle.setSize(SignInButton.SIZE_STANDARD);
+        ((TextView)btnGoogle.getChildAt(0)).setText(R.string.common_signin_button_text_long);
+
+        final EditText logEmail = findViewById(R.id.log_email);
+        final EditText logPsw = findViewById(R.id.log_pass);
+        progressBar = findViewById(R.id.log_progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
+        Button btnRegister = findViewById(R.id.log_registerBtn);
+        Button btnLogin = findViewById(R.id.log_loginBtn);
+
+        //options required to log in with Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        //Se viene premuto il pulsante btnLogin, controllo se su firebase è presente un account
-        //con quelle credenziali: se è presente mi loggo e vado alla MainActivity, altrimenti
-        //restituisco un messaggio di errore
+        //If btnLogin is pressed, login with standard firebase credentials. If login is successful,
+        //start MainActivity, otherwise show the error as a toast
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = logEmail.getText().toString();
                 String psw = logPsw.getText().toString();
                 if(TextUtils.isEmpty(email)){
-                    logEmail.setError("Campo obbligatorio");
+                    logEmail.setError(getString(R.string.field_missing));
                 }
                 if(TextUtils.isEmpty(psw)){
-                    logPsw.setError("Campo obbligatorio");
+                    logPsw.setError(getString(R.string.field_missing));
                 }
-                if ((logEmail.getError()!= null) || (logPsw.getError()!= null)) {
+                if ((logEmail.getError() != null) || (logPsw.getError() != null)) { //input error, so return
                     return;
                 }
 
-                prgBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE); //give some feeling of responsiveness to the user
 
-                mAuth.signInWithEmailAndPassword(email,psw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                auth.signInWithEmailAndPassword(email, psw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(Task<AuthResult> task) {
+                        progressBar.setVisibility(View.INVISIBLE);
                         if (task.isSuccessful()){
-                            Toast.makeText(LoginActivity.this, "Loggato con successo", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            Utils.showSuccessLoginToast(LoginActivity.this);
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         }else{
-                            Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            prgBar.setVisibility(View.INVISIBLE);
+                            Utils.showErrorToast(LoginActivity.this, task.getException());
                         }
 
                     }
@@ -110,83 +112,67 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //Se viene premuto il pulsante btnRegister, viene lanciata la RegisterActivity
+        //start RegisterActivity if btnRegister is clicked
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                finish();
+                //do not finish this activity since it will be shown again after registration
             }
         });
 
-        //Se viene premuto il pulsante btnGoogle, viene lanciata la funzione signIn() che mi permette di loggarmi
-        //con Google
         btnGoogle.setOnClickListener(new View.OnClickListener() {
-            //Effettuo il login
             @Override
             public void onClick(View v) {
-                prgBar.setVisibility(View.VISIBLE);
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                //Chiama la funzione onActivityResult
-                startActivityForResult(signInIntent, RC_SIGN_IN);
+                progressBar.setVisibility(View.VISIBLE);
+                Intent signInIntent = googleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
             }
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.w(TAG, "Activity Startata");
-    }
-
-
-    /**
-     * Funzione che gestisce il tentativo di login
-     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //Se il requestCode è lo stesso di quello passato dalla funzione signIn()
-        if (requestCode == RC_SIGN_IN) {
+        //check for result of google sign in
+        if (requestCode == RC_GOOGLE_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                mAuth.signInWithCredential(credential)
+                auth.signInWithCredential(credential)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(Task<AuthResult> task) {
+                                progressBar.setVisibility(View.INVISIBLE);
                                 if (task.isSuccessful()) {
-                                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                    Utils.showSuccessLoginToast(LoginActivity.this);
+                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                     finish();
-                                } else {
-                                    prgBar.setVisibility(View.INVISIBLE);
-                                    Toast.makeText(LoginActivity.this, (CharSequence) task.getException(), Toast.LENGTH_SHORT).show();
-                                }
+                                } else
+                                    Utils.showErrorToast(LoginActivity.this, task.getException());
                             }
                         });
-                Toast.makeText(LoginActivity.this, "Loggato con successo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
             } catch (ApiException e) {
-                Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-                prgBar.setVisibility(View.INVISIBLE);
+                Utils.showErrorToast(this, e);
+                progressBar.setVisibility(View.INVISIBLE);
             }
         }
     }
 
-
     /**
-     * Viene richiesto un doppio tap a distanza di 2 secondi sul tasto back per uscire dall'app
+     * requested 2 taps at most 2 seconds apart in order to exit
      */
     @Override
     public void onBackPressed() {
         if(backPressedTime + 2000 > System.currentTimeMillis()){
-            super.onBackPressed();
             backToast.cancel();
-            finishAffinity();
+            super.onBackPressed(); //the default finish the current activity
         }else{
-            backToast = Toast.makeText(getApplicationContext(), R.string.double_back, Toast.LENGTH_SHORT);
+            backToast = Toast.makeText(this, R.string.double_back, Toast.LENGTH_SHORT);
             backToast.show();
         }
-        backPressedTime=System.currentTimeMillis();
+        backPressedTime = System.currentTimeMillis();
     }
 }
