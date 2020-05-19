@@ -1,25 +1,42 @@
 <resources>
     <string name="app_name">FindSoccerPlayers</string>
-    <string name="todoCAPS">DA IMPLEMENTARE</string>
-    <string name="double_back">Premi due volte per uscire</string>
-    <string name="error">Error :</string>
-    <string name="loggato">Loggato con successo!</string>
-    <string name="acc_act_title">SIGNED IN WITH:</string>
-    <string name="logoutCAPS">LOG OUT</string>
-    <string name="login_act_title">LOG IN:</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="loginCAPS">LOGIN</string>
-    <string name="registratiCAPS">REGISTRATI</string>
-    <string name="non_sei_registrato">Non sei registrato?</string>
-    <string name="register_act_title">REGISTER:</string>
-    <string name="nome">Nome</string>
-    <string name="cognome">Cognome</string>
-    <string name="data_di_nascita_obbligatorio">Data di nascita (obbligatorio):</string>
-    <string name="seleziona">Seleziona</string>
-    <string name="email_obbligatorio">Email (obbligatorio)</string>
-    <string name="conferma_email_obbligatorio">Conferma Email (obbligatorio)</string>
-    <string name="password_obbligatorio">Password (obbligatorio)</string>
-    <string name="conferma_password_obbligatorio">Conferma Password (obbligatorio)</string>
+
+    <!--general result user feedback strings-->
+    <string name="unknown_error">"unknown error</string>
+    <string name="login_success">loggato con successo</string>
+    <string name="field_missing">campo obbligatorio!</string>
+    <string name="unimplemented">DA IMPLEMENTARE</string>
+    <string name="double_back">premi due volte per uscire</string>
+    <string name="select_birth_date">seleziona la data di nascita</string>
+    <string name="pass_too_short">la password deve avere almeno 6 caratteri</string>
+    <string name="pass_not_equal">le password non coincidono</string>
+    <string name="email_not_equal">le email non coincidono</string>
+
+    <!--activities strings-->
+    <string name="act_account_title">SIGNED IN WITH:</string>
+    <string name="act_account_logout">LOG OUT</string>
+    <string name="act_account_id">id: %1$s</string>
+    <string name="act_account_username">username: %1$s</string>
+    <string name="act_account_email">email: %1$s</string>
+
+    <string name="act_login_title">LOG IN:</string>
+    <string name="act_login_email">email</string>
+    <string name="act_login_pass">password</string>
+    <string name="act_login_log_button">LOGIN</string>
+    <string name="act_login_reg_button">REGISTRATI</string>
+    <string name="act_login_label1">non sei registrato?</string>
+    <string name="act_login_label2">oppure</string>
+
+    <string name="act_register_title">REGISTER:</string>
+    <string name="act_register_select_date">seleziona</string>
+    <string name="act_register_email">email (obbligatorio)</string>
+    <string name="act_register_confirm_email">conferma email (obbligatorio)</string>
+    <string name="act_register_pass">password (obbligatorio)</string>
+    <string name="act_register_confirm_pass">conferma password (obbligatorio)</string>
+    <string name="act_register_name">nome (obbligatorio)</string>
+    <string name="act_register_surname">cognome (obbligatorio)</string>
+    <string name="act_register_date_birth">data di nascita:</string>
+
+    <string name="act_main_title">MAIN ACTIVITY</string>
 
 </resources>

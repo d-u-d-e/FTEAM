@@ -11,32 +11,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private long backPressedTime;
+    private long backPressedTime = 0;
     private Toast backToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.w(TAG,"Activity Creata");
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser acct = mAuth.getCurrentUser();
-
+        Log.w(TAG, "MainActivity creata");
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
     }
 
-    /**
-     * Visualizzo a schermo la barra con il menu
-     *
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -44,20 +34,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Gestisce i listener del menu
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            //Se viene premuta l'icona account, lancio AccountActivity
-            case R.id.account:
-                startActivity(new Intent(getApplicationContext(),AccountActivity.class));
+            //show user account
+            case R.id.acc_account:
+                startActivity(new Intent(this, AccountActivity.class));
                 return true;
-            //Se viene premuto il tasto "Impostazioni" nel menu, viene lanciata ....
-            case R.id.settings:
-                Toast.makeText(getApplicationContext(), R.string.todoCAPS, Toast.LENGTH_SHORT).show();
-                //Todo: creare entity delle impostazioni
+            //show settings
+            case R.id.acc_settings:
+                Utils.showUnimplementedToast(this);
+                //TODO: creare entity delle impostazioni
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -65,19 +52,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Viene richiesto un doppio tap a distanza di 2 secondi sul tasto back per uscire dall'app
+     * requested 2 taps at most 2 seconds apart in order to exit
      */
     @Override
     public void onBackPressed() {
-        //backPressedTime è settato a 0 per default
         if(backPressedTime + 2000 > System.currentTimeMillis()){
-            super.onBackPressed();
             backToast.cancel();
-            finishAffinity();
+            super.onBackPressed(); //the default finish the current activity
         }else{
-            backToast=Toast.makeText(getApplicationContext(), R.string.double_back, Toast.LENGTH_SHORT);
+            backToast = Toast.makeText(getApplicationContext(), R.string.double_back, Toast.LENGTH_SHORT);
             backToast.show();
         }
-        backPressedTime=System.currentTimeMillis();
+        backPressedTime = System.currentTimeMillis();
     }
 }

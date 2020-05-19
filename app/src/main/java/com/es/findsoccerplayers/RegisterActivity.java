@@ -26,94 +26,100 @@ import java.util.Calendar;
 
 public class RegisterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
-    private EditText edNome, edCognome, edEmail, edConfEmail, edPsw, edConfPsw;
-    private TextView txSelect;
-    private ProgressBar prgBar;
-    private FirebaseAuth mAuth;
-    private String nome, cognome, email, confEmail, psw, confPsw, birthDate, uid;
+    private TextView selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-        edNome = findViewById(R.id.regNome);
-        edCognome = findViewById(R.id.regCognome);
-        edEmail = findViewById(R.id.regEmail);
-        edConfEmail = findViewById(R.id.regConfEmail);
-        edPsw = findViewById(R.id.regPsw);
-        edConfPsw = findViewById(R.id.regConfPsw);
-        Button btnRegister = findViewById(R.id.btnRegister);
-        prgBar = findViewById(R.id.progBar);
-        txSelect = findViewById(R.id.selectDate);
-        mAuth = FirebaseAuth.getInstance();
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.reg_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        final EditText nameEd = findViewById(R.id.reg_name);
+        final EditText surnameEd = findViewById(R.id.reg_surname);
+        final EditText emailEd = findViewById(R.id.reg_email);
+        final EditText emailConfEd = findViewById(R.id.reg_emailConf);
+        final EditText passEd = findViewById(R.id.reg_pass);
+        final EditText passConfEd = findViewById(R.id.reg_passConf);
+        Button registerBtn = findViewById(R.id.reg_registerBtn);
+        final ProgressBar progressBar = findViewById(R.id.reg_progressBar);
+        selectedDate = findViewById(R.id.reg_selectDate);
+
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings  =  new FirebaseFirestoreSettings.Builder()
-                .build();
+        FirebaseFirestoreSettings settings  =  new FirebaseFirestoreSettings.Builder().build();
         database.setFirestoreSettings(settings);
 
-        //Imposto il listener per il selettore della data di nascita
-        txSelect.setOnClickListener(new View.OnClickListener() {
+        selectedDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePickerDialog();
             }
         });
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
+        registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nome = edNome.getText().toString();
-                cognome = edCognome.getText().toString();
-                email = edEmail.getText().toString();
-                confEmail = edConfEmail.getText().toString();
-                psw = edPsw.getText().toString();
-                confPsw = edConfPsw.getText().toString();
+                String name = nameEd.getText().toString();
+                String surname = surnameEd.getText().toString();
+                String email = emailEd.getText().toString();
+                String emailConf = emailConfEd.getText().toString();
+                String pass = passEd.getText().toString();
+                String passConf = passConfEd.getText().toString();
 
-                //Effettuo i controlli per vedere se i campi obbligatori sono compilati correttamente
-                if(txSelect.getText().toString().equals("Seleziona"))
-                    Toast.makeText(RegisterActivity.this, "Seleziona la data di nascita", Toast.LENGTH_SHORT).show();
+                //check if fields are completed without input errors
+
+                String missingField = getString(R.string.field_missing);
+
+                if(selectedDate.getText().toString().equals(getString(R.string.act_register_select_date)))
+                    Toast.makeText(RegisterActivity.this, R.string.select_birth_date, Toast.LENGTH_SHORT).show();
+
+                if(TextUtils.isEmpty(name))
+                    nameEd.setError(missingField);
+
+                if(TextUtils.isEmpty(surname))
+                    surnameEd.setError(missingField);
 
                 if(TextUtils.isEmpty(email))
-                    edEmail.setError("Campo obbligatorio");
+                    emailEd.setError(missingField);
 
-                if(TextUtils.isEmpty(confEmail))
-                    edConfEmail.setError("Campo obbligatorio");
+                if(TextUtils.isEmpty(emailConf))
+                    emailConfEd.setError(missingField);
 
-                if(TextUtils.isEmpty(psw))
-                    edPsw.setError("Campo obbligatorio");
+                if(TextUtils.isEmpty(pass))
+                    passEd.setError(missingField);
 
-                if(TextUtils.isEmpty(confPsw))
-                    edConfPsw.setError("Campo obbligatorio");
+                if(TextUtils.isEmpty(passConf))
+                    passConfEd.setError(missingField);
 
-                if(psw.length() < 6)
-                    edPsw.setError("La password deve avere minimo 6 caratteri");
+                if(pass.length() < 6)
+                    passEd.setError(getString(R.string.pass_too_short));
 
-                if(!email.equals(confEmail))
-                    edEmail.setError("Le email non coincidono");
+                if(!email.equals(emailConf))
+                    emailEd.setError(getString(R.string.email_not_equal));
 
-                if(!psw.equals(confPsw))
-                    edPsw.setError("Le password non coincidono");
+                if(!pass.equals(passConf))
+                    passEd.setError(getString(R.string.pass_not_equal));
 
-                if (edEmail.getError()!=null || edPsw.getError()!=null || edConfEmail.getError()!=null || edConfPsw.getError()!=null )
+                if (emailEd.getError() != null || passEd.getError() != null ||
+                        emailConfEd.getError() != null || passConfEd.getError() != null )
                     return;
 
-                prgBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
 
-                //Se tutte le credenziali sono corrette, creo un account con email e password
-                mAuth.createUserWithEmailAndPassword(email,psw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                //everything is fine, create an account
+                auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(Task<AuthResult> task) {
+                        progressBar.setVisibility(View.INVISIBLE);
                         if(task.isSuccessful()){
-                            Toast.makeText(RegisterActivity.this, R.string.loggato, Toast.LENGTH_SHORT).show();
+                            Utils.showSuccessLoginToast(RegisterActivity.this);
+                            //back to login
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                        }else{
-                            prgBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(RegisterActivity.this, R.string.error + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        }
+                            finish();
+                        }else
+                            Utils.showErrorToast(RegisterActivity.this, task.getException());
                     }
                 });
             }
@@ -121,12 +127,10 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
     }
 
     /**
-     * Visualizza a schermo il selettore della data se la textView 'Seleziona' viene premuta
+     * Shows date picker dialog after user hits select date text view
      */
     private void showDatePickerDialog(){
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                this,
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this,
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
@@ -134,22 +138,20 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
     }
 
     /**
-     * Funzione che viene lanciata quando viene scelta la data di nascita e ne legge il valore
-     *
+     * sets the date after the user picked it
      */
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        month+=1;
-        birthDate = dayOfMonth+"/"+month+"/"+year;
-        txSelect.setTextColor(getResources().getColor(R.color.nero));
-        txSelect.setText(birthDate);
+        month += 1;
+        selectedDate.setTextColor(getResources().getColor(R.color.black));
+        selectedDate.setText(dayOfMonth + "/" + month + "/" + year);
     }
 
     /**
-     * Se viene premuto il tasto back, torno alla LoginActivity
+     * hitting back will return to Login Activity
      */
     @Override
     public void onBackPressed() {
+        startActivity(new Intent(this, LoginActivity.class));
         super.onBackPressed();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
     }
 }
