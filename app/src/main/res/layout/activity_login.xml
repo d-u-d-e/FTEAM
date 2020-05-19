@@ -23,7 +23,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.172"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/log_toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/log_toolbar"
+        app:layout_constraintTop_toTopOf="@+id/log_toolbar"
+        app:layout_constraintBottom_toTopOf="@id/log_email"/>
 
     <EditText
         android:id="@+id/log_email"
@@ -36,7 +38,8 @@
         android:textAlignment="viewStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/log_loginLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/log_loginLabel"
+        app:layout_constraintBottom_toTopOf="@id/log_pass"/>
 
     <EditText
         android:id="@+id/log_pass"
@@ -48,6 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/log_email"
+        app:layout_constraintBottom_toTopOf="@id/log_loginBtn"
         android:layout_marginTop="20dp"
         />
 
@@ -60,7 +64,8 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/log_pass" />
+        app:layout_constraintTop_toBottomOf="@+id/log_pass"
+        app:layout_constraintBottom_toTopOf="@id/log_progressBar"/>
 
     <ProgressBar
         android:id="@+id/log_progressBar"
@@ -70,7 +75,8 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/log_loginBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/log_loginBtn"
+        app:layout_constraintBottom_toTopOf="@id/log_registerQuestion"/>
 
     <TextView
         android:id="@+id/log_registerQuestion"
@@ -83,7 +89,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/log_progressBar" />
+        app:layout_constraintTop_toBottomOf="@+id/log_progressBar"
+        app:layout_constraintBottom_toTopOf="@id/log_registerBtn"/>
 
     <Button
         android:id="@+id/log_registerBtn"
@@ -93,20 +100,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/log_registerQuestion"
-        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toTopOf="@id/log_otherLoginTypeLabel"
         />
 
     <TextView
         android:id="@+id/log_otherLoginTypeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:text="@string/act_login_label2"
         android:textAlignment="center"
         android:textSize="12sp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/log_registerBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/log_registerBtn"
+        app:layout_constraintBottom_toTopOf="@id/log_googleSignInBtn"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/log_googleSignInBtn"
