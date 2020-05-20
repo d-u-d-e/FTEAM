@@ -56,7 +56,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/reg_email"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.106"
+        app:layout_constraintHorizontal_bias="0.120"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reg_surname" />
@@ -69,10 +69,10 @@
         android:textColor="@color/colorPrimary"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/reg_email"
-        app:layout_constraintHorizontal_bias="0.158"
+        app:layout_constraintHorizontal_bias="0.036"
         app:layout_constraintLeft_toRightOf="@id/reg_dateBirth"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/reg_surname"/>
+        app:layout_constraintTop_toBottomOf="@id/reg_surname" />
 
     <EditText
         android:id="@+id/reg_email"

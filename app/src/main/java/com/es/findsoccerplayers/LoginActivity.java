@@ -67,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
         Button btnRegister = findViewById(R.id.log_registerBtn);
         Button btnLogin = findViewById(R.id.log_loginBtn);
+        final TextView forgottenPsw = findViewById(R.id.log_forgottenPsw);
 
         //options required to log in with Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -129,6 +130,15 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
             }
         });
+
+        //start RegisterActivity if btnRegister is clicked
+        forgottenPsw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, ResetPassword.class));
+                //do not finish this activity since it will be shown again after registration
+            }
+        });
     }
 
     @Override
@@ -155,7 +165,12 @@ public class LoginActivity extends AppCompatActivity {
                         });
                 Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
             } catch (ApiException e) {
-                Utils.showErrorToast(this, e);
+                if(e.toString().equals("com.google.android.gms.common.api.ApiException: 12501: ")){
+
+                }else {
+                    Log.w(TAG, "Cathccata: " + e.toString());
+                    Utils.showErrorToast(this, e);
+                }
                 progressBar.setVisibility(View.INVISIBLE);
             }
         }
