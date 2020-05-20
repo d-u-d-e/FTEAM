@@ -68,13 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         Button btnRegister = findViewById(R.id.log_registerBtn);
         Button btnLogin = findViewById(R.id.log_loginBtn);
 
-        //options required to log in with Google
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-
         //If btnLogin is pressed, login with standard firebase credentials. If login is successful,
         //start MainActivity, otherwise show the error as a toast
 
@@ -120,6 +113,13 @@ public class LoginActivity extends AppCompatActivity {
                 //do not finish this activity since it will be shown again after registration
             }
         });
+
+        //options required to log in with Google
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
 
         btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
