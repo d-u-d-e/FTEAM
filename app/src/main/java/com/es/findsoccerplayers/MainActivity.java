@@ -1,9 +1,14 @@
 package com.es.findsoccerplayers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,11 +16,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    public final String LOGITUDE = "longitude";
+    public final String LATITUDE = "latitude";
     private long backPressedTime = 0;
     private Toast backToast;
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    FusedLocationProviderClient mFusedLocationProviderClient;
+    Location mlastLocation;
+    private double lastLatitude;
+    private double lastLongitude;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        getLocation();
+
     }
 
     @Override
@@ -46,6 +66,19 @@ public class MainActivity extends AppCompatActivity {
                 Utils.showUnimplementedToast(this);
                 //TODO: creare entity delle impostazioni
                 return true;
+            case R.id.create_match:
+                Intent intent = new Intent(this, MatchActivity.class);
+                //If we have a last know location of the user, send it to the MatchActivity
+                if(lastLatitude > 0 && lastLongitude > 0){
+                    intent.putExtra(LATITUDE, lastLatitude);
+                    intent.putExtra(LOGITUDE, lastLongitude);
+                    startActivity(intent);
+                    // else just start the activity
+                } else {
+                    startActivity(intent);
+                }
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -64,5 +97,47 @@ public class MainActivity extends AppCompatActivity {
             backToast.show();
         }
         backPressedTime = System.currentTimeMillis();
+    }
+
+    private void getLocation(){
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+        } else {
+            mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null){
+                        mlastLocation = location;
+                        lastLatitude = mlastLocation.getLatitude();
+                        lastLongitude = mlastLocation.getLongitude();
+                    } else {
+                        // To delete in definitive build
+                        Toast.makeText(MainActivity.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case REQUEST_LOCATION_PERMISSION:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    getLocation();
+                } else {
+                    Toast.makeText(this, R.string.local_permission_denied, Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getLocation();
     }
 }

@@ -14,5 +14,11 @@
         app:showAsAction="never"
         />
 
+    <item
+        android:id="@+id/create_match"
+        android:title="Create match"
+        app:showAsAction="never"
+        />
+
 
 </menu>
