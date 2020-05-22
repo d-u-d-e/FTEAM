@@ -165,6 +165,8 @@ public class LoginActivity extends AppCompatActivity {
                         });
                 Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
             } catch (ApiException e) {
+                //The exception with code 12501 is a feedback from google that the sign in was cancelled by the user,
+                //so it isn't an exception that requires to be handled or shown
                 if(e.toString().equals("com.google.android.gms.common.api.ApiException: 12501: ")){
 
                 }else {
