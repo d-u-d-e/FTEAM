@@ -31,7 +31,7 @@ public class ResetPassword extends AppCompatActivity {
         Button reset = findViewById(R.id.rst_btn);
         final EditText email = findViewById(R.id.rst_email);
 
-        /**
+        /*
          * when the reset button is pressed, an email is sent to the user to reset his password.
          * If the email is not founded, an error is shown
          */

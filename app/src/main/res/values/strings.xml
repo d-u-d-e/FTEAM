@@ -27,6 +27,7 @@
     <string name="act_login_reg_button">REGISTER</string>
     <string name="act_login_label1">You are not registered?</string>
     <string name="act_login_label2">or</string>
+    <string name="act_login_log_forgottenPass">Forgotten password?</string>
 
     <string name="act_register_title">REGISTER</string>
     <string name="act_register_select_date">Select</string>
@@ -40,8 +41,7 @@
 
     <string name="act_main_title">MAIN ACTIVITY</string>
 
-    <string name="act_login_log_forgottenPsw">Forgotten password?</string>
-
+    
     <string name="act_reset_title">RESET PASSWORD</string>
     <string name="acr_reset_sentence">Insert the email you used to register:</string>
 

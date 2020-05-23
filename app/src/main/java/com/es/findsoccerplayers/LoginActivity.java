@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         FirebaseUser acct = auth.getCurrentUser();
         //if someone has already logged, start MainActivity
-        if(acct !=null) {
+        if(acct != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
             return;
@@ -167,10 +167,8 @@ public class LoginActivity extends AppCompatActivity {
             } catch (ApiException e) {
                 //The exception with code 12501 is a feedback from google that the sign in was cancelled by the user,
                 //so it isn't an exception that requires to be handled or shown
-                if(e.toString().equals("com.google.android.gms.common.api.ApiException: 12501: ")){
-
-                }else {
-                    Log.w(TAG, "Cathccata: " + e.toString());
+                if(!e.toString().equals("com.google.android.gms.common.api.ApiException: 12501: ")){
+                    Log.w(TAG, "Catch: " + e.toString());
                     Utils.showErrorToast(this, e);
                 }
                 progressBar.setVisibility(View.INVISIBLE);
