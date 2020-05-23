@@ -46,7 +46,9 @@ public class ResetPassword extends AppCompatActivity {
                             public void onComplete(Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Utils.showSuccessResetPswToast(ResetPassword.this);
-                                    startActivity(new Intent(ResetPassword.this, LoginActivity.class));
+                                    Intent i = new Intent(ResetPassword.this, LoginActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                    startActivity(i);
                                     finish();
                                 }
                                 else

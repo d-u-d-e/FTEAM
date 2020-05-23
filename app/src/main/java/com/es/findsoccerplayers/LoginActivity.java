@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.SignInButton;
 
 import com.google.android.gms.common.api.ApiException;
@@ -163,11 +164,10 @@ public class LoginActivity extends AppCompatActivity {
                                     Utils.showErrorToast(LoginActivity.this, task.getException());
                             }
                         });
-                Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
             } catch (ApiException e) {
                 //The exception with code 12501 is a feedback from google that the sign in was cancelled by the user,
                 //so it isn't an exception that requires to be handled or shown
-                if(!e.toString().equals("com.google.android.gms.common.api.ApiException: 12501: ")){
+                if(e.getStatusCode() != GoogleSignInStatusCodes.SIGN_IN_CANCELLED){
                     Log.w(TAG, "Catch: " + e.toString());
                     Utils.showErrorToast(this, e);
                 }

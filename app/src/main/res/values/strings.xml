@@ -3,6 +3,7 @@
 
     <!--general result user feedback strings-->
     <string name="unknown_error">Unknown error</string>
+    <string name="network_error">Network error</string>
     <string name="login_success">Successfully logged in</string>
     <string name="field_missing">Required field!</string>
     <string name="unimplemented">TODO</string>
@@ -41,7 +42,7 @@
 
     <string name="act_main_title">MAIN ACTIVITY</string>
 
-    
+
     <string name="act_reset_title">RESET PASSWORD</string>
     <string name="acr_reset_sentence">Insert the email you used to register:</string>
 

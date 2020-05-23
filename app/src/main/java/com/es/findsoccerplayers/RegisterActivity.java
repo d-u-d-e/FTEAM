@@ -126,7 +126,9 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
                         if(task.isSuccessful()){
                             Utils.showSuccessLoginToast(RegisterActivity.this);
                             //back to login
-                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                            Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            startActivity(i);
                             finish();
                         }else
                             Utils.showErrorToast(RegisterActivity.this, task.getException());
@@ -154,15 +156,6 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         month += 1;
         selectedDate.setTextColor(getResources().getColor(R.color.black));
         selectedDate.setText(dayOfMonth + "/" + month + "/" + year);
-    }
-
-    /**
-     * hitting back will return to Login Activity
-     */
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(this, LoginActivity.class));
-        super.onBackPressed();
     }
 
     /**
