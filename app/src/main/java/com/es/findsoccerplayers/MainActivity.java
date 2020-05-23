@@ -14,11 +14,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     Location mlastLocation;
     private double lastLatitude;
     private double lastLongitude;
+    private FloatingActionButton fab;
 
 
     @Override
@@ -41,9 +44,27 @@ public class MainActivity extends AppCompatActivity {
         Log.w(TAG, "MainActivity creata");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.main_toolbar);
+        fab = findViewById(R.id.main_fab);
         setSupportActionBar(toolbar);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         getLocation();
+
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MatchActivity.class);
+                //If we have a last know location of the user, send it to the MatchActivity
+                if(lastLatitude > 0 && lastLongitude > 0){
+                    intent.putExtra(LATITUDE, lastLatitude);
+                    intent.putExtra(LOGITUDE, lastLongitude);
+                    startActivity(intent);
+                    // else just start the activity
+                } else {
+                    startActivity(intent);
+                }
+            }
+        });
 
     }
 
@@ -65,19 +86,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.acc_settings:
                 Utils.showUnimplementedToast(this);
                 //TODO: creare entity delle impostazioni
-                return true;
-            case R.id.create_match:
-                Intent intent = new Intent(this, MatchActivity.class);
-                //If we have a last know location of the user, send it to the MatchActivity
-                if(lastLatitude > 0 && lastLongitude > 0){
-                    intent.putExtra(LATITUDE, lastLatitude);
-                    intent.putExtra(LOGITUDE, lastLongitude);
-                    startActivity(intent);
-                    // else just start the activity
-                } else {
-                    startActivity(intent);
-                }
-                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

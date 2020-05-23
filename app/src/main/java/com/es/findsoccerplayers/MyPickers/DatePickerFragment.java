@@ -14,6 +14,9 @@ import static com.es.findsoccerplayers.MatchActivity.setTheDate;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+    public static String date;
+
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -33,7 +36,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     // setTheDate di MatchActivity
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         setTheDate(dayOfMonth, month+ 1, year);
-
+        date = String.format("%02d / %02d / %04d", dayOfMonth, month, year);
     }
 
 

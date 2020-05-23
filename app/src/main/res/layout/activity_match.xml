@@ -7,6 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".MatchActivity">
 
+        <include
+            android:id="@+id/match_toolbar"
+            layout="@layout/toolbar" />
+
+
         <ImageView
             android:id="@+id/imageViewTime"
             android:layout_width="wrap_content"
@@ -14,8 +19,9 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:src="@drawable/ic_access_time"
+            app:layout_constraintTop_toBottomOf="@id/match_toolbar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+             />
 
         <TextView
             android:id="@+id/date_hour"
@@ -27,7 +33,8 @@
             android:textSize="15dp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imageViewTime"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/match_toolbar"
+            />
 
         <TextView
             android:id="@+id/date_text"
@@ -121,20 +128,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageViewLocation"/>
 
-        <Button
-            android:id="@+id/create_button"
-            android:layout_width="match_parent"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/match_fab"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@color/green"
-            android:text="@string/create_game"
-            android:textColor="@color/white"
-            android:textSize="20dp"
+            android:backgroundTint="@color/green"
+            android:layout_marginEnd="32dp"
+            android:src="@drawable/ic_done_24dp"
+            android:layout_marginBottom="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

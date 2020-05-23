@@ -34,7 +34,9 @@
             android:name=".MapsActivity"
             android:theme="@style/MapTheme"
             android:label="@string/title_activity_maps"></activity>
-        <activity android:name=".MatchActivity" />
+        <activity
+            android:name=".MatchActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".AccountActivity"
             android:parentActivityName=".MainActivity" />
