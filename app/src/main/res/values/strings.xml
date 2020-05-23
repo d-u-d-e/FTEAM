@@ -2,41 +2,47 @@
     <string name="app_name">FindSoccerPlayers</string>
 
     <!--general result user feedback strings-->
-    <string name="unknown_error">"unknown error</string>
-    <string name="login_success">loggato con successo</string>
-    <string name="field_missing">campo obbligatorio!</string>
-    <string name="unimplemented">DA IMPLEMENTARE</string>
-    <string name="double_back">premi due volte per uscire</string>
-    <string name="select_birth_date">seleziona la data di nascita</string>
-    <string name="pass_too_short">la password deve avere almeno 6 caratteri</string>
-    <string name="pass_not_equal">le password non coincidono</string>
-    <string name="email_not_equal">le email non coincidono</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="login_success">Successfully logged in</string>
+    <string name="field_missing">Required field!</string>
+    <string name="unimplemented">TODO</string>
+    <string name="double_back">Push twice to exit</string>
+    <string name="select_birth_date">Select your birthdate!</string>
+    <string name="pass_too_short">Password must be 6 character long</string>
+    <string name="pass_not_equal">Passwords do not match</string>
+    <string name="email_not_equal">Emails do not match</string>
+    <string name="reset_psw_success">An email has been sent to you. Check your email box</string>
 
     <!--activities strings-->
-    <string name="act_account_title">SIGNED IN WITH:</string>
+    <string name="act_account_title">SIGNED IN WITH</string>
     <string name="act_account_logout">LOG OUT</string>
     <string name="act_account_id">id: %1$s</string>
-    <string name="act_account_username">username: %1$s</string>
-    <string name="act_account_email">email: %1$s</string>
+    <string name="act_account_username">Username: %1$s</string>
+    <string name="act_account_email">Email: %1$s</string>
 
-    <string name="act_login_title">LOG IN:</string>
-    <string name="act_login_email">email</string>
-    <string name="act_login_pass">password</string>
+    <string name="act_login_title">LOG IN</string>
+    <string name="act_login_email">Email</string>
+    <string name="act_login_pass">Password</string>
     <string name="act_login_log_button">LOGIN</string>
-    <string name="act_login_reg_button">REGISTRATI</string>
-    <string name="act_login_label1">non sei registrato?</string>
-    <string name="act_login_label2">oppure</string>
+    <string name="act_login_reg_button">REGISTER</string>
+    <string name="act_login_label1">You are not registered?</string>
+    <string name="act_login_label2">or</string>
 
-    <string name="act_register_title">REGISTER:</string>
-    <string name="act_register_select_date">seleziona</string>
-    <string name="act_register_email">email (obbligatorio)</string>
-    <string name="act_register_confirm_email">conferma email (obbligatorio)</string>
-    <string name="act_register_pass">password (obbligatorio)</string>
-    <string name="act_register_confirm_pass">conferma password (obbligatorio)</string>
-    <string name="act_register_name">nome (obbligatorio)</string>
-    <string name="act_register_surname">cognome (obbligatorio)</string>
-    <string name="act_register_date_birth">data di nascita:</string>
+    <string name="act_register_title">REGISTER</string>
+    <string name="act_register_select_date">Select</string>
+    <string name="act_register_email">Email (required)</string>
+    <string name="act_register_confirm_email">Email confirm (required)</string>
+    <string name="act_register_pass">Password (required)</string>
+    <string name="act_register_confirm_pass">Password confirm (required)</string>
+    <string name="act_register_name">Name (required)</string>
+    <string name="act_register_surname">Surname (required)</string>
+    <string name="act_register_date_birth">Birthdate:</string>
 
     <string name="act_main_title">MAIN ACTIVITY</string>
+
+    <string name="act_login_log_forgottenPsw">Forgotten password?</string>
+
+    <string name="act_reset_title">RESET PASSWORD</string>
+    <string name="acr_reset_sentence">Insert the email you used to register:</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.es.findsoccerplayers;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -50,6 +51,15 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings  =  new FirebaseFirestoreSettings.Builder().build();
         database.setFirestoreSettings(settings);
+
+        if (savedInstanceState != null)
+        {
+            String strDateValue = savedInstanceState.getString("selectedDateTV");
+            if (strDateValue != null){
+                selectedDate.setText(strDateValue);
+                selectedDate.setTextColor(getResources().getColor(R.color.black));
+            }
+        }
 
         selectedDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,5 +163,17 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
     public void onBackPressed() {
         startActivity(new Intent(this, LoginActivity.class));
         super.onBackPressed();
+    }
+
+    /**
+     * when the phone is rotated, the value of date is saved
+     */
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        String selectedDateTV = selectedDate.getText().toString();
+        savedInstanceState.putString("selectedDateTV",selectedDateTV);
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 }

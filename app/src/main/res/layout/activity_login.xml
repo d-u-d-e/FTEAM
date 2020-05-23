@@ -16,7 +16,7 @@
         android:id="@+id/log_loginLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:text="@string/act_login_title"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -24,7 +24,6 @@
         app:layout_constraintHorizontal_bias="0.172"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/log_toolbar"
-        app:layout_constraintTop_toTopOf="@+id/log_toolbar"
         app:layout_constraintBottom_toTopOf="@id/log_email"/>
 
     <EditText
@@ -65,7 +64,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/log_pass"
-        app:layout_constraintBottom_toTopOf="@id/log_progressBar"/>
+        app:layout_constraintBottom_toTopOf="@id/log_forgottenPsw"/>
+
+    <TextView
+        android:id="@+id/log_forgottenPsw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/act_login_log_forgottenPsw"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="15sp"
+        app:layout_constraintBottom_toTopOf="@id/log_progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/log_loginBtn" />
 
     <ProgressBar
         android:id="@+id/log_progressBar"
@@ -75,7 +87,7 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/log_loginBtn"
+        app:layout_constraintTop_toBottomOf="@+id/log_forgottenPsw"
         app:layout_constraintBottom_toTopOf="@id/log_registerQuestion"/>
 
     <TextView
@@ -110,7 +122,6 @@
         android:text="@string/act_login_label2"
         android:textAlignment="center"
         android:textSize="12sp"
-        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/log_registerBtn"
