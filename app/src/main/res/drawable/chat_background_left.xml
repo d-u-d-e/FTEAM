@@ -3,7 +3,7 @@
     android:shape="rectangle">
     <corners
         android:radius="10dp"
-        android:topRightRadius="0dp">
+        android:topLeftRadius="0dp">
     </corners>
-    <solid android:color="@color/myMessage"></solid>
+    <solid android:color="@color/groupMessage"></solid>
 </shape>

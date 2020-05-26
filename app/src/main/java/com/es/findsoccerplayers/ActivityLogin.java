@@ -45,7 +45,7 @@ public class ActivityLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.w(TAG, "LoginActivity creata");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.act_login);
         Toolbar toolbar = findViewById(R.id.log_toolbar);
         setSupportActionBar(toolbar);
 

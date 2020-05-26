@@ -34,7 +34,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.act_register);
         Toolbar toolbar = findViewById(R.id.reg_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
