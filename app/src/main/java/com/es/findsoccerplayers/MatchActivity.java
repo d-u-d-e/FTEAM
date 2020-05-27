@@ -8,7 +8,6 @@ import androidx.fragment.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +41,6 @@ public class MatchActivity extends AppCompatActivity {
     private final String MATCH_HOUR = "matchHour";
     private final String PLAYER_NUMBER = "playerNumber";
     private final String DESCRIPTION = "description";
-    public static int missingPlayerNumber = 0;
 
     private static Match mMatch = new Match();
 
@@ -72,8 +70,7 @@ public class MatchActivity extends AppCompatActivity {
             description.setText(savedInstanceState.getString(DESCRIPTION));
             longitude = savedInstanceState.getDouble(LOGITUDE);
             latitude = savedInstanceState.getDouble(LATITUDE);
-            missingPlayerNumber = savedInstanceState.getInt(PLAYER_NUMBER);
-            missingPlayer.setText("Missing players: " + missingPlayerNumber);
+            missingPlayer.setText(savedInstanceState.getString(PLAYER_NUMBER));
 
         } else {
             Intent intent = getIntent();
@@ -147,7 +144,9 @@ public class MatchActivity extends AppCompatActivity {
                     mMatch.setPlaceName(placetext.getText().toString());
                     mMatch.setLongitude(longitude);
                     mMatch.setLatitude(latitude);
-                    mMatch.setPlayerNumber(missingPlayerNumber);
+                    //String test = missingPlayer.getText().toString();
+                    //missingPlayerNumber = Integer.parseInt(missingPlayer.getText().toString());
+                    mMatch.setPlayerNumber(Integer.parseInt(missingPlayer.getText().toString()));
 
                     //TODO: Send all to the database and close this activity
                     Utils.showUnimplementedToast(MatchActivity.this);
@@ -181,23 +180,6 @@ public class MatchActivity extends AppCompatActivity {
         }
     }
 
-    //set the choosen date
-    public static void setTheDate(int day, int month, int year){
-        matchDate.setText(String.format("%02d / %02d / %04d", day, month, year));
-    }
-
-    //set the choosen hour
-    public static void setTheHour(int hour, int minute){
-        matchHour.setText(String.format("%02d : %02d", hour, minute));
-    }
-
-    //set the missing number player selected
-    public static void setThePlayerNumber(int player){
-        missingPlayerNumber = player;
-        missingPlayer.setText("Missing players: " + missingPlayerNumber);
-    }
-
-
     /**
      * hitting back will return to MainActivity
      */
@@ -222,7 +204,7 @@ public class MatchActivity extends AppCompatActivity {
         outState.putString(DESCRIPTION, description.getText().toString());
         outState.putDouble(LOGITUDE, longitude);
         outState.putDouble(LATITUDE, latitude);
-        outState.putInt(PLAYER_NUMBER,missingPlayerNumber);
+        outState.putString(PLAYER_NUMBER,missingPlayer.getText().toString());
 
         super.onSaveInstanceState(outState);
     }

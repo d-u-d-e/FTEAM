@@ -3,13 +3,15 @@ package com.es.findsoccerplayers.MyPickers;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.es.findsoccerplayers.R;
+
 import java.util.Calendar;
 
-import static com.es.findsoccerplayers.MatchActivity.setTheHour;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
     @Override
@@ -25,7 +27,8 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        setTheHour( hourOfDay, minute);
+        TextView timeDate = getActivity().findViewById(R.id.time_text);
+        timeDate.setText(String.format("%02d : %02d", hourOfDay, minute));
     }
 
 }

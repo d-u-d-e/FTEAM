@@ -5,12 +5,13 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.widget.DatePicker;
+import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 
-import java.util.Calendar;
+import com.es.findsoccerplayers.R;
 
-import static com.es.findsoccerplayers.MatchActivity.setTheDate;
+import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
@@ -35,8 +36,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     //Quando l'utente inserisce la data scelta, passa le informazioni al metodo
     // setTheDate di MatchActivity
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        setTheDate(dayOfMonth, month+ 1, year);
-        date = String.format("%02d / %02d / %04d", dayOfMonth, month, year);
+        TextView matchDate = getActivity().findViewById(R.id.date_text);
+        matchDate.setText(String.format("%02d / %02d / %04d", dayOfMonth, month + 1, year));
     }
 
 

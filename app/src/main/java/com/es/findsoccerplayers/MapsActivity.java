@@ -18,6 +18,7 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +50,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public final String PLACE_NAME = "place name";
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     LocationManager mLocationManager;
+    private FloatingActionButton confirm_fab;
 
 
     @Override
@@ -67,6 +70,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             Toast.makeText(MapsActivity.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
         }
+
+        confirm_fab = findViewById(R.id.confirm_fab);
+        confirm_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(LATITUDE, mlatitude);
+                resultIntent.putExtra(LOGITUDE, mlongitude);
+                resultIntent.putExtra(PLACE_NAME, placename);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            }
+        });
     }
 
     @Override
@@ -93,25 +109,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         // Change the map type based on the user's selection.
         switch (item.getItemId()) {
-            case R.id.confirm_position:
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra(LATITUDE, mlatitude);
-                resultIntent.putExtra(LOGITUDE, mlongitude);
-                resultIntent.putExtra(PLACE_NAME, placename);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-                return true;
             case R.id.normal_map:
                 mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 return true;
             case R.id.hybrid_map:
                 mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                return true;
-            case R.id.satellite_map:
-                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                return true;
-            case R.id.terrain_map:
-                mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

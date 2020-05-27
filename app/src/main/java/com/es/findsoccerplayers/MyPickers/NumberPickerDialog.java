@@ -5,11 +5,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import static com.es.findsoccerplayers.MatchActivity.setThePlayerNumber;
+import com.es.findsoccerplayers.R;
+
 
 public class NumberPickerDialog extends DialogFragment {
 
@@ -28,7 +30,8 @@ public class NumberPickerDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int i = np.getValue();
-                setThePlayerNumber(i);
+                TextView numberPlayer = getActivity().findViewById(R.id.player_number_set);
+                numberPlayer.setText(String.valueOf(i));
             }
         });
 
