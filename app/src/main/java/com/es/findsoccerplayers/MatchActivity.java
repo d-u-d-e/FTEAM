@@ -97,8 +97,8 @@ public class MatchActivity extends AppCompatActivity {
         matchDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment datepicker = new DatePickerFragment();
-                datepicker.show(getSupportFragmentManager(), "date_picker");
+                DialogFragment datePicker = new DatePickerFragment();
+                datePicker.show(getSupportFragmentManager(), "date_picker");
             }
         });
 
@@ -106,8 +106,8 @@ public class MatchActivity extends AppCompatActivity {
         matchHour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment timepicker = new TimePickerFragment();
-                timepicker.show(getSupportFragmentManager(), "hour_picker");
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(getSupportFragmentManager(), "hour_picker");
             }
         });
 
@@ -115,8 +115,8 @@ public class MatchActivity extends AppCompatActivity {
         missingPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment playernumb = new NumberPickerDialog();
-                playernumb.show(getSupportFragmentManager(), "player_picker");
+                DialogFragment playerNumb = new NumberPickerDialog();
+                playerNumb.show(getSupportFragmentManager(), "player_picker");
             }
         });
 
