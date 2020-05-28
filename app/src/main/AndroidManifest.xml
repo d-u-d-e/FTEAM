@@ -25,7 +25,7 @@
             android:parentActivityName=".ActivityMain"/>
         <activity
             android:name=".ActivitySettings"
-            android:parentActivityName=".ActivityMain"/> />
+            android:parentActivityName=".ActivityMain"/>
         <activity
             android:name=".ActivityResetPassword"
             android:parentActivityName=".ActivityLogin" />

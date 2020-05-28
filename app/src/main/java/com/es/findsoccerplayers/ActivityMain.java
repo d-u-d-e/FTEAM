@@ -33,7 +33,7 @@ public class ActivityMain extends AppCompatActivity {
 
         TabLayout tabs = findViewById(R.id.main_tabs);
         ViewPager vp = findViewById(R.id.main_vp);
-        ViewPagerAdapterInfoBookedMatch adapter = new ViewPagerAdapterInfoBookedMatch(getSupportFragmentManager());
+        ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
         adapter.addFragment(new FragmentAvailableMatches(),"AVAILABLE MATCHES");
         adapter.addFragment(new FragmentBookedMatches(),"BOOKED MATCHES");
         adapter.addFragment(new FragmentYourMatches(),"YOUR MATCHES");

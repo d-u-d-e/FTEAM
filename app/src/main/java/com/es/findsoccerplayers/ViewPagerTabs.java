@@ -7,12 +7,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewPagerMain extends FragmentPagerAdapter {
+public class ViewPagerTabs extends FragmentPagerAdapter {
 
     private final List<Fragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentListTitles = new ArrayList<>();
 
-    public ViewPagerMain(FragmentManager fm) {
+    public ViewPagerTabs(FragmentManager fm) {
         super(fm);
     }
 

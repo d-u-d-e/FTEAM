@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
@@ -50,9 +52,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
         selectedDate = findViewById(R.id.reg_selectDate);
 
         final FirebaseAuth fAuth = FirebaseAuth.getInstance();
-        final FirebaseFirestore database = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings  =  new FirebaseFirestoreSettings.Builder().build();
-        database.setFirestoreSettings(settings);
+        final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
         if (savedInstanceState != null)
         {
@@ -127,7 +127,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
                         progressBar.setVisibility(View.INVISIBLE);
                         if(task.isSuccessful()){
                             Utils.showSuccessLoginToast(ActivityRegister.this);
-                            Utils.storeUserInfoDB(TAG,fAuth,database,name,surname,selectedDate.getText().toString());
+                            Utils.storeUserInfoDB(TAG, fAuth, databaseRef, name, surname, selectedDate.getText().toString());
                             //back to login
                             startActivity(new Intent(getApplicationContext(), ActivityLogin.class));
                             finish();

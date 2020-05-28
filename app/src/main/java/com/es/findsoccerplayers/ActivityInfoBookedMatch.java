@@ -20,7 +20,7 @@ public class ActivityInfoBookedMatch extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ViewPagerAdapterInfoBookedMatch adapter = new ViewPagerAdapterInfoBookedMatch(getSupportFragmentManager());
+        ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
         adapter.addFragment(new FragmentInfoBookedMatch(),"INFO");
         adapter.addFragment(new FragmentChat(),"CHAT");
         vp.setAdapter(adapter);

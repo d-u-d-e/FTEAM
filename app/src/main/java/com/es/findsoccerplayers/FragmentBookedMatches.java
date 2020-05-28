@@ -17,7 +17,7 @@ public class FragmentBookedMatches extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_booked_matches,container,false);
+        view = inflater.inflate(R.layout.fragment_booked_matches, container, false);
 
         TextView es = view.findViewById(R.id.esempio);
         es.setOnClickListener(new View.OnClickListener() {
