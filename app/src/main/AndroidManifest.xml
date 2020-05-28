@@ -37,14 +37,27 @@
         <activity
             android:name=".MatchActivity"
             android:parentActivityName=".MainActivity"/>
+
+        <activity
+            android:name=".ResetPassword"
+            android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".AccountActivity"
             android:parentActivityName=".MainActivity" />
+
         <activity
             android:name=".RegisterActivity"
-            android:parentActivityName=".LoginActivity" />
+            android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".MainActivity" />
-        <activity android:name=".LoginActivity">
+
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
