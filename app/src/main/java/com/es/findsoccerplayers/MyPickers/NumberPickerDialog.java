@@ -26,10 +26,11 @@ public class NumberPickerDialog extends DialogFragment {
 
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setTitle("Quanti giocatori ti mancano?").setView(np).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        alertDialog.setTitle(R.string.how_many_players).setView(np).setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int i = np.getValue();
+                //Take a reference to the TextView ad set the text
                 TextView numberPlayer = getActivity().findViewById(R.id.player_number_set);
                 numberPlayer.setText(String.valueOf(i));
             }

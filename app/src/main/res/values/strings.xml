@@ -57,6 +57,7 @@
     <string name="local_permission_denied">Location Permission Denied</string>
     <string name="gecodo_failed">Position name not found. Geocode didn\'t work.</string>
     <string name="default_position_name">My Position</string>
+    <string name="how_many_players">How many players?</string>
 
 
 </resources>

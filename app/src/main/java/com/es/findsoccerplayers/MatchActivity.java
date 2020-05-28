@@ -73,13 +73,6 @@ public class MatchActivity extends AppCompatActivity {
             missingPlayer.setText(savedInstanceState.getString(PLAYER_NUMBER));
 
         } else {
-            Intent intent = getIntent();
-            //If the MainActivity send us the last know location of the user
-            // send it to the MapsActivity for starting point
-            if(intent.hasExtra(LATITUDE)){
-                longitude = intent.getDoubleExtra(LOGITUDE, 0 );
-                latitude = intent.getDoubleExtra(LATITUDE, 0);
-            }
             //Current value for default
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
@@ -126,8 +119,6 @@ public class MatchActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO: Crea Activity Maps e ottieni il nome del posto oppure nome citta
                 Intent intent = new Intent(MatchActivity.this, MapsActivity.class);
-                intent.putExtra(LOGITUDE, longitude);
-                intent.putExtra(LATITUDE, latitude);
                 startActivityForResult(intent, MATCH_A_REQUEST_CODE);
             }
         });
@@ -144,8 +135,6 @@ public class MatchActivity extends AppCompatActivity {
                     mMatch.setPlaceName(placetext.getText().toString());
                     mMatch.setLongitude(longitude);
                     mMatch.setLatitude(latitude);
-                    //String test = missingPlayer.getText().toString();
-                    //missingPlayerNumber = Integer.parseInt(missingPlayer.getText().toString());
                     mMatch.setPlayerNumber(Integer.parseInt(missingPlayer.getText().toString()));
 
                     //TODO: Send all to the database and close this activity
