@@ -5,17 +5,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ResetPassword extends AppCompatActivity {
+public class ActivityResetPassword extends AppCompatActivity {
 
     private static final String TAG = "ResetPasswordActivity";
 
@@ -45,24 +43,15 @@ public class ResetPassword extends AppCompatActivity {
                             @Override
                             public void onComplete(Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Utils.showSuccessResetPswToast(ResetPassword.this);
-                                    startActivity(new Intent(ResetPassword.this, LoginActivity.class));
+                                    Utils.showSuccessResetPswToast(ActivityResetPassword.this);
+                                    startActivity(new Intent(ActivityResetPassword.this, ActivityLogin.class));
                                     finish();
                                 }
                                 else
-                                    Utils.showErrorToast(ResetPassword.this, task.getException());
+                                    Utils.showErrorToast(ActivityResetPassword.this, task.getException());
                             }
                         });
             }
         });
-    }
-
-    /**
-     * hitting back will return to Login Activity
-     */
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(this, LoginActivity.class));
-        super.onBackPressed();
     }
 }

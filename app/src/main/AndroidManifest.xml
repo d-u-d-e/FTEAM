@@ -12,19 +12,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ResetPassword"
-            android:parentActivityName=".LoginActivity" />
+            android:name=".ActivityCreateMatch"
+            android:parentActivityName=".ActivityMain"/>
         <activity
-            android:name=".AccountActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".ActivityInfoBookedMatch"
+            android:parentActivityName=".ActivityMain"/>
         <activity
-            android:name=".RegisterActivity"
-            android:parentActivityName=".LoginActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginActivity">
+            android:name=".ActivityEditMatch"
+            android:parentActivityName=".ActivityMain"/>
+        <activity
+            android:name=".ActivityInfoMatch"
+            android:parentActivityName=".ActivityMain"/>
+        <activity
+            android:name=".ActivitySettings"
+            android:parentActivityName=".ActivityMain"/> />
+        <activity
+            android:name=".ActivityResetPassword"
+            android:parentActivityName=".ActivityLogin" />
+        <activity
+            android:name=".ActivityAccount"
+            android:parentActivityName=".ActivityMain" />
+        <activity
+            android:name=".ActivityRegister"
+            android:parentActivityName=".ActivityLogin" />
+        <activity android:name=".ActivityMain" />
+        <activity android:name=".ActivityLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

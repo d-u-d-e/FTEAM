@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 /**
  * shows the account info for the current user
  * */
-public class AccountActivity extends AppCompatActivity {
+public class ActivityAccount extends AppCompatActivity {
 
     private FirebaseUser acct;
     private TextView id;
@@ -62,7 +62,7 @@ public class AccountActivity extends AppCompatActivity {
                 googleSignInClient.signOut();
                 //back to login activity
                 finishAffinity();
-                Intent i = new Intent(AccountActivity.this, LoginActivity.class);
+                Intent i = new Intent(ActivityAccount.this, ActivityLogin.class);
                 startActivity(i);
             }
         });
@@ -82,7 +82,7 @@ public class AccountActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, ActivityMain.class);
         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
         super.onBackPressed();

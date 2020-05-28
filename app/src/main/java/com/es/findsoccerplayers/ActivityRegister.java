@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -25,9 +24,12 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import java.util.Calendar;
 
-public class RegisterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+public class ActivityRegister extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     private TextView selectedDate;
+    private static final String TAG = "RegisterActivity";
+
+    String name, surname, email, emailConf,pass, passConf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +49,8 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         final ProgressBar progressBar = findViewById(R.id.reg_progressBar);
         selectedDate = findViewById(R.id.reg_selectDate);
 
-        final FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        final FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        final FirebaseFirestore database = FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings  =  new FirebaseFirestoreSettings.Builder().build();
         database.setFirestoreSettings(settings);
 
@@ -71,19 +73,19 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = nameEd.getText().toString();
-                String surname = surnameEd.getText().toString();
-                String email = emailEd.getText().toString();
-                String emailConf = emailConfEd.getText().toString();
-                String pass = passEd.getText().toString();
-                String passConf = passConfEd.getText().toString();
+                name = nameEd.getText().toString();
+                surname = surnameEd.getText().toString();
+                email = emailEd.getText().toString();
+                emailConf = emailConfEd.getText().toString();
+                pass = passEd.getText().toString();
+                passConf = passConfEd.getText().toString();
 
                 //check if fields are completed without input errors
 
                 String missingField = getString(R.string.field_missing);
 
                 if(selectedDate.getText().toString().equals(getString(R.string.act_register_select_date)))
-                    Toast.makeText(RegisterActivity.this, R.string.select_birth_date, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityRegister.this, R.string.select_birth_date, Toast.LENGTH_SHORT).show();
 
                 if(TextUtils.isEmpty(name))
                     nameEd.setError(missingField);
@@ -119,17 +121,18 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
                 progressBar.setVisibility(View.VISIBLE);
 
                 //everything is fine, create an account
-                auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                fAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(Task<AuthResult> task) {
                         progressBar.setVisibility(View.INVISIBLE);
                         if(task.isSuccessful()){
-                            Utils.showSuccessLoginToast(RegisterActivity.this);
+                            Utils.showSuccessLoginToast(ActivityRegister.this);
+                            Utils.storeUserInfoDB(TAG,fAuth,database,name,surname,selectedDate.getText().toString());
                             //back to login
-                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                            startActivity(new Intent(getApplicationContext(), ActivityLogin.class));
                             finish();
                         }else
-                            Utils.showErrorToast(RegisterActivity.this, task.getException());
+                            Utils.showErrorToast(ActivityRegister.this, task.getException());
                     }
                 });
             }
@@ -161,7 +164,7 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
      */
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, LoginActivity.class));
+        startActivity(new Intent(this, ActivityLogin.class));
         super.onBackPressed();
     }
 
