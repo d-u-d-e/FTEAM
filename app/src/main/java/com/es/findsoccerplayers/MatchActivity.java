@@ -169,16 +169,6 @@ public class MatchActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * hitting back will return to MainActivity
-     */
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(i);
-        super.onBackPressed();
-    }
 
 
     /**
