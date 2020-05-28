@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,6 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.w(TAG, "MainActivity creata");
-        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
@@ -54,7 +54,7 @@ public class ActivityMain extends AppCompatActivity {
         switch (item.getItemId()){
             //show user account
             case R.id.acc_account:
-                startActivity(new Intent(this, AccountActivity.class));
+                startActivity(new Intent(this, ActivityAccount.class));
                 return true;
             //show settings
             case R.id.acc_settings:
