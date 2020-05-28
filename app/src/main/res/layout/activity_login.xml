@@ -70,7 +70,7 @@
         android:id="@+id/log_forgottenPsw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/act_login_log_forgottenPsw"
+        android:text="@string/act_login_log_forgottenPass"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:layout_marginTop="15sp"

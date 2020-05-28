@@ -54,7 +54,7 @@ public class ActivityMain extends AppCompatActivity {
         switch (item.getItemId()){
             //show user account
             case R.id.acc_account:
-                startActivity(new Intent(this, ActivityAccount.class));
+                startActivity(new Intent(this, AccountActivity.class));
                 return true;
             //show settings
             case R.id.acc_settings:
