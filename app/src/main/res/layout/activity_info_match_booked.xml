@@ -4,19 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityMain"
+    tools:context=".ActivityInfoBookedMatch"
     android:orientation="vertical">
 
     <include
-        android:id="@+id/main_toolbar"
-        layout="@layout/toolbar" />
+        android:id="@+id/info_match_booked_toolbar"
+        layout="@layout/toolbar"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:tabGravity="fill"
         app:tabMode="fixed"
-        android:id="@+id/main_tabs"
+        android:id="@+id/info_match_booked_tabs"
         android:background="@color/colorPrimary"
         app:tabTextColor="@color/white"
         app:tabIndicatorColor="@color/white"/>
@@ -24,8 +26,6 @@
     <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/main_vp"/>
-
-
+        android:id="@+id/info_match_booked_vp"/>
 
 </LinearLayout>

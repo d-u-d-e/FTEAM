@@ -1,9 +1,10 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,35 +14,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 
-public class MainActivity extends AppCompatActivity {
+public class ActivityMain extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private long backPressedTime = 0;
     private Toast backToast;
-    private FloatingActionButton fab;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.w(TAG, "MainActivity creata");
-        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.main_toolbar);
-        fab = findViewById(R.id.main_fab);
         setSupportActionBar(toolbar);
 
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MatchActivity.class);
-                startActivity(intent);
-            }
-        });
+        TabLayout tabs = findViewById(R.id.main_tabs);
+        ViewPager vp = findViewById(R.id.main_vp);
+        ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
+        adapter.addFragment(new FragmentAvailableMatches(),"AVAILABLE MATCHES");
+        adapter.addFragment(new FragmentBookedMatches(),"BOOKED MATCHES");
+        adapter.addFragment(new FragmentYourMatches(),"YOUR MATCHES");
+        vp.setAdapter(adapter);
+        tabs.setupWithViewPager(vp);
 
     }
 
@@ -57,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             //show user account
             case R.id.acc_account:
-                startActivity(new Intent(this, AccountActivity.class));
+                startActivity(new Intent(this, ActivityAccount.class));
                 return true;
             //show settings
             case R.id.acc_settings:
@@ -83,5 +80,4 @@ public class MainActivity extends AppCompatActivity {
         }
         backPressedTime = System.currentTimeMillis();
     }
-
 }

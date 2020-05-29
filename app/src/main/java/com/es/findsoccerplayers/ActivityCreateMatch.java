@@ -20,7 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
 
-public class MatchActivity extends AppCompatActivity {
+public class ActivityCreateMatch extends AppCompatActivity {
 
     private static TextView matchDate;
     private static TextView matchHour;
@@ -48,11 +48,11 @@ public class MatchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_match);
-        Toolbar toolbar = findViewById(R.id.match_toolbar);
+        setContentView(R.layout.activity_create_match);
+
+        Toolbar toolbar = findViewById(R.id.cr_match_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         //Find the view
         matchDate = findViewById(R.id.date_text);
@@ -118,7 +118,7 @@ public class MatchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO: Crea Activity Maps e ottieni il nome del posto oppure nome citta
-                Intent intent = new Intent(MatchActivity.this, MapsActivity.class);
+                Intent intent = new Intent(ActivityCreateMatch.this, ActivityMaps.class);
                 startActivityForResult(intent, MATCH_A_REQUEST_CODE);
             }
         });
@@ -127,7 +127,7 @@ public class MatchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(description.getText().toString().equals("")){
-                    Toast.makeText(MatchActivity.this, "Insert a description", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityCreateMatch.this, "Insert a description", Toast.LENGTH_SHORT).show();
                 }else{
                     mMatch.setDescription(description.getText().toString());
                     mMatch.setMatchData(matchDate.getText().toString()); //
@@ -138,22 +138,14 @@ public class MatchActivity extends AppCompatActivity {
                     mMatch.setPlayerNumber(Integer.parseInt(missingPlayer.getText().toString()));
 
                     //TODO: Send all to the database and close this activity
-                    Utils.showUnimplementedToast(MatchActivity.this);
+                    Utils.showUnimplementedToast(ActivityCreateMatch.this);
 
 
                 }
 
             }
         });
-
-
-
-
-
-
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -187,7 +179,4 @@ public class MatchActivity extends AppCompatActivity {
 
         super.onSaveInstanceState(outState);
     }
-
-
-
 }

@@ -69,4 +69,7 @@
     <string name="acr_reset_sentence">Insert the email you used to register:</string>
 
 
+    <string name="title_activity_info_match_booked">InfoMatchBookedActivity</string>
+
+
 </resources>

@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/acc_settings"
-        android:title="Impostazioni"
+        android:title="Settings"
         app:showAsAction="never"
         />
 

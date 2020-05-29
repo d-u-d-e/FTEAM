@@ -1,14 +1,12 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -17,7 +15,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,13 +35,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private String placename;
@@ -78,6 +74,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        Toolbar toolbar = findViewById(R.id.maps_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         confirm_fab = findViewById(R.id.confirm_fab);
         position_fab = findViewById(R.id.position_fab);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -98,7 +98,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             //if the GPS is disabled show a Toast
-            Toast.makeText(MapsActivity.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityMaps.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
             gpsON = false;
             //TODO: Get the position from the user shared Preferencies
             // initposition = (user shared preferencies)
@@ -132,7 +132,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
                     //if the GPS is disabled show a Toast or an AlertDialog
-                    Toast.makeText(MapsActivity.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityMaps.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
                     position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
                     gpsON = false;
                 }else {
@@ -234,7 +234,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         latLng.latitude,
                         latLng.longitude);
                 try {
-                    Geocoder geo = new Geocoder(MapsActivity.this.getApplicationContext(), Locale.getDefault());
+                    Geocoder geo = new Geocoder(ActivityMaps.this.getApplicationContext(), Locale.getDefault());
                     List<Address> addresses = geo.getFromLocation(latLng.latitude, latLng.longitude, 1);
                     if (addresses.isEmpty()) {
                         placename = getString(R.string.default_position_name);
@@ -247,7 +247,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 } catch (Exception e){
                     e.printStackTrace();
-                    Toast.makeText(MapsActivity.this, R.string.gecodo_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityMaps.this, R.string.gecodo_failed, Toast.LENGTH_SHORT).show();
                     placename = getString(R.string.default_position_name);
                 }
                 Marker myMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(placename).snippet(snippet)
