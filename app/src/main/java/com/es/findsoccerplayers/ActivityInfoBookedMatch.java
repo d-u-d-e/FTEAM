@@ -6,6 +6,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 
+import com.es.findsoccerplayers.fragments.FragmentChat;
+import com.es.findsoccerplayers.fragments.FragmentInfoBookedMatch;
+import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.google.android.material.tabs.TabLayout;
 
 public class ActivityInfoBookedMatch extends AppCompatActivity {
@@ -21,8 +24,8 @@ public class ActivityInfoBookedMatch extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-        adapter.addFragment(new FragmentInfoBookedMatch(),"INFO");
-        adapter.addFragment(new FragmentChat(),"CHAT");
+        adapter.addFragment(new FragmentInfoBookedMatch(), "INFO");
+        adapter.addFragment(new FragmentChat(), "CHAT");
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
 

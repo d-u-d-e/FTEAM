@@ -11,127 +11,127 @@
         layout="@layout/toolbar" />
 
     <ImageView
-        android:id="@+id/imageViewTime"
+        android:id="@+id/cr_match_imageViewTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:src="@drawable/ic_access_time"
+        app:srcCompat="@drawable/ic_access_time"
         app:layout_constraintTop_toBottomOf="@id/cr_match_toolbar"
         app:layout_constraintStart_toStartOf="parent"
         />
 
     <TextView
-        android:id="@+id/date_hour"
+        android:id="@+id/cr_match_dateHour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:text="@string/date_and_hour"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageViewTime"
+        app:layout_constraintStart_toEndOf="@+id/cr_match_imageViewTime"
         app:layout_constraintTop_toBottomOf="@id/cr_match_toolbar"
         />
 
     <TextView
-        android:id="@+id/date_text"
+        android:id="@+id/cr_match_dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginTop="16dp"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date_hour" />
+        app:layout_constraintTop_toBottomOf="@id/cr_match_dateHour" />
 
     <TextView
-        android:id="@+id/time_text"
+        android:id="@+id/cr_match_timeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="30dp"
         android:text="TextView"
-        android:textSize="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date_hour" />
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/cr_match_dateText"
+        app:layout_constraintTop_toBottomOf="@id/cr_match_dateHour" />
 
     <ImageView
-        android:id="@+id/image_run_man"
+        android:id="@+id/cr_match_imageManRunning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:src="@drawable/ic_man_run_"
+        app:srcCompat="@drawable/ic_man_run_"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/time_text" />
+        app:layout_constraintTop_toBottomOf="@id/cr_match_timeText" />
 
     <TextView
-        android:id="@+id/number_player_text"
+        android:id="@+id/cr_match_playersText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
-        android:text="@string/player_number"
-        android:textSize="15dp"
+        android:text="@string/players_number"
+        android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/image_run_man"
-        app:layout_constraintTop_toBottomOf="@id/time_text"/>
+        app:layout_constraintStart_toEndOf="@+id/cr_match_imageManRunning"
+        app:layout_constraintTop_toBottomOf="@id/cr_match_timeText"/>
 
 
     <TextView
-        android:id="@+id/player_number_set"
+        android:id="@+id/cr_match_playersNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"
+         android:layout_marginTop="32dp"
         android:text="@string/players"
-        android:textSize="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/number_player_text"/>
-
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/cr_match_playersText"
+        app:layout_constraintTop_toBottomOf="@+id/cr_match_timeText" />
 
     <ImageView
-        android:id="@+id/imageViewLocation"
+        android:id="@+id/cr_match_imageViewLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:src="@drawable/ic_location"
+        app:srcCompat="@drawable/ic_location"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/player_number_set" />
+        app:layout_constraintTop_toBottomOf="@id/cr_match_playersNumber" />
 
     <TextView
-        android:id="@+id/add_position"
+        android:id="@+id/cr_match_addPosition"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="32dp"
         android:text="@string/add_position"
-        android:textSize="15dp"
-        app:layout_constraintStart_toEndOf="@+id/imageViewLocation"
-        app:layout_constraintTop_toBottomOf="@id/player_number_set"/>
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/cr_match_imageViewLocation"
+        app:layout_constraintTop_toBottomOf="@id/cr_match_playersNumber"/>
 
     <EditText
-        android:id="@+id/description_field"
+        android:id="@+id/cr_match_descriptionField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="50dp"
-        android:hint="@string/description"
-        android:textSize="15dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="40dp"
         android:background="@android:color/transparent"
+        android:hint="@string/description"
+        android:textSize="15sp"
+        android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewLocation"/>
+        app:layout_constraintTop_toBottomOf="@+id/cr_match_imageViewLocation" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/match_fab"
+        android:id="@+id/cr_match_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_done_24dp"
+        app:srcCompat="@drawable/ic_done_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

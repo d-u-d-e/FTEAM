@@ -1,4 +1,4 @@
-package com.es.findsoccerplayers.MyPickers;
+package com.es.findsoccerplayers.pickers;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,7 +31,7 @@ public class NumberPickerDialog extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 int i = np.getValue();
                 //Take a reference to the TextView ad set the text
-                TextView numberPlayer = getActivity().findViewById(R.id.player_number_set);
+                TextView numberPlayer = getActivity().findViewById(R.id.cr_match_playersNumber);
                 numberPlayer.setText(String.valueOf(i));
             }
         });

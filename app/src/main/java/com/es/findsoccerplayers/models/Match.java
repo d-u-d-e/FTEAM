@@ -1,4 +1,4 @@
-package com.es.findsoccerplayers.Models;
+package com.es.findsoccerplayers.models;
 
 public class Match {
 
@@ -51,7 +51,7 @@ public class Match {
         return playerNumber;
     }
 
-    public void setPlayerNumber(int playerNumber) {
+    public void setPlayersNumber(int playerNumber) {
         this.playerNumber = playerNumber;
     }
 

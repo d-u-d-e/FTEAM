@@ -37,7 +37,6 @@ public class ActivityLogin extends AppCompatActivity {
     private static final int RC_GOOGLE_SIGN_IN = 100;
     private static final String TAG = "LoginActivity";
     private FirebaseAuth fAuth;
-    private FirebaseFirestore database;
     private long backPressedTime;
     private Toast backToast;
     private ProgressBar progressBar;
@@ -72,7 +71,7 @@ public class ActivityLogin extends AppCompatActivity {
         Button btnLogin = findViewById(R.id.log_loginBtn);
         final TextView forgottenPsw = findViewById(R.id.log_forgottenPsw);
 
-        database = FirebaseFirestore.getInstance();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings  =  new FirebaseFirestoreSettings.Builder().build();
         database.setFirestoreSettings(settings);
 
@@ -177,7 +176,7 @@ public class ActivityLogin extends AppCompatActivity {
                 if(e.toString().equals("com.google.android.gms.common.api.ApiException: 12501: ")){
 
                 }else {
-                    Log.w(TAG, "Cathccata: " + e.toString());
+                    Log.w(TAG, "Exception: " + e.toString());
                     Utils.showErrorToast(this, e);
                 }
                 progressBar.setVisibility(View.INVISIBLE);
@@ -192,7 +191,7 @@ public class ActivityLogin extends AppCompatActivity {
     public void onBackPressed() {
         if(backPressedTime + 2000 > System.currentTimeMillis()){
             backToast.cancel();
-            super.onBackPressed(); //the default finish the current activity
+            super.onBackPressed(); //the default finishes the current activity
         }else{
             backToast = Toast.makeText(this, R.string.double_back, Toast.LENGTH_SHORT);
             backToast.show();

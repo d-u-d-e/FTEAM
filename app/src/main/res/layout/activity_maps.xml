@@ -11,30 +11,30 @@ tools:context=".ActivityMaps">
         android:id="@+id/maps_toolbar"
         layout="@layout/toolbar" />
 
-    <fragment
-        android:id="@+id/map"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/maps_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ActivityMaps" />
 
-<com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/confirm_fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    android:src="@drawable/ic_done_24dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/maps_confirm_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/ic_done_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/position_fab"
+        android:id="@+id/maps_position_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:backgroundTint="@color/white"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_my_location_grey"
-        app:layout_constraintBottom_toTopOf="@+id/confirm_fab"
+        app:srcCompat="@drawable/ic_my_location_grey"
+        app:layout_constraintBottom_toTopOf="@+id/maps_confirm_fab"
         app:layout_constraintEnd_toEndOf="parent" />
 
 

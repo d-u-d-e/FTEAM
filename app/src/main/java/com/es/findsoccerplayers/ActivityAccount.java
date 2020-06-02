@@ -3,7 +3,6 @@ package com.es.findsoccerplayers;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.accounts.Account;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -77,16 +76,5 @@ public class ActivityAccount extends AppCompatActivity {
         id.setText(String.format(getString(R.string.act_account_id), acct.getUid()));
         email.setText(String.format(getString(R.string.act_account_email), acct.getEmail()));
         name.setText(String.format(getString(R.string.act_account_username), acct.getDisplayName()));
-    }
-
-    /**
-     * hitting back will return to MainActivity
-     */
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(this, ActivityMain.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(i);
-        super.onBackPressed();
     }
 }

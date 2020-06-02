@@ -1,4 +1,4 @@
-package com.es.findsoccerplayers.MyPickers;
+package com.es.findsoccerplayers.pickers;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -27,7 +27,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        TextView timeDate = getActivity().findViewById(R.id.time_text);
+        TextView timeDate = getActivity().findViewById(R.id.cr_match_timeText);
         timeDate.setText(String.format("%02d : %02d", hourOfDay, minute));
     }
 

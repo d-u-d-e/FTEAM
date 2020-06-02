@@ -6,15 +6,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.google.firebase.database.FirebaseDatabase;
 
 class Utils {
 
@@ -36,17 +33,19 @@ class Utils {
         Toast.makeText(c, R.string.reset_psw_success, Toast.LENGTH_SHORT).show();
     }
 
-    static void storeUserInfoDB(final String TAG, FirebaseAuth fAuth, DatabaseReference db, String name, String surname, String date) {
+    static void dbStoreUser(final String tag, String name, String surname, String date) {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
         User user = new User(fAuth.getCurrentUser().getUid(),name, surname, date);
         db.child("users").child(user.getId()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.w(TAG, "Memorizzato con successo nel db");
+                Log.w(tag, "Database successfully updated with new user info");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Errore memorizzazione nel db: " + e.toString());
+                Log.w(tag, "Database update error: " + e.toString());
             }
         });
     }

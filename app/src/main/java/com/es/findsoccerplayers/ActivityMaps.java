@@ -43,9 +43,9 @@ import java.util.Locale;
 public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private String placename;
-    private double mlatitude;
-    private double mlongitude;
+    private String placeName;
+    private double latitude;
+    private double longitude;
     private LatLng initPosition;
     private LatLng myPosition;
 
@@ -58,16 +58,10 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     LocationCallback mLocationCallback;
     Location mLastLocation;
 
-
-
-    private FloatingActionButton confirm_fab;
     private FloatingActionButton position_fab;
-
 
     //Location objects and parameters
     FusedLocationProviderClient mFusedLocationClient;
-    private boolean gpsON = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +72,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        confirm_fab = findViewById(R.id.confirm_fab);
-        position_fab = findViewById(R.id.position_fab);
+        FloatingActionButton confirm_fab = findViewById(R.id.maps_confirm_fab);
+        position_fab = findViewById(R.id.maps_position_fab);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         //create a callback when receive a location result
@@ -92,35 +86,31 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         };
 
 
-
-
         //check if the GPS is disabled
         mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             //if the GPS is disabled show a Toast
             Toast.makeText(ActivityMaps.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
-            gpsON = false;
-            //TODO: Get the position from the user shared Preferencies
-            // initposition = (user shared preferencies)
+            //TODO: Get the position from the user shared Preferences
+            // initPosition = (user shared preferences)
         }else {
                 //Use the current position of the user
-                gpsON = true;
                 position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
                 startTrackingLocation();
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.maps_map);
         mapFragment.getMapAsync(this);
 
         confirm_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra(LATITUDE, mlatitude);
-                resultIntent.putExtra(LONGITUDE, mlongitude);
-                resultIntent.putExtra(PLACE_NAME, placename);
+                resultIntent.putExtra(LATITUDE, latitude);
+                resultIntent.putExtra(LONGITUDE, longitude);
+                resultIntent.putExtra(PLACE_NAME, placeName);
                 setResult(RESULT_OK, resultIntent);
                 stopTrackingLocation();
                 finish();
@@ -134,10 +124,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                     //if the GPS is disabled show a Toast or an AlertDialog
                     Toast.makeText(ActivityMaps.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
                     position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
-                    gpsON = false;
                 }else {
                     // Go to the new view in the map and change the color
-                    gpsON = true;
                     startTrackingLocation();
                     position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
                 }
@@ -149,13 +137,11 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode){
-            case REQUEST_LOCATION_PERMISSION:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    //Draw my position in the map
-                    enableMyLocation();
-                    break;
-                }
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Draw my position in the map
+                enableMyLocation();
+            }
         }
     }
 
@@ -187,8 +173,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -198,19 +183,19 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         enableMyLocation();
 
-        //If the user have a last know location the map will start from there
-        // if there is not a last know location the entire world map will appear and the user will find his location
+        //If the user has a last known location the map will start from there
+        // if there is not a last known location the entire world map will appear and the user will find his location
         // by pressing the button in the top right corner of the map.
 
         setMapLongClick(mMap); // Add a marker in a long position click
         setPoiClick(mMap);  //add a marker in a POI
-        setInfoWindowclick(mMap); // choose the selectet position if the user click in the info window
+        setInfoWindowClick(mMap); // choose the selected position if the user clicks in the info window
         onMapMoving(mMap); //if the camera moves because the user move it, stop tracking location. He's looking for a place.
     }
 
 
 
-    // onMapMoving stop the tracking location if the user star moving the camera.
+    // onMapMoving stops the tracking location if the user starts moving the camera.
     private void onMapMoving(GoogleMap map){
         map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
@@ -237,20 +222,18 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                     Geocoder geo = new Geocoder(ActivityMaps.this.getApplicationContext(), Locale.getDefault());
                     List<Address> addresses = geo.getFromLocation(latLng.latitude, latLng.longitude, 1);
                     if (addresses.isEmpty()) {
-                        placename = getString(R.string.default_position_name);
+                        placeName = getString(R.string.default_position_name);
                     } else {
-                        if (addresses.size() > 0) {
-                            placename = addresses.get(0).getLocality();  // if the place is not a POI the use only the City name
-                            mlatitude = latLng.latitude;  //get the selected place latitude
-                            mlongitude = latLng.longitude; // //get the selected place longitude
-                        }
+                        placeName = addresses.get(0).getLocality();  // if the place is not a POI then use only the city name
+                        latitude = latLng.latitude;  //get the selected place latitude
+                        longitude = latLng.longitude; // //get the selected place longitude
                     }
                 } catch (Exception e){
                     e.printStackTrace();
                     Toast.makeText(ActivityMaps.this, R.string.gecodo_failed, Toast.LENGTH_SHORT).show();
-                    placename = getString(R.string.default_position_name);
+                    placeName = getString(R.string.default_position_name);
                 }
-                Marker myMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(placename).snippet(snippet)
+                Marker myMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(snippet)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                 myMarker.showInfoWindow();
             }
@@ -259,8 +242,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    /*POI is the "Point Of Interes". Many structure alredy exist in
-    * Google database with their name. We can set the position name name from the POI name */
+    /*POI is the "Point Of Interest". Many structures already exist in
+    * Google database with their names. We can set the position name name from the POI name */
     private void setPoiClick(final GoogleMap map){
         map.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
             @Override
@@ -269,21 +252,21 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 Marker poiMarker = mMap.addMarker(new MarkerOptions().position(pointOfInterest.latLng).title(pointOfInterest.name)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                 poiMarker.showInfoWindow();
-                placename = pointOfInterest.name; //get the poi name
-                mlatitude = pointOfInterest.latLng.latitude;  // get the poi latitude
-                mlongitude = pointOfInterest.latLng.longitude; // get the poi longitude
+                placeName = pointOfInterest.name; //get the poi name
+                latitude = pointOfInterest.latLng.latitude;  // get the poi latitude
+                longitude = pointOfInterest.latLng.longitude; // get the poi longitude
             }
         });
     }
 
-    private void setInfoWindowclick(final GoogleMap map){
+    private void setInfoWindowClick(final GoogleMap map){
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra(LATITUDE, mlatitude);
-                resultIntent.putExtra(LONGITUDE, mlongitude);
-                resultIntent.putExtra(PLACE_NAME, placename);
+                resultIntent.putExtra(LATITUDE, latitude);
+                resultIntent.putExtra(LONGITUDE, longitude);
+                resultIntent.putExtra(PLACE_NAME, placeName);
                 setResult(RESULT_OK, resultIntent);
                 stopTrackingLocation();
                 finish();
@@ -296,7 +279,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     private void enableMyLocation(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             mMap.setMyLocationEnabled(true); // show a small blue circle for my position
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);// I create my own beatiful position floating anction button
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);// I create my own beautiful position floating action button
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         }

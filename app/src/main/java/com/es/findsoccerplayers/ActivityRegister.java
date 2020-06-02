@@ -21,8 +21,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import java.util.Calendar;
 
@@ -54,14 +52,6 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
         final FirebaseAuth fAuth = FirebaseAuth.getInstance();
         final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
-        if (savedInstanceState != null)
-        {
-            String strDateValue = savedInstanceState.getString("selectedDateTV");
-            if (strDateValue != null){
-                selectedDate.setText(strDateValue);
-                selectedDate.setTextColor(getResources().getColor(R.color.black));
-            }
-        }
 
         selectedDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,9 +117,10 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
                         progressBar.setVisibility(View.INVISIBLE);
                         if(task.isSuccessful()){
                             Utils.showSuccessLoginToast(ActivityRegister.this);
-                            Utils.storeUserInfoDB(TAG, fAuth, databaseRef, name, surname, selectedDate.getText().toString());
-                            //back to login
-                            startActivity(new Intent(getApplicationContext(), ActivityLogin.class));
+                            Utils.dbStoreUser(TAG, name, surname, selectedDate.getText().toString());
+                            Intent i = new Intent(ActivityRegister.this, ActivityLogin.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            startActivity(i);
                             finish();
                         }else
                             Utils.showErrorToast(ActivityRegister.this, task.getException());
@@ -166,17 +157,5 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
     public void onBackPressed() {
         startActivity(new Intent(this, ActivityLogin.class));
         super.onBackPressed();
-    }
-
-    /**
-     * when the phone is rotated, the value of date is saved
-     */
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState)
-    {
-        String selectedDateTV = selectedDate.getText().toString();
-        savedInstanceState.putString("selectedDateTV",selectedDateTV);
-
-        super.onSaveInstanceState(savedInstanceState);
     }
 }

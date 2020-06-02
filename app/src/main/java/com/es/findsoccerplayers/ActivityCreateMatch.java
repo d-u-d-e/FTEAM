@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
@@ -12,38 +11,34 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.es.findsoccerplayers.Models.Match;
-import com.es.findsoccerplayers.MyPickers.DatePickerFragment;
-import com.es.findsoccerplayers.MyPickers.NumberPickerDialog;
-import com.es.findsoccerplayers.MyPickers.TimePickerFragment;
+import com.es.findsoccerplayers.models.Match;
+import com.es.findsoccerplayers.pickers.DatePickerFragment;
+import com.es.findsoccerplayers.pickers.NumberPickerDialog;
+import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
 
 public class ActivityCreateMatch extends AppCompatActivity {
 
-    private static TextView matchDate;
-    private static TextView matchHour;
-    private static TextView missingPlayer;
-    private TextView placetext;
+    private TextView matchDate;
+    private TextView matchHour;
+    private TextView missingPlayers;
+    private TextView placeText;
     private EditText description;
     private double longitude;
     private double latitude;
-    private String nameOfTheplace;
-    private FloatingActionButton matchFAB;
 
-
-    private final String LOGITUDE = "longitude";
+    private final String LONGITUDE = "longitude";
     private final String LATITUDE = "latitude";
     private final String PLACE_NAME = "place name";
     private final int MATCH_A_REQUEST_CODE = 42;
     private final String MATCH_DATE = "matchDate";
     private final String MATCH_HOUR = "matchHour";
-    private final String PLAYER_NUMBER = "playerNumber";
+    private final String PLAYERS_NUMBER = "playerNumber";
     private final String DESCRIPTION = "description";
 
-    private static Match mMatch = new Match();
-
+    private Match mMatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,22 +50,21 @@ public class ActivityCreateMatch extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Find the view
-        matchDate = findViewById(R.id.date_text);
-        matchHour = findViewById(R.id.time_text);
-        missingPlayer = findViewById(R.id.player_number_set);
-        placetext = findViewById(R.id.add_position);
-        description = findViewById(R.id.description_field);
-        matchFAB = findViewById(R.id.match_fab);
-
+        matchDate = findViewById(R.id.cr_match_dateText);
+        matchHour = findViewById(R.id.cr_match_timeText);
+        missingPlayers = findViewById(R.id.cr_match_playersNumber);
+        placeText = findViewById(R.id.cr_match_addPosition);
+        description = findViewById(R.id.cr_match_descriptionField);
+        FloatingActionButton matchFab = findViewById(R.id.cr_match_fab);
 
         if(savedInstanceState != null){
             matchDate.setText(savedInstanceState.getString(MATCH_DATE));
             matchHour.setText(savedInstanceState.getString(MATCH_HOUR));
-            placetext.setText(savedInstanceState.getString(PLACE_NAME));
+            placeText.setText(savedInstanceState.getString(PLACE_NAME));
             description.setText(savedInstanceState.getString(DESCRIPTION));
-            longitude = savedInstanceState.getDouble(LOGITUDE);
+            longitude = savedInstanceState.getDouble(LONGITUDE);
             latitude = savedInstanceState.getDouble(LATITUDE);
-            missingPlayer.setText(savedInstanceState.getString(PLAYER_NUMBER));
+            missingPlayers.setText(savedInstanceState.getString(PLAYERS_NUMBER));
 
         } else {
             //Current value for default
@@ -83,8 +77,6 @@ public class ActivityCreateMatch extends AppCompatActivity {
             matchDate.setText(day + "/" + month + "/" + year);
             matchHour.setText(hour + ":" + minute);
         }
-
-
 
         //Set the date number with dialog
         matchDate.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +97,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
         });
 
         //Set the missing player number with dialog
-        missingPlayer.setOnClickListener(new View.OnClickListener() {
+        missingPlayers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogFragment playerNumb = new NumberPickerDialog();
@@ -114,7 +106,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
         });
 
         //Start MapsActivity for result
-        placetext.setOnClickListener(new View.OnClickListener() {
+        placeText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO: Crea Activity Maps e ottieni il nome del posto oppure nome citta
@@ -123,7 +115,9 @@ public class ActivityCreateMatch extends AppCompatActivity {
             }
         });
 
-        matchFAB.setOnClickListener(new View.OnClickListener() {
+        mMatch = new Match();
+
+        matchFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(description.getText().toString().equals("")){
@@ -132,15 +126,12 @@ public class ActivityCreateMatch extends AppCompatActivity {
                     mMatch.setDescription(description.getText().toString());
                     mMatch.setMatchData(matchDate.getText().toString()); //
                     mMatch.setMatchHour(matchHour.getText().toString());
-                    mMatch.setPlaceName(placetext.getText().toString());
+                    mMatch.setPlaceName(placeText.getText().toString());
                     mMatch.setLongitude(longitude);
                     mMatch.setLatitude(latitude);
-                    mMatch.setPlayerNumber(Integer.parseInt(missingPlayer.getText().toString()));
-
+                    mMatch.setPlayersNumber(Integer.parseInt(missingPlayers.getText().toString()));
                     //TODO: Send all to the database and close this activity
                     Utils.showUnimplementedToast(ActivityCreateMatch.this);
-
-
                 }
 
             }
@@ -150,32 +141,29 @@ public class ActivityCreateMatch extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if(requestCode == MATCH_A_REQUEST_CODE){
             if(resultCode == RESULT_OK){
-                longitude = data.getDoubleExtra(LOGITUDE, longitude);
+                longitude = data.getDoubleExtra(LONGITUDE, longitude);
                 latitude = data.getDoubleExtra(LATITUDE, latitude);
-                nameOfTheplace = data.getStringExtra(PLACE_NAME);
-                placetext.setText(nameOfTheplace);
+                String nameOfThePlace = data.getStringExtra(PLACE_NAME);
+                placeText.setText(nameOfThePlace);
             }
         }
     }
-
-
 
     /**
      * Save the state
      */
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
 
         outState.putString(MATCH_DATE, matchDate.getText().toString());
         outState.putString(MATCH_HOUR, matchHour.getText().toString());
-        outState.putString(PLACE_NAME, placetext.getText().toString());
+        outState.putString(PLACE_NAME, placeText.getText().toString());
         outState.putString(DESCRIPTION, description.getText().toString());
-        outState.putDouble(LOGITUDE, longitude);
+        outState.putDouble(LONGITUDE, longitude);
         outState.putDouble(LATITUDE, latitude);
-        outState.putString(PLAYER_NUMBER,missingPlayer.getText().toString());
+        outState.putString(PLAYERS_NUMBER, missingPlayers.getText().toString());
 
         super.onSaveInstanceState(outState);
     }

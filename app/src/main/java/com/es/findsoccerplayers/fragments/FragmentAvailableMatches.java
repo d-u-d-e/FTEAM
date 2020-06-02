@@ -1,4 +1,4 @@
-package com.es.findsoccerplayers;
+package com.es.findsoccerplayers.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,15 +9,15 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.es.findsoccerplayers.ActivityCreateMatch;
+import com.es.findsoccerplayers.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FragmentAvailableMatches extends Fragment {
 
-    View view;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_available_matches, container, false);
+        View view = inflater.inflate(R.layout.fragment_available_matches, container, false);
 
         FloatingActionButton fab_create_match = view.findViewById(R.id.fab_create_match);
         fab_create_match.setOnClickListener(new View.OnClickListener() {
@@ -26,8 +26,6 @@ public class FragmentAvailableMatches extends Fragment {
                 startActivity(new Intent(getActivity(), ActivityCreateMatch.class));
             }
         });
-
-
         return view;
     }
 }

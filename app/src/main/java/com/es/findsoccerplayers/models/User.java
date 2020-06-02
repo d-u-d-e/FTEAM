@@ -1,8 +1,8 @@
-package com.es.findsoccerplayers;
+package com.es.findsoccerplayers.models;
 
 public class User {
 
-    String name, surname, birthday,id;
+    private String name, surname, birthday, id;
 
     public User(String id, String name, String surname, String birthday) {
         this.name = name;

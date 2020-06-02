@@ -45,8 +45,10 @@
         <activity
             android:name=".ActivityEditMatch"
             android:parentActivityName=".ActivityMain"/>
-            android:name=".AccountActivity"
-            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".ActivityAccount"
+            android:parentActivityName=".ActivityMain" />
 
         <activity
             android:name=".ActivityInfoMatch"
@@ -56,13 +58,14 @@
             android:parentActivityName=".ActivityMain"/>
         <activity
             android:name=".ActivityResetPassword"
-            android:parentActivityName=".ActivityLogin" />
-        <activity
-            android:name=".ActivityAccount"
-            android:parentActivityName=".ActivityMain" />
+            android:parentActivityName=".ActivityLogin"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".ActivityRegister"
-            android:parentActivityName=".ActivityLogin" />
+            android:parentActivityName=".ActivityLogin"
+            android:screenOrientation="portrait"
+            />
 
         <activity android:name=".ActivityMain" />
 

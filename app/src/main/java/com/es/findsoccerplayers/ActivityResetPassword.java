@@ -29,10 +29,10 @@ public class ActivityResetPassword extends AppCompatActivity {
         Button reset = findViewById(R.id.rst_btn);
         final EditText email = findViewById(R.id.rst_email);
 
-        /**
-         * when the reset button is pressed, an email is sent to the user to reset his password.
-         * If the email is not founded, an error is shown
-         */
+
+         /* When the reset button is pressed, an email is sent to the user to reset his password.
+         * If the email is not found, an error is shown */
+
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,7 +44,9 @@ public class ActivityResetPassword extends AppCompatActivity {
                             public void onComplete(Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Utils.showSuccessResetPswToast(ActivityResetPassword.this);
-                                    startActivity(new Intent(ActivityResetPassword.this, ActivityLogin.class));
+                                    Intent i = new Intent(ActivityResetPassword.this, ActivityLogin.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                    startActivity(i);
                                     finish();
                                 }
                                 else

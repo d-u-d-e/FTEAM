@@ -4,17 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.es.findsoccerplayers.fragments.FragmentAvailableMatches;
+import com.es.findsoccerplayers.fragments.FragmentBookedMatches;
+import com.es.findsoccerplayers.fragments.FragmentYourMatches;
+import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.google.android.material.tabs.TabLayout;
 
 public class ActivityMain extends AppCompatActivity {
@@ -34,12 +35,11 @@ public class ActivityMain extends AppCompatActivity {
         TabLayout tabs = findViewById(R.id.main_tabs);
         ViewPager vp = findViewById(R.id.main_vp);
         ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-        adapter.addFragment(new FragmentAvailableMatches(),"AVAILABLE MATCHES");
-        adapter.addFragment(new FragmentBookedMatches(),"BOOKED MATCHES");
-        adapter.addFragment(new FragmentYourMatches(),"YOUR MATCHES");
+        adapter.addFragment(new FragmentAvailableMatches(), "AVAILABLE MATCHES");
+        adapter.addFragment(new FragmentBookedMatches(), "BOOKED MATCHES");
+        adapter.addFragment(new FragmentYourMatches(), "YOUR MATCHES");
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
-
     }
 
     @Override

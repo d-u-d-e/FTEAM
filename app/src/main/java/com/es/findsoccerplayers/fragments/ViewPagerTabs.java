@@ -1,4 +1,4 @@
-package com.es.findsoccerplayers;
+package com.es.findsoccerplayers.fragments;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
