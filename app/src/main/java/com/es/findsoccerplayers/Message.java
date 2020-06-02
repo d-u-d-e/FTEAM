@@ -3,10 +3,22 @@ package com.es.findsoccerplayers;
 public class Message {
     private String sender;
     private String text;
+    private int timestamp;
 
-    public Message(String sender, String text) {
+    public int getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(int timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Message(){}
+
+    public Message(String sender, String text, int timestamp) {
         this.sender = sender;
         this.text = text;
+        this.timestamp = timestamp;
     }
 
     public String getSender() {

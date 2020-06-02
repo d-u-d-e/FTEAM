@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -98,7 +97,7 @@ public class ChatActivity extends AppCompatActivity {
         DatabaseReference ref = db.getReference("chats").child(relatedMatch);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 chats.clear();
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Message m = snapshot.getValue(Message.class);
@@ -109,7 +108,7 @@ public class ChatActivity extends AppCompatActivity {
                 recyclerView.setAdapter(messageAdapter);
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
