@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class ActivityRegister extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -145,9 +146,11 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
      * sets the date after the user picked it
      */
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        month += 1;
+        Calendar c = Calendar.getInstance();
+        c.set(year, month, dayOfMonth);
+        String r = c.getDisplayName(Calendar.DATE, Calendar.SHORT, Locale.getDefault());
         selectedDate.setTextColor(getResources().getColor(R.color.black));
-        selectedDate.setText(dayOfMonth + "/" + month + "/" + year);
+        selectedDate.setText(r);
     }
 
     /**

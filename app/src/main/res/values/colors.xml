@@ -5,6 +5,7 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="blue">#0767AE</color>
     <color name="message">#C8A2FD</color>
     <color name="myMessage">#C8A2FD</color>
     <color name="groupMessage">#C0BAC8</color>
