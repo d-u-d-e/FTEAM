@@ -11,7 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class ActivityMain extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private long backPressedTime = 0;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             //show user account
             case R.id.acc_account:
-                startActivity(new Intent(this, AccountActivity.class));
+                startActivity(new Intent(this, ActivityAccount.class));
                 return true;
             //show settings
             case R.id.acc_settings:

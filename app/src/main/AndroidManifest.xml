@@ -14,19 +14,19 @@
         <activity
             android:name=".ChatActivity" />
         <activity
-            android:name=".ResetPassword"
-            android:parentActivityName=".LoginActivity"
+            android:name=".ActivityResetPassword"
+            android:parentActivityName=".ActivityLogin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AccountActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".ActivityAccount"
+            android:parentActivityName=".ActivityMain" />
         <activity
-            android:name=".RegisterActivity"
-            android:parentActivityName=".LoginActivity"
+            android:name=".ActivityRegister"
+            android:parentActivityName=".ActivityLogin"
             android:screenOrientation="portrait" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".ActivityMain" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".ActivityLogin"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
