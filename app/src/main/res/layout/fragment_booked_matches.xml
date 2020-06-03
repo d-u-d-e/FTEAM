@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/esempio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:text="PARTITA 1"
-        android:textSize="50dp"
-        android:textColor="@color/colorPrimary"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LISTA MATCH PRENOTATI" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/frag_booked_list"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

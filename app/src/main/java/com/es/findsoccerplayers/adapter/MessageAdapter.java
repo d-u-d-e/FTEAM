@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.es.findsoccerplayers.Message;
+import com.es.findsoccerplayers.models.Message;
 import com.es.findsoccerplayers.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,9 +31,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public MessageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
         if(viewType == MSG_TYPE_LEFT)
-            view = LayoutInflater.from(context).inflate(R.layout.act_chat_message_left, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.frag_chat_message_left, parent, false);
         else
-            view = LayoutInflater.from(context).inflate(R.layout.act_chat_message_right, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.frag_chat_message_right, parent, false);
         return new MessageAdapter.ViewHolder(view);
     }
 

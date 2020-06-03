@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.es.findsoccerplayers.Message;
+import com.es.findsoccerplayers.models.Message;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MessageAdapter;
@@ -42,7 +41,7 @@ public class FragmentChat extends Fragment {
     private RecyclerView recyclerView;
 
 
-    FragmentChat(String relatedMatch){
+    public FragmentChat(String relatedMatch){
         super();
         this.relatedMatch = relatedMatch;
         readMessages();

@@ -1,4 +1,4 @@
-package com.es.findsoccerplayers;
+package com.es.findsoccerplayers.models;
 
 public class Message {
     private String sender;

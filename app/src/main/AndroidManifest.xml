@@ -12,8 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ActivityChat" />
-        <activity
             android:name=".ActivityResetPassword"
             android:parentActivityName=".ActivityLogin"
             android:screenOrientation="portrait" />
