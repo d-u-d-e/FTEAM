@@ -13,12 +13,13 @@ import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentYourMatches extends Fragment {
 
     private MatchAdapter matchAdapter;
-    private List<Match> matches;
+    private List<Match> matches = new ArrayList<>();;
     private RecyclerView recyclerView;
 
     @Override

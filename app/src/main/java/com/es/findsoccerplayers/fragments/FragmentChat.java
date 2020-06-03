@@ -44,15 +44,11 @@ public class FragmentChat extends Fragment {
     public FragmentChat(String relatedMatch){
         super();
         this.relatedMatch = relatedMatch;
-        readMessages();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_chat, container, false);
-
-        Toolbar toolbar = view.findViewById(R.id.chat_toolbar);
-        toolbar.setTitle(R.string.act_chat_title);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseDatabase.getInstance();
@@ -76,6 +72,8 @@ public class FragmentChat extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        readMessages();
 
         return view;
     }

@@ -21,10 +21,10 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
     private List<Match> matches;
 
     public MatchAdapter(Context c, List<Match> matches){
+        super();
         context = c;
         this.matches = matches;
     }
-
 
     @Override
     public MatchAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -58,7 +58,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
                     Match m = matches.get(position);
                     Intent i = new Intent(v.getContext(), ActivityInfoBookedMatch.class); //TODO
                     i.putExtra("match", m.getID());
-                    MatchAdapter.this.context.startActivity(i);
+                    v.getContext().startActivity(i);
                 }
             });
         }

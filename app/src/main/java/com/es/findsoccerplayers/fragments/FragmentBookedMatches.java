@@ -39,8 +39,9 @@ public class FragmentBookedMatches extends Fragment {
         recyclerView = view.findViewById(R.id.frag_booked_list);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        matchAdapter = new MatchAdapter(getActivity(), matches);
+        recyclerView.setAdapter(matchAdapter);
         return view;
     }
 
@@ -56,12 +57,26 @@ public class FragmentBookedMatches extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 matches.clear();
+                DatabaseReference ref;
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    Match m = snapshot.getValue(Match.class);
-                    matches.add(m);
+                    String key = snapshot.getKey();
+                    ref = db.getReference("matches/" + key);
+                    ref.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Match m = dataSnapshot.getValue(Match.class);
+                            if(m != null){
+                                matches.add(m);
+                                matchAdapter.notifyItemInserted(matches.size()-1);
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
-                matchAdapter = new MatchAdapter(getActivity(), matches);
-                recyclerView.setAdapter(matchAdapter);
+
             }
 
             @Override

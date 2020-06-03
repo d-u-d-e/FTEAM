@@ -135,7 +135,6 @@ public class ActivityCreateMatch extends AppCompatActivity {
                     mMatch.setPlayersNumber(Integer.parseInt(missingPlayers.getText().toString()));
 
                     Utils.dbStoreMatch(TAG, mMatch);
-                    Utils.showUnimplementedToast(ActivityCreateMatch.this);
                 }
 
             }

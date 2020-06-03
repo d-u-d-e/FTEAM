@@ -68,10 +68,10 @@ public class Utils {
             };
         });
 
-        ref = FirebaseDatabase.getInstance().getReference("matches/" + key);
-        ref.setValue(m, new DatabaseReference.CompletionListener() {
+        ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("matches").child(key).setValue(m).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+            public void onSuccess(Void aVoid) {
                 Log.w(tag, "Database successfully updated with new general match info");
             }
         });
