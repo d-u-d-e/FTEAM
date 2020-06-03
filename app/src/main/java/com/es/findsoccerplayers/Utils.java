@@ -33,6 +33,7 @@ class Utils {
         Toast.makeText(c, R.string.reset_psw_success, Toast.LENGTH_SHORT).show();
     }
 
+<<<<<<< HEAD
     static void dbStoreUser(final String tag, String name, String surname, String date) {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
@@ -50,4 +51,9 @@ class Utils {
         });
     }
 
+=======
+    static void showCannotSendMessage(Context c){
+        Toast.makeText(c, R.string.send_empty_message, Toast.LENGTH_SHORT).show();
+    }
+>>>>>>> send message is working
 }

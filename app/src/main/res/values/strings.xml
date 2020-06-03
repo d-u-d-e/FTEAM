@@ -13,6 +13,7 @@
     <string name="pass_not_equal">Passwords do not match</string>
     <string name="email_not_equal">Emails do not match</string>
     <string name="reset_psw_success">An email has been sent to you. Check your email box</string>
+    <string name="send_empty_message">You can\'t send an empty message</string>
 
     <!--activities strings-->
     <string name="act_account_title">SIGNED IN WITH</string>
@@ -66,10 +67,16 @@
 
 
     <string name="act_reset_title">RESET PASSWORD</string>
+<<<<<<< HEAD
     <string name="act_reset_sentence">Insert the email you used to register:</string>
 
 
     <string name="title_activity_info_match_booked">InfoMatchBookedActivity</string>
 
+=======
+    <string name="acr_reset_sentence">Insert the email you used to register:</string>
+
+    <string name="act_chat_title">Group chat</string>
+>>>>>>> send message is working
 
 </resources>

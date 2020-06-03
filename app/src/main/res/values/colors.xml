@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimary">#AE77FB</color>
+    <color name="colorPrimaryDark">#EEE7FD</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+<<<<<<< HEAD
     <color name="red">#FF0000</color>
     <color name="green">#009C25</color>
     <color name="blue">#0767AE</color>
+=======
+    <color name="message">#C8A2FD</color>
+>>>>>>> send message is working
 </resources>
