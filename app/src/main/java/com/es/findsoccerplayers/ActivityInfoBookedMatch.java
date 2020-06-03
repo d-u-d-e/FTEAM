@@ -16,7 +16,7 @@ public class ActivityInfoBookedMatch extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info_match_booked);
+        setContentView(R.layout.act_info_match_booked);
         TabLayout tabs = findViewById(R.id.info_match_booked_tabs);
         ViewPager vp = findViewById(R.id.info_match_booked_vp);
         Toolbar toolbar = findViewById(R.id.info_match_booked_toolbar);

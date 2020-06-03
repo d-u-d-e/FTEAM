@@ -43,7 +43,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_match);
+        setContentView(R.layout.act_create_match);
 
         Toolbar toolbar = findViewById(R.id.cr_match_toolbar);
         setSupportActionBar(toolbar);

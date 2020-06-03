@@ -1,12 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    tools:context=".ActivityChat"
+    android:background="@color/colorPrimaryDark">
 
-    <TextView
-        android:layout_width="136dp"
-        android:layout_height="75dp"
-        android:text="QUI CI VA LA CHAT" />
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/chat_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-</LinearLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/chat_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            >
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/chat_recycler_view"
+        android:layout_below="@id/chat_bar_layout"
+        android:layout_above="@id/chat_send_layout">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/message"
+        android:padding="5dp"
+        android:id="@+id/chat_send_layout"
+        android:layout_alignParentBottom="true">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/chat_message_text"
+            android:layout_toStartOf="@id/chat_send_btn"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:hint="Type a message..."
+            >
+
+        </EditText>
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/chat_send_btn"
+            android:background="@drawable/ic_send_button"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

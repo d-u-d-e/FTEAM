@@ -11,9 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Date;
-
-class Utils {
+public class Utils {
 
     static void showErrorToast(Context c, Exception ex){
         String error = c.getString(R.string.unknown_error);
@@ -50,7 +48,7 @@ class Utils {
         });
     }
 
-    static void showCannotSendMessage(Context c){
+    public static void showCannotSendMessage(Context c){
         Toast.makeText(c, R.string.send_empty_message, Toast.LENGTH_SHORT).show();
     }
 }

@@ -2,6 +2,7 @@ package com.es.findsoccerplayers;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.es.findsoccerplayers.fragments.FragmentAvailableMatches;
+import com.es.findsoccerplayers.fragments.FragmentBookedMatches;
+import com.es.findsoccerplayers.fragments.FragmentYourMatches;
+import com.es.findsoccerplayers.fragments.ViewPagerTabs;
+import com.google.android.material.tabs.TabLayout;
 
 public class ActivityMain extends AppCompatActivity {
 
@@ -22,9 +29,17 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
         Log.w(TAG, "MainActivity creata");
-        setContentView(R.layout.act_main);
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
+
+        TabLayout tabs = findViewById(R.id.main_tabs);
+        ViewPager vp = findViewById(R.id.main_vp);
+        ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
+        adapter.addFragment(new FragmentAvailableMatches(), "AVAILABLE MATCHES");
+        adapter.addFragment(new FragmentBookedMatches(), "BOOKED MATCHES");
+        adapter.addFragment(new FragmentYourMatches(), "YOUR MATCHES");
+        vp.setAdapter(adapter);
+        tabs.setupWithViewPager(vp);
     }
 
     @Override
@@ -44,7 +59,6 @@ public class ActivityMain extends AppCompatActivity {
             //show settings
             case R.id.acc_settings:
                 Utils.showUnimplementedToast(this);
-                startActivity(new Intent(this, ChatActivity.class));
                 //TODO: creare entity delle impostazioni
                 return true;
             default:
