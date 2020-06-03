@@ -59,6 +59,7 @@ public class ActivityMain extends AppCompatActivity {
             //show settings
             case R.id.acc_settings:
                 Utils.showUnimplementedToast(this);
+                startActivity(new Intent(this, ChatActivity.class));
                 //TODO: creare entity delle impostazioni
                 return true;
             default:
