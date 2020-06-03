@@ -4,10 +4,16 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -44,6 +50,29 @@ public class Utils {
             @Override
             public void onFailure(Exception e) {
                 Log.w(tag, "Database update error: " + e.toString());
+            }
+        });
+    }
+
+    static void dbStoreMatch(final String tag, Match m){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference ref = FirebaseDatabase.getInstance().
+                getReference("users/" + user.getUid() + "/matches");
+        DatabaseReference newRef = ref.push();
+        String key = newRef.getKey();
+        m.setID(key);
+        newRef.setValue(true, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                Log.w(tag, "Database successfully updated with new match info for the user");
+            };
+        });
+
+        ref = FirebaseDatabase.getInstance().getReference("matches/" + key);
+        ref.setValue(m, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                Log.w(tag, "Database successfully updated with new general match info");
             }
         });
     }

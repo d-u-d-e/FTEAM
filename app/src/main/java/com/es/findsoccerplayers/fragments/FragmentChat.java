@@ -49,7 +49,7 @@ public class FragmentChat extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chat, container, false);
+        View view = inflater.inflate(R.layout.frag_chat, container, false);
 
         Toolbar toolbar = view.findViewById(R.id.chat_toolbar);
         toolbar.setTitle(R.string.act_chat_title);

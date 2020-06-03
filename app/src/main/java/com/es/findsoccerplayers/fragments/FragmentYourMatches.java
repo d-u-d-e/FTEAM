@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,7 @@ public class FragmentYourMatches extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_your_matches, container, false);
+        View view = inflater.inflate(R.layout.frag_your_matches, container, false);
 
         recyclerView = view.findViewById(R.id.frag_yours_list);
         recyclerView.setHasFixedSize(true);

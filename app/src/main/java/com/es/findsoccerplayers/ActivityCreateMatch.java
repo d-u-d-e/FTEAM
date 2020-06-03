@@ -16,6 +16,8 @@ import com.es.findsoccerplayers.pickers.DatePickerFragment;
 import com.es.findsoccerplayers.pickers.NumberPickerDialog;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
@@ -29,6 +31,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
     private double longitude;
     private double latitude;
 
+    private static final String TAG = "CreateMatchActivity";
     private final String LONGITUDE = "longitude";
     private final String LATITUDE = "latitude";
     private final String PLACE_NAME = "place name";
@@ -130,7 +133,8 @@ public class ActivityCreateMatch extends AppCompatActivity {
                     mMatch.setLongitude(longitude);
                     mMatch.setLatitude(latitude);
                     mMatch.setPlayersNumber(Integer.parseInt(missingPlayers.getText().toString()));
-                    //TODO: Send all to the database and close this activity
+
+                    Utils.dbStoreMatch(TAG, mMatch);
                     Utils.showUnimplementedToast(ActivityCreateMatch.this);
                 }
 

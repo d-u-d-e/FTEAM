@@ -9,6 +9,7 @@ public class Match {
     private double latitude;
     private double longitude;
     private String description;
+    private String matchID;
 
     public Match(){
     }
@@ -73,6 +74,14 @@ public class Match {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setID(String s){
+        matchID = s;
+    }
+
+    public String getID(){
+        return matchID;
     }
 
     public void setDescription(String description) {

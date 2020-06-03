@@ -1,6 +1,7 @@
 package com.es.findsoccerplayers.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.es.findsoccerplayers.ActivityInfoBookedMatch;
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.R;
 
@@ -22,6 +24,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         context = c;
         this.matches = matches;
     }
+
 
     @Override
     public MatchAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -41,12 +44,23 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         return matches.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+
+    class ViewHolder extends RecyclerView.ViewHolder{
         TextView item;
 
         ViewHolder(View itemView) {
             super(itemView);
             item = itemView.findViewById(R.id.frag_match_item);
+            item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getLayoutPosition();
+                    Match m = matches.get(position);
+                    Intent i = new Intent(v.getContext(), ActivityInfoBookedMatch.class); //TODO
+                    i.putExtra("match", m.getID());
+                    MatchAdapter.this.context.startActivity(i);
+                }
+            });
         }
     }
 }
