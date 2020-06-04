@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,6 +39,7 @@ public class FragmentYourMatches extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        matches.clear();
         matchAdapter = new MatchAdapter(getContext(), matches);
         recyclerView.setAdapter(matchAdapter);
 
@@ -69,7 +71,7 @@ public class FragmentYourMatches extends Fragment {
                                 Match m = dataSnapshot.getValue(Match.class);
                                 if(m != null){
                                     matches.add(m);
-                                    matchAdapter.notifyItemInserted(matches.size()-1);
+                                    matchAdapter.notifyItemInserted(matches.size() - 1);
                                 }
                             }
                             @Override

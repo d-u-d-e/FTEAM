@@ -39,6 +39,8 @@ public class FragmentBookedMatches extends Fragment {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        matches.clear();
         matchAdapter = new MatchAdapter(getActivity(), matches);
         recyclerView.setAdapter(matchAdapter);
         return view;
