@@ -32,6 +32,7 @@
 				"a": true,
 				"b": true
 			},
+			"creator": "a",
 			"data": "12/07/2020",
 			"descrizione": "Colleziono tibie e peroni",
 			"orario": "5:50 PM"
@@ -45,6 +46,7 @@
 				"a": true,
 				"b": true
 			},
+			"creator": "b",
 			"descrizione": "O il pallone, o la vita",			
 			"data": "13/07/2020",
 			"orario": "3:20 PM"
