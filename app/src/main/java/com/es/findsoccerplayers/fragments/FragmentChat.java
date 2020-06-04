@@ -80,11 +80,8 @@ public class FragmentChat extends Fragment {
 
     private void sendMessage(String message){
         DatabaseReference ref = db.getReference("chats").child(relatedMatch);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("sender", currentUser.getUid());
-        map.put("timestamp", System.currentTimeMillis());
-        map.put("text", message);
-        ref.push().setValue(map);
+        Message m = new Message(currentUser.getUid(), currentUser.getDisplayName(), message, System.currentTimeMillis());
+        ref.push().setValue(m);
     }
 
     private void readMessages(){

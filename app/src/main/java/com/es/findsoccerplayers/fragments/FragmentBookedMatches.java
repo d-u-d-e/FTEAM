@@ -30,13 +30,12 @@ public class FragmentBookedMatches extends Fragment {
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private MatchAdapter matchAdapter;
     private List<Match> matches = new ArrayList<>();
-    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_booked_matches, container, false);
 
-        recyclerView = view.findViewById(R.id.frag_booked_list);
+        RecyclerView recyclerView = view.findViewById(R.id.frag_booked_list);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -60,21 +59,25 @@ public class FragmentBookedMatches extends Fragment {
                 DatabaseReference ref;
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     String key = snapshot.getKey();
-                    ref = db.getReference("matches/" + key);
-                    ref.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Match m = dataSnapshot.getValue(Match.class);
-                            if(m != null){
-                                matches.add(m);
-                                matchAdapter.notifyItemInserted(matches.size()-1);
+                    Boolean isMember = snapshot.child("member").getValue(Boolean.class);
+                    if(isMember == null) throw new IllegalStateException("missing member field in database");
+                    if(isMember){
+                        ref = db.getReference("matches/" + key);
+                        ref.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Match m = dataSnapshot.getValue(Match.class);
+                                if(m != null){
+                                    matches.add(m);
+                                    matchAdapter.notifyItemInserted(matches.size()-1);
+                                }
                             }
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
 
             }

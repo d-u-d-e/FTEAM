@@ -16,6 +16,7 @@ import com.es.findsoccerplayers.pickers.DatePickerFragment;
 import com.es.findsoccerplayers.pickers.NumberPickerDialog;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -133,7 +134,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
                     mMatch.setLongitude(longitude);
                     mMatch.setLatitude(latitude);
                     mMatch.setPlayersNumber(Integer.parseInt(missingPlayers.getText().toString()));
-
+                    mMatch.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     Utils.dbStoreMatch(TAG, mMatch);
                 }
 

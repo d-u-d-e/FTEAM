@@ -57,7 +57,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
                     int position = getLayoutPosition();
                     Match m = matches.get(position);
                     Intent i = new Intent(v.getContext(), ActivityInfoBookedMatch.class); //TODO
-                    i.putExtra("match", m.getID());
+                    i.putExtra("match", m.getMatchID());
                     v.getContext().startActivity(i);
                 }
             });

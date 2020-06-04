@@ -17,6 +17,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Utils {
 
     static void showErrorToast(Context c, Exception ex){
@@ -60,8 +63,12 @@ public class Utils {
                 getReference("users/" + user.getUid() + "/matches");
         DatabaseReference newRef = ref.push();
         String key = newRef.getKey();
-        m.setID(key);
-        newRef.setValue(true, new DatabaseReference.CompletionListener() {
+        m.setMatchID(key);
+        Map<String, Boolean> map = new HashMap<>();
+        //TODO maybe this is not always the default
+        map.put("member", true);
+        map.put("creator", true);
+        newRef.setValue(map, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 Log.w(tag, "Database successfully updated with new match info for the user");
