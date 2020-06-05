@@ -2,11 +2,9 @@ package com.es.findsoccerplayers.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +39,7 @@ public class FragmentBookedMatches extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         matches.clear();
-        matchAdapter = new MatchAdapter(getActivity(), matches);
+        matchAdapter = new MatchAdapter(getContext(), matches);
         recyclerView.setAdapter(matchAdapter);
         return view;
     }

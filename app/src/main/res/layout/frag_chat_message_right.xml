@@ -43,5 +43,14 @@
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chat_user" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" "
+            app:layout_constraintEnd_toStartOf="@+id/chat_timestamp"
+            app:layout_constraintStart_toEndOf="@+id/chat_user"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
