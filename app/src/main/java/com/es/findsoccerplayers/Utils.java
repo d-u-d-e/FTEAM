@@ -57,7 +57,7 @@ public class Utils {
         });
     }
 
-    static void dbStoreMatch(final String tag, Match m){
+    static boolean dbStoreMatch(final String tag, Match m){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref = FirebaseDatabase.getInstance().
                 getReference("users/" + user.getUid() + "/matches");
@@ -82,6 +82,7 @@ public class Utils {
                 Log.w(tag, "Database successfully updated with new general match info");
             }
         });
+        return true;
     }
 
     public static void showCannotSendMessage(Context c){

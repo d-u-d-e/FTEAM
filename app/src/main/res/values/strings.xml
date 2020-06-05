@@ -71,4 +71,12 @@
     <string name="act_reset_sentence">Insert the email you used to register:</string>
     <string name="act_chat_title">Group chat</string>
 
+    <!--InfoBookedMatch strings-->
+    <string name="frag_info_booked_match_campo">FIELD: </string>
+    <string name="frag_info_booked_match_giorno">DAY: </string>
+    <string name="frag_info_booked_match_missingPlayers">MISSING PLAYERS: </string>
+    <string name="frag_info_booked_match_description">DESCRIPTION: </string>
+    <string name="frag_info_booked_match_quota">QUOTA:</string>
+    <string name="frag_info_booked_match_description_retireBtn">RETIRE</string>
+
 </resources>

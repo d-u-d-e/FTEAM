@@ -22,6 +22,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="5dp"
             android:text="username"
+            android:textStyle="italic|bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12:37"
+            android:textStyle="italic"
             android:id="@+id/chat_timestamp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

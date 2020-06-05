@@ -29,7 +29,7 @@ public class ActivityInfoBookedMatch extends AppCompatActivity {
         String matchID = i.getStringExtra("match");
 
         ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-        adapter.addFragment(new FragmentInfoBookedMatch(), "INFO");
+        adapter.addFragment(new FragmentInfoBookedMatch(matchID), "INFO");
         adapter.addFragment(new FragmentChat(matchID), "CHAT");
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
