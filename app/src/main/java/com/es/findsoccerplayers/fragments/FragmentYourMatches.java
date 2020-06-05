@@ -38,10 +38,9 @@ public class FragmentYourMatches extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        matches.clear();
         matchAdapter = new MatchAdapter(getContext(), matches);
         recyclerView.setAdapter(matchAdapter);
-
+        recyclerView.setItemAnimator(null);
         return view;
     }
 
