@@ -137,7 +137,9 @@ public class ActivityCreateMatch extends AppCompatActivity {
                     mMatch.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     if(Utils.dbStoreMatch(TAG, mMatch)){
                         Toast.makeText(ActivityCreateMatch.this, "Match successfully created", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(ActivityCreateMatch.this, ActivityMain.class));
+                        Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(i);
                         finish();
                     }
                 }

@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.es.findsoccerplayers.ActivityInfoBookedMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.models.Match;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 public class FragmentInfoBookedMatch extends Fragment {
 
     private String relatedMatch;
-    private TextView field, day, time, quota, missingPlayers, description;
+    private TextView field, day, time, money, missingPlayers, description;
     private Button retireBtn;
     private FirebaseDatabase db;
     private Match m;
@@ -37,10 +36,10 @@ public class FragmentInfoBookedMatch extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_info_booked_match, container, false);
 
-        field = view.findViewById(R.id.frag_info_booked_match_campoTV);
-        day = view.findViewById(R.id.frag_info_booked_match_giornoTV);
-        time = view.findViewById(R.id.frag_info_booked_match_oraTV);
-        quota = view.findViewById(R.id.frag_info_booked_match_quotaTV);
+        field = view.findViewById(R.id.frag_info_booked_match_fieldTV);
+        day = view.findViewById(R.id.frag_info_booked_match_dayTV);
+        time = view.findViewById(R.id.frag_info_booked_match_timeTV);
+        money= view.findViewById(R.id.frag_info_booked_match_moneyTV);
         missingPlayers = view.findViewById(R.id.frag_info_booked_match_missingPlayersTV);
         description = view.findViewById(R.id.frag_info_booked_match_descriptionTV);
         retireBtn = view.findViewById(R.id.frag_info_booked_match_retireBtn);
@@ -60,12 +59,11 @@ public class FragmentInfoBookedMatch extends Fragment {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                m = new Match();
                 m = dataSnapshot.getValue(Match.class);
                 field.setText(m.getPlaceName().toString());
                 day.setText(m.getMatchData().toString());
                 time.setText(m.getMatchHour().toString());
-                quota.setText("----");
+                money.setText("----");                                              //TODO
                 missingPlayers.setText(Integer.toString(m.getPlayersNumber()));
                 description.setText(m.getDescription().toString());
             }

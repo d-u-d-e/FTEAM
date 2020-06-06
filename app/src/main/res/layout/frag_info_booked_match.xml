@@ -7,7 +7,7 @@
     android:gravity="center">
 
     <LinearLayout
-        android:id="@+id/frag_info_booked_match_campoLyt"
+        android:id="@+id/frag_info_booked_match_fieldLyt"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,7 +21,7 @@
             android:textStyle="bold"
             />
         <TextView
-            android:id="@+id/frag_info_booked_match_campoTV"
+            android:id="@+id/frag_info_booked_match_fieldTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -32,8 +32,8 @@
         android:id="@+id/frag_info_booked_match_dayLyt"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/frag_info_booked_match_campoLyt"
-        app:layout_constraintBottom_toTopOf="@+id/frag_info_booked_match_quotaLyt"
+        app:layout_constraintTop_toBottomOf="@id/frag_info_booked_match_fieldLyt"
+        app:layout_constraintBottom_toTopOf="@+id/frag_info_booked_match_moneyLyt"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="40dp">
         <TextView
@@ -43,7 +43,7 @@
             android:textStyle="bold"
             />
         <TextView
-            android:id="@+id/frag_info_booked_match_giornoTV"
+            android:id="@+id/frag_info_booked_match_dayTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -55,14 +55,14 @@
             android:text="at"
             />
         <TextView
-            android:id="@+id/frag_info_booked_match_oraTV"
+            android:id="@+id/frag_info_booked_match_timeTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             />
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/frag_info_booked_match_quotaLyt"
+        android:id="@+id/frag_info_booked_match_moneyLyt"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/frag_info_booked_match_dayLyt"
@@ -76,7 +76,7 @@
             android:textStyle="bold"
             />
         <TextView
-            android:id="@+id/frag_info_booked_match_quotaTV"
+            android:id="@+id/frag_info_booked_match_moneyTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -86,7 +86,7 @@
         android:id="@+id/frag_info_booked_match_missingPlayersLyt"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/frag_info_booked_match_quotaLyt"
+        app:layout_constraintTop_toBottomOf="@id/frag_info_booked_match_moneyLyt"
         app:layout_constraintBottom_toTopOf="@+id/frag_info_booked_match_descriptionLyt"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="40dp">
