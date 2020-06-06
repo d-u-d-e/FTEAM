@@ -51,6 +51,7 @@
     <string name="create_game">Create game</string>
     <string name="add_position">Add position: </string>
     <string name="title_activity_maps">Map</string>
+    <string name="all_fields_required">All fields are required</string>
 
     <!--MapActivities strings-->
     <string name="normal_map">Normal View</string>
@@ -62,11 +63,19 @@
     <string name="gecodo_failed">Position name not found. Geocode didn\'t work.</string>
     <string name="default_position_name">My Position</string>
     <string name="how_many_players">How many players?</string>
+    <string name="select_a_place">Select a Place</string>
 
 
 
     <string name="act_reset_title">RESET PASSWORD</string>
     <string name="act_reset_sentence">Insert the email you used to register:</string>
+
+    <!--ActivitySetLocation strings-->
+    <string name="complete_preferences">Select a distance and a position please!</string>
+    <string name="select_a_distance">Select a distance</string>
+    <string name="select_this_position_txt_btn">Select this position</string>
+
+
 
 
     <string name="title_activity_info_match_booked">InfoMatchBookedActivity</string>
