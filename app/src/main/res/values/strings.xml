@@ -43,6 +43,13 @@
 
     <string name="act_main_title">MAIN ACTIVITY</string>
 
+    <string name="act_reset_sentence">Insert the email you used to register:</string>
+    <string name="act_reset_title">RESET PASSWORD</string>
+
+    <string name="act_chat_title">Group chat</string>
+
+    <string name="title_activity_info_match_booked">InfoMatchBookedActivity</string>
+
 
     <!--MatchActivities strings-->
     <string name="date_and_hour">Set date and hour: </string>
@@ -65,13 +72,7 @@
     <string name="how_many_players">How many players?</string>
 
 
-
-    <string name="act_reset_title">RESET PASSWORD</string>
-    <string name="title_activity_info_match_booked">InfoMatchBookedActivity</string>
-    <string name="act_reset_sentence">Insert the email you used to register:</string>
-    <string name="act_chat_title">Group chat</string>
-
-    <!--InfoBookedMatch strings-->
+    <!--InfoBookedMatch fragment strings-->
     <string name="frag_info_booked_match_campo">FIELD: </string>
     <string name="frag_info_booked_match_giorno">DAY: </string>
     <string name="frag_info_booked_match_missingPlayers">MISSING PLAYERS: </string>

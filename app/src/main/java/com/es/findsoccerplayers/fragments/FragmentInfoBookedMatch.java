@@ -60,12 +60,12 @@ public class FragmentInfoBookedMatch extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 m = dataSnapshot.getValue(Match.class);
-                field.setText(m.getPlaceName().toString());
-                day.setText(m.getMatchData().toString());
-                time.setText(m.getMatchHour().toString());
+                field.setText(m.getPlaceName());
+                day.setText(m.getMatchData());
+                time.setText(m.getMatchHour());
                 money.setText("----");                                              //TODO
                 missingPlayers.setText(Integer.toString(m.getPlayersNumber()));
-                description.setText(m.getDescription().toString());
+                description.setText(m.getDescription());
             }
 
             @Override
