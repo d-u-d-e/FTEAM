@@ -58,6 +58,7 @@ public class Utils {
     }
 
     static boolean dbStoreMatch(final String tag, Match m){
+        //TODO gestire caso in cui il match non viene correttamente salvato --> return false
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref = FirebaseDatabase.getInstance().
                 getReference("users/" + user.getUid() + "/matches");
@@ -87,5 +88,111 @@ public class Utils {
 
     public static void showCannotSendMessage(Context c){
         Toast.makeText(c, R.string.send_empty_message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static String getPreviewDescription(String description){
+        if(description.length()<20)
+            return description;
+        else{
+            return (description.substring(0,21)+"...");
+        }
+    }
+
+    public static String extractDay(String date){
+        if(date.substring(1,2).equals("/"))
+            return date.substring(0,1);
+        else
+            return date.substring(0,2);
+    }
+
+    public static String extractMonth(String date) {
+        String month;
+        date = date.replaceAll("\\s", "");
+        if(date.substring(2,3).equals("/")){
+            switch (Integer.parseInt(date.substring(3, 5))) {
+                case 1:
+                    month = "JAN";
+                    break;
+                case 2:
+                    month = "FEB";
+                    break;
+                case 3:
+                    month = "MAR";
+                    break;
+                case 4:
+                    month = "APR";
+                    break;
+                case 5:
+                    month = "MAY";
+                    break;
+                case 6:
+                    month = "JUN";
+                    break;
+                case 7:
+                    month = "JUL";
+                    break;
+                case 8:
+                    month = "AUG";
+                    break;
+                case 9:
+                    month = "SET";
+                    break;
+                case 10:
+                    month = "OCT";
+                    break;
+                case 11:
+                    month = "NOV";
+                    break;
+                case 12:
+                    month = "DIC";
+                    break;
+                default:
+                    month = "ERR";
+                    break;
+            }
+        }else{
+            switch (Integer.parseInt(date.substring(2,3))) {
+                case 1:
+                    month = "JAN";
+                    break;
+                case 2:
+                    month = "FEB";
+                    break;
+                case 3:
+                    month = "MAR";
+                    break;
+                case 4:
+                    month = "APR";
+                    break;
+                case 5:
+                    month = "MAY";
+                    break;
+                case 6:
+                    month = "JUN";
+                    break;
+                case 7:
+                    month = "JUL";
+                    break;
+                case 8:
+                    month = "AUG";
+                    break;
+                case 9:
+                    month = "SET";
+                    break;
+                case 10:
+                    month = "OCT";
+                    break;
+                case 11:
+                    month = "NOV";
+                    break;
+                case 12:
+                    month = "DIC";
+                    break;
+                default:
+                    month = "ERR";
+                    break;
+            }
+        }
+        return month;
     }
 }

@@ -80,4 +80,9 @@
     <string name="frag_info_booked_match_quota">QUOTA:</string>
     <string name="frag_info_booked_match_description_retireBtn">RETIRE</string>
 
+    <!--Match element strings-->
+    <string name="match_element_field_label">FIELD:</string>
+    <string name="match_element_time_label">HOUR:</string>
+    <string name="match_element_desc_label">DESCRIPTION:</string>
+
 </resources>

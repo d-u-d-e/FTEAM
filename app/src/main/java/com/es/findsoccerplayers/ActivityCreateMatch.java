@@ -141,6 +141,8 @@ public class ActivityCreateMatch extends AppCompatActivity {
                         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(i);
                         finish();
+                    }else{
+                        Toast.makeText(ActivityCreateMatch.this, "ERROR", Toast.LENGTH_SHORT).show();
                     }
                 }
 

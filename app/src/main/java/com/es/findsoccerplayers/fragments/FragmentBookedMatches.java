@@ -1,14 +1,17 @@
 package com.es.findsoccerplayers.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.es.findsoccerplayers.ActivityInfoBookedMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
@@ -27,27 +30,40 @@ public class FragmentBookedMatches extends Fragment {
 
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private MatchAdapter matchAdapter;
+    RecyclerView recyclerView;
+    LinearLayoutManager linearLayoutManager;
     private List<Match> matches = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_booked_matches, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.frag_booked_list);
+        recyclerView = view.findViewById(R.id.frag_booked_list);
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        matchAdapter = new MatchAdapter(matches);
 
-        matchAdapter = new MatchAdapter(getContext(), matches);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(matchAdapter);
         recyclerView.setItemAnimator(null);
+
+        matchAdapter.setOnItemClickListener(new MatchAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                matches.get(position);
+                Intent i = new Intent(getContext(), ActivityInfoBookedMatch.class);
+                i.putExtra("match", matches.get(position).getMatchID());
+                i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+            }
+        });
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref =
                 db.getReference().child("users").child(user.getUid()).child("matches");

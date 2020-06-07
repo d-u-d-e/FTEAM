@@ -7,36 +7,73 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.es.findsoccerplayers.ActivityInfoBookedMatch;
+import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.R;
 
 import java.util.List;
 
-public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
-
+public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHolder>{
     private Context context;
     private List<Match> matches;
+    private OnItemClickListener listener;
 
-    public MatchAdapter(Context c, List<Match> matches){
-        super();
-        context = c;
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener=listener;
+    }
+
+    public static class MatchViewHolder extends RecyclerView.ViewHolder{
+        public TextView day, month, field, hour, desc;
+
+        public MatchViewHolder(View itemView, final OnItemClickListener listener) {
+            super(itemView);
+            day = itemView.findViewById(R.id.match_element_gg);
+            month = itemView.findViewById(R.id.match_element_mm);
+            field = itemView.findViewById(R.id.match_element_field);
+            hour = itemView.findViewById(R.id.match_element_time);
+            desc = itemView.findViewById(R.id.match_element_desc);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    public MatchAdapter(List<Match> matches){
         this.matches = matches;
     }
 
     @Override
-    public MatchAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view;
-        view = LayoutInflater.from(context).inflate(R.layout.frag_match_item, parent, false);
-        return new MatchAdapter.ViewHolder(view);
+    public MatchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.frag_match_item, parent, false);
+        return new MatchViewHolder(view,listener);
     }
 
+
     @Override
-    public void onBindViewHolder(MatchAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(MatchViewHolder holder, int position) {
         Match m = matches.get(position);
-        holder.item.setText(m.getDescription()); //TODO show better info
+        holder.day.setText(" "+Utils.extractDay(m.getMatchData()));
+        holder.month.setText(" "+Utils.extractMonth(m.getMatchData()));
+        holder.field.setText(" "+m.getPlaceName());
+        holder.hour.setText(" "+m.getMatchHour());
+        holder.desc.setText(" "+Utils.getPreviewDescription(m.getDescription()));
     }
 
     @Override
@@ -45,22 +82,4 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
     }
 
 
-    class ViewHolder extends RecyclerView.ViewHolder{
-        TextView item;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            item = itemView.findViewById(R.id.frag_match_item);
-            item.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getLayoutPosition();
-                    Match m = matches.get(position);
-                    Intent i = new Intent(v.getContext(), ActivityInfoBookedMatch.class); //TODO
-                    i.putExtra("match", m.getMatchID());
-                    v.getContext().startActivity(i);
-                }
-            });
-        }
-    }
 }
