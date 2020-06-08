@@ -54,7 +54,6 @@ public class FragmentBookedMatches extends Fragment {
                 matches.get(position);
                 Intent i = new Intent(getContext(), ActivityInfoBookedMatch.class);
                 i.putExtra("match", matches.get(position).getMatchID());
-                i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
             }
         });

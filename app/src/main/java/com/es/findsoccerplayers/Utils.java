@@ -17,6 +17,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.time.Month;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,7 +93,7 @@ public class Utils {
     }
 
     public static String getPreviewDescription(String description){
-        if(description.length()<20)
+        if(description.length()<=20)
             return description;
         else{
             return (description.substring(0,21)+"...");
@@ -150,8 +152,8 @@ public class Utils {
                     month = "ERR";
                     break;
             }
-        }else{
-            switch (Integer.parseInt(date.substring(2,3))) {
+        }else {
+            switch (Integer.parseInt(date.substring(2, 3))) {
                 case 1:
                     month = "JAN";
                     break;
