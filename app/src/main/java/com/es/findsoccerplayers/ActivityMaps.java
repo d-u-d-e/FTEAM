@@ -5,16 +5,18 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.es.findsoccerplayers.position.GpsUtils;
+import com.es.findsoccerplayers.position.MapElements;
+import com.es.findsoccerplayers.position.PositionClient;
+
 import android.Manifest;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -25,7 +27,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,18 +51,17 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     private double longitude;
     private LatLng initPosition;
     private LatLng myPosition;
+    private boolean locationAccess;
 
 
     public final String LONGITUDE = "longitude";
     public final String LATITUDE = "latitude";
     public final String PLACE_NAME = "place name";
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    LocationManager mLocationManager;
+    public static final int GPS_REQUEST = 1001;
     LocationCallback mLocationCallback;
-    Location mLastLocation;
     private boolean mapReady = false;
     private boolean isTracking = false;
-    private boolean gpsOFF = false;
 
     private FloatingActionButton position_fab;
     FloatingActionButton confirm_fab;
@@ -77,6 +77,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar toolbar = findViewById(R.id.maps_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getLocationPermission(); //get location permission if I don'have it
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -95,6 +96,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.maps_map);
         mapFragment.getMapAsync(this);
 
+
+
         confirm_fab = findViewById(R.id.maps_confirm_fab);
         position_fab = findViewById(R.id.maps_position_fab);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -112,16 +115,11 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         };
 
 
-        //check if the GPS is disabled
-        mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        //check if the GPS is disabled and set the right notification
+        if(PositionClient.isGpsOFF(getApplicationContext())){
             position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
-            //if the GPS is disabled show a Toast
-            Toast.makeText(ActivityMaps.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
-            gpsOFF = true;
         }else {
                 position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
-                gpsOFF = false;
         }
 
         confirm_fab.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +134,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                     resultIntent.putExtra(PLACE_NAME, placeName);
                     setResult(RESULT_OK, resultIntent);
                     if(isTracking){
-                        stopTrackingLocation();
+                        PositionClient.stopTrackingPosition(mFusedLocationClient, mLocationCallback);
+                        isTracking = true;
                     }
                     finish();
                 }
@@ -147,16 +146,19 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         position_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-                    //if the GPS is disabled show a Toast or an AlertDialog
-                    Toast.makeText(ActivityMaps.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
-                    position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
+                if(!locationAccess){
+                    getLocationPermission();
                 }else {
-                    // Go to the new view in the map and change the color
-                    if(!isTracking){
-                        startTrackingLocation();
+                    if(PositionClient.isGpsOFF(getApplicationContext())){
+                        PositionClient.turnGPSon(ActivityMaps.this);
+                    } else{
+                        // Go to the new view in the map and change the color
+                        if(!isTracking && !PositionClient.isGpsOFF(getApplicationContext())){
+                            PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
+                            isTracking = true;
+                        }
+                        position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
                     }
-                    position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
                 }
 
             }
@@ -168,8 +170,12 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //Draw my position in the map
-                enableMyLocation();
+                //If I have the permission to access to the location set locationAcces to true
+                locationAccess = true;
+                //if the GPS is turned off, ask to turn it on
+                if(PositionClient.isGpsOFF(getApplicationContext())){
+                    PositionClient.turnGPSon(ActivityMaps.this);
+                }
             }
         }
     }
@@ -211,23 +217,35 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mapReady = true;
-        enableMyLocation();
-        //If the user has a last known location the map will start from there
-        // if there is not a last known location the entire world map will appear and the user will find his location
-        // by pressing the button in the top right corner of the map.
+
+
+        if(locationAccess){
+            if(PositionClient.isGpsOFF(ActivityMaps.this)){
+                PositionClient.turnGPSon(ActivityMaps.this);
+            }
+        }
+
+        //If I have location access and GPS is on then show a small blue circle to identify my position
+        if(!PositionClient.isGpsOFF(ActivityMaps.this) && locationAccess){
+            MapElements.showMyLocation(mMap);
+        }
+
+
+        //if I have an initial position from sharedPreferences and the GPS is Off, the start the map from that position
+        if(initPosition != null && PositionClient.isGpsOFF(ActivityMaps.this)){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initPosition, 12));
+            }
+
+
+        if(!isTracking && locationAccess){
+            PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
+            isTracking = true;
+        }
 
         setMapLongClick(mMap); // Add a marker in a long position click
         setPoiClick(mMap);  //add a marker in a POI
         setInfoWindowClick(mMap); // choose the selected position if the user clicks in the info window
         onMapMoving(mMap); //if the camera moves because the user move it, stop tracking location. He's looking for a place.
-
-        if(initPosition != null){
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initPosition, 12));
-            }
-
-        if(!isTracking && !gpsOFF){
-            startTrackingLocation();
-        }
 
 
     }
@@ -241,7 +259,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             public void onCameraMoveStarted(int reason) {
                 if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE){
                     if(isTracking){
-                        stopTrackingLocation();
+                        PositionClient.stopTrackingPosition(mFusedLocationClient, mLocationCallback);
+                        isTracking = false;
                     }
                 }
             }
@@ -255,9 +274,10 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                mMap.clear();
+                map.clear();
                 if(isTracking){
-                    stopTrackingLocation();
+                    PositionClient.stopTrackingPosition(mFusedLocationClient, mLocationCallback);
+                    isTracking = false;
                 }
                 String snippet = String.format(Locale.getDefault(), "Lat: %1.5f, Long: %2.5f",
                         latLng.latitude,
@@ -294,7 +314,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             public void onPoiClick(PointOfInterest pointOfInterest) {
                 mMap.clear();
                 if(isTracking){
-                    stopTrackingLocation();
+                    PositionClient.stopTrackingPosition(mFusedLocationClient, mLocationCallback);
+                    isTracking = false;
                 }
                 Marker poiMarker = mMap.addMarker(new MarkerOptions().position(pointOfInterest.latLng).title(pointOfInterest.name)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
@@ -316,7 +337,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 resultIntent.putExtra(PLACE_NAME, placeName);
                 setResult(RESULT_OK, resultIntent);
                 if(isTracking){
-                    stopTrackingLocation();
+                    PositionClient.stopTrackingPosition(mFusedLocationClient, mLocationCallback);
+                    isTracking = false;
                 }
                 finish();
             }
@@ -324,37 +346,29 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    //enable showing my location. Check self permission first
-    private void enableMyLocation(){
+
+
+    private void getLocationPermission(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            mMap.setMyLocationEnabled(true); // show a small blue circle for my position
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);// I create my own beautiful position floating action button
+            locationAccess = true;
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         }
-
     }
 
 
-    //Location Request to build the Location Callback.
-    private LocationRequest getLocationRequest() {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return locationRequest;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GPS_REQUEST) {
+                PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
+                MapElements.showMyLocation(mMap);
+                position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
+            }
+        }
     }
 
-    //start tracking location
-    private void startTrackingLocation(){
-        mFusedLocationClient.requestLocationUpdates(getLocationRequest(), mLocationCallback, null);
-        isTracking = true;
-    }
-
-    //stop tracking location
-    private void stopTrackingLocation(){
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-        isTracking = false;
-    }
 
 }
