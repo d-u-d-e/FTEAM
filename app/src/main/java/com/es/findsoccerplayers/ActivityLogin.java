@@ -29,8 +29,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
+
 
 public class ActivityLogin extends AppCompatActivity {
 
@@ -45,7 +44,7 @@ public class ActivityLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.w(TAG, "LoginActivity creata");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.act_login);
         Toolbar toolbar = findViewById(R.id.log_toolbar);
         setSupportActionBar(toolbar);
 
@@ -71,9 +70,6 @@ public class ActivityLogin extends AppCompatActivity {
         Button btnLogin = findViewById(R.id.log_loginBtn);
         final TextView forgottenPsw = findViewById(R.id.log_forgottenPsw);
 
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings  =  new FirebaseFirestoreSettings.Builder().build();
-        database.setFirestoreSettings(settings);
 
         //options required to log in with Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

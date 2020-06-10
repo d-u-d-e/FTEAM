@@ -5,22 +5,25 @@ public class Match {
     private String placeName;
     private String matchData;
     private String matchHour;
-    private int playerNumber;
+    private int playersNumber;
     private double latitude;
     private double longitude;
     private String description;
+    private String matchID;
+    private String creatorID;
 
     public Match(){
     }
 
-    public Match(String placeName, String matchData, String matchHour, int playerNumber, double latitude, double longitude, String description) {
+    public Match(String placeName, String matchData, String matchHour, int playerNumber, double latitude, double longitude, String description, String creatorID) {
         this.placeName = placeName;
         this.matchData = matchData;
         this.matchHour = matchHour;
-        this.playerNumber = playerNumber;
+        this.playersNumber = playerNumber;
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
+        this.creatorID = creatorID;
     }
 
     public String getPlaceName() {
@@ -47,12 +50,12 @@ public class Match {
         this.matchHour = matchHour;
     }
 
-    public int getPlayerNumber() {
-        return playerNumber;
+    public int getPlayersNumber() {
+        return playersNumber;
     }
 
     public void setPlayersNumber(int playerNumber) {
-        this.playerNumber = playerNumber;
+        this.playersNumber = playerNumber;
     }
 
     public double getLatitude() {
@@ -77,5 +80,21 @@ public class Match {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getMatchID() {
+        return matchID;
+    }
+
+    public void setMatchID(String matchID) {
+        this.matchID = matchID;
+    }
+
+    public String getCreatorID() {
+        return creatorID;
+    }
+
+    public void setCreatorID(String creatorID) {
+        this.creatorID = creatorID;
     }
 }

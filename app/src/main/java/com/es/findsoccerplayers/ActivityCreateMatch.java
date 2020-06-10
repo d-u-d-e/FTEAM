@@ -16,6 +16,9 @@ import com.es.findsoccerplayers.pickers.DatePickerFragment;
 import com.es.findsoccerplayers.pickers.NumberPickerDialog;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
@@ -29,6 +32,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
     private double longitude;
     private double latitude;
 
+    private static final String TAG = "CreateMatchActivity";
     private final String LONGITUDE = "longitude";
     private final String LATITUDE = "latitude";
     private final String PLACE_NAME = "place name";
@@ -43,7 +47,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_match);
+        setContentView(R.layout.act_create_match);
 
         Toolbar toolbar = findViewById(R.id.cr_match_toolbar);
         setSupportActionBar(toolbar);
@@ -130,8 +134,16 @@ public class ActivityCreateMatch extends AppCompatActivity {
                     mMatch.setLongitude(longitude);
                     mMatch.setLatitude(latitude);
                     mMatch.setPlayersNumber(Integer.parseInt(missingPlayers.getText().toString()));
-                    //TODO: Send all to the database and close this activity
-                    Utils.showUnimplementedToast(ActivityCreateMatch.this);
+                    mMatch.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    if(Utils.dbStoreMatch(TAG, mMatch)){
+                        Toast.makeText(ActivityCreateMatch.this, "Match successfully created", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(i);
+                        finish();
+                    }else{
+                        Toast.makeText(ActivityCreateMatch.this, "ERROR", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
             }

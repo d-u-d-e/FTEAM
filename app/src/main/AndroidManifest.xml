@@ -53,6 +53,7 @@
         <activity
             android:name=".ActivityInfoMatch"
             android:parentActivityName=".ActivityMain"/>
+
         <activity
             android:name=".ActivitySettings"
             android:parentActivityName=".ActivityMain"/>

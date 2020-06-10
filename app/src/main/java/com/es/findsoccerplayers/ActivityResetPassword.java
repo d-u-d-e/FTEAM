@@ -20,7 +20,7 @@ public class ActivityResetPassword extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reset_password);
+        setContentView(R.layout.act_reset_password);
 
         Toolbar toolbar = findViewById(R.id.rst_toolbar);
         setSupportActionBar(toolbar);
