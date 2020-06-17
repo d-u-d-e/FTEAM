@@ -82,18 +82,11 @@
     <string name="frag_info_booked_match_quota">QUOTA:</string>
     <string name="frag_info_booked_match_description_retireBtn">RETIRE</string>
 
-    <string name="act_reset_title">RESET PASSWORD</string>
-    <string name="act_reset_sentence">Insert the email you used to register:</string>
 
     <!--ActivitySetLocation strings-->
     <string name="complete_preferences">Select a distance and a position please!</string>
     <string name="select_a_distance">Select a distance</string>
     <string name="select_this_position_txt_btn">Select this position</string>
-
-
-
-
-    <string name="title_activity_info_match_booked">InfoMatchBookedActivity</string>
 
 
 </resources>
