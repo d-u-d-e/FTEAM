@@ -5,7 +5,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.es.findsoccerplayers.position.GpsUtils;
 import com.es.findsoccerplayers.position.MapElements;
 import com.es.findsoccerplayers.position.PositionClient;
 
@@ -115,13 +114,14 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         };
 
 
-        //check if the GPS is disabled and set the right notification
-        if(PositionClient.isGpsOFF(getApplicationContext())){
+        //check if the GPS is disabled or locationAccess enabled and set the right configuration
+        if(PositionClient.isGpsOFF(getApplicationContext()) || !locationAccess){
             position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
         }else {
                 position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
         }
 
+        //ConfirmPosition FAB listener
         confirm_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,6 +143,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        //Position FAB listener
         position_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +154,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                         PositionClient.turnGPSon(ActivityMaps.this);
                     } else{
                         // Go to the new view in the map and change the color
-                        if(!isTracking && !PositionClient.isGpsOFF(getApplicationContext())){
+                        if(!isTracking){
                             PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
                             isTracking = true;
                         }
@@ -175,6 +176,10 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 //if the GPS is turned off, ask to turn it on
                 if(PositionClient.isGpsOFF(getApplicationContext())){
                     PositionClient.turnGPSon(ActivityMaps.this);
+                } else if(!isTracking){
+                    isTracking = true;
+                    PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
+                    MapElements.showMyLocation(mMap);
                 }
             }
         }
@@ -222,13 +227,13 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         if(locationAccess){
             if(PositionClient.isGpsOFF(ActivityMaps.this)){
                 PositionClient.turnGPSon(ActivityMaps.this);
+            } else {
+                //If I have location access and GPS is on then show a small blue circle to identify my position
+                MapElements.showMyLocation(mMap);
             }
         }
 
-        //If I have location access and GPS is on then show a small blue circle to identify my position
-        if(!PositionClient.isGpsOFF(ActivityMaps.this) && locationAccess){
-            MapElements.showMyLocation(mMap);
-        }
+
 
 
         //if I have an initial position from sharedPreferences and the GPS is Off, the start the map from that position
@@ -361,8 +366,12 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == Activity.RESULT_OK) {
+            //The response come from the turGPSon()
             if (requestCode == GPS_REQUEST) {
+                //If the user choose to turn on the GPS then start tracking and set the widget in the correct colors etc
+                // otherwise do nothing. He will zoom the map manually
                 PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
                 MapElements.showMyLocation(mMap);
                 position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));

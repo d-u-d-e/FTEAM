@@ -110,8 +110,8 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         };
 
 
-        //check if the GPS is disabled
-        if(PositionClient.isGpsOFF(getApplicationContext())){
+        //check if the GPS is disabled or locationAccess enabled and set the right configuration
+        if(PositionClient.isGpsOFF(getApplicationContext()) || !locationAccess){
             //if the GPS is disabled show a Toast
             Toast.makeText(ActivitySetLocation.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
             position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
@@ -130,7 +130,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                         PositionClient.turnGPSon(ActivitySetLocation.this);
                     } else {
                         // Go to the new view in the map and change the color
-                        if(!isTracking && !PositionClient.isGpsOFF(ActivitySetLocation.this)){
+                        if(!isTracking){
                             PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
                             isTracking = true;
                             mMap.clear();
@@ -219,18 +219,17 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         if(locationAccess){
             if(PositionClient.isGpsOFF(ActivitySetLocation.this)){
                 PositionClient.turnGPSon(ActivitySetLocation.this);
+            } else{
+                MapElements.showMyLocation(mMap);
             }
         }
 
-        //If I have location access and GPS is on then show a small blue circle to identify my position
-        if(!PositionClient.isGpsOFF(ActivitySetLocation.this) && locationAccess){
-            MapElements.showMyLocation(mMap);
-        }
 
         if(!isTracking && locationAccess){
             PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
             isTracking = true;
         }
+
 
         onMapMoving(mMap);//if the camera moves because the user move it, stop tracking location. He's looking for a place.
         setMapLongClick(mMap);// Add a marker in a long position click
@@ -284,6 +283,10 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                 //if the GPS is turned off, ask to turn it on
                 if(PositionClient.isGpsOFF(getApplicationContext())){
                     PositionClient.turnGPSon(ActivitySetLocation.this);
+                }else if(!isTracking){
+                    isTracking = true;
+                    PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
+                    MapElements.showMyLocation(mMap);
                 }
             }
         }
