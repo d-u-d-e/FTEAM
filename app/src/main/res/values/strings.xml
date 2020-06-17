@@ -88,5 +88,10 @@
     <string name="select_a_distance">Select a distance</string>
     <string name="select_this_position_txt_btn">Select this position</string>
 
+    <!--Match element strings-->
+    <string name="match_element_field_label">FIELD:</string>
+    <string name="match_element_time_label">HOUR:</string>
+    <string name="match_element_desc_label">DESCRIPTION:</string>
+
 
 </resources>
