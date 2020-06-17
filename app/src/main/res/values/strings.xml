@@ -13,6 +13,7 @@
     <string name="pass_not_equal">Passwords do not match</string>
     <string name="email_not_equal">Emails do not match</string>
     <string name="reset_psw_success">An email has been sent to you. Check your email box</string>
+    <string name="send_empty_message">You can\'t send an empty message</string>
 
     <!--activities strings-->
     <string name="act_account_title">SIGNED IN WITH</string>
@@ -42,6 +43,13 @@
 
     <string name="act_main_title">MAIN ACTIVITY</string>
 
+    <string name="act_reset_sentence">Insert the email you used to register:</string>
+    <string name="act_reset_title">RESET PASSWORD</string>
+
+    <string name="act_chat_title">Group chat</string>
+
+    <string name="title_activity_info_match_booked">InfoMatchBookedActivity</string>
+
 
     <!--MatchActivities strings-->
     <string name="date_and_hour">Set date and hour: </string>
@@ -66,6 +74,13 @@
     <string name="select_a_place">Select a Place</string>
 
 
+    <!--InfoBookedMatch fragment strings-->
+    <string name="frag_info_booked_match_campo">FIELD: </string>
+    <string name="frag_info_booked_match_giorno">DAY: </string>
+    <string name="frag_info_booked_match_missingPlayers">MISSING PLAYERS: </string>
+    <string name="frag_info_booked_match_description">DESCRIPTION: </string>
+    <string name="frag_info_booked_match_quota">QUOTA:</string>
+    <string name="frag_info_booked_match_description_retireBtn">RETIRE</string>
 
     <string name="act_reset_title">RESET PASSWORD</string>
     <string name="act_reset_sentence">Insert the email you used to register:</string>

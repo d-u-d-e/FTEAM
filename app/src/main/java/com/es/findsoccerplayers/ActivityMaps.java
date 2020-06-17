@@ -71,7 +71,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.act_maps);
 
         Toolbar toolbar = findViewById(R.id.maps_toolbar);
         setSupportActionBar(toolbar);
