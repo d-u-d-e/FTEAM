@@ -51,8 +51,6 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
         selectedDate = findViewById(R.id.reg_selectDate);
 
         final FirebaseAuth fAuth = FirebaseAuth.getInstance();
-        final DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-
 
         selectedDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +116,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
                         progressBar.setVisibility(View.INVISIBLE);
                         if(task.isSuccessful()){
                             Utils.showSuccessLoginToast(ActivityRegister.this);
-                            Utils.dbStoreUser(TAG, name, surname, selectedDate.getText().toString());
+                            Utils.dbStoreNewUser(TAG, name, surname, selectedDate.getText().toString());
                             Intent i = new Intent(ActivityRegister.this, ActivityLogin.class);
                             i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                             startActivity(i);

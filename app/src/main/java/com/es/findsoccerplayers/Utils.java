@@ -4,9 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -17,11 +14,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Month;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -50,10 +44,11 @@ public class Utils {
         Toast.makeText(c, R.string.reset_psw_success, Toast.LENGTH_SHORT).show();
     }
 
-    static void dbStoreUser(final String tag, String name, String surname, String date) {
+    static void dbStoreNewUser(final String tag, String name, String surname, String date) {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
         User user = new User(fAuth.getCurrentUser().getUid(), name, surname, date);
+
         db.child("users").child(user.getId()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

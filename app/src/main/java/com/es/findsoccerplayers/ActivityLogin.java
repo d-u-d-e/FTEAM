@@ -1,5 +1,6 @@
 package com.es.findsoccerplayers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -29,9 +30,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
-public class ActivityLogin extends AppCompatActivity {
+public class ActivityLogin extends AppCompatActivity{
 
     private static final int RC_GOOGLE_SIGN_IN = 100;
     private static final String TAG = "LoginActivity";
@@ -147,58 +153,7 @@ public class ActivityLogin extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //check for result of google sign in
         if (requestCode == RC_GOOGLE_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                final GoogleSignInAccount account = task.getResult(ApiException.class);
-                if(account == null){
-                    Utils.showErrorToast(this, getString(R.string.unknown_error));
-                }
-                else{
-                    final AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                    fAuth.signInWithCredential(credential)
-                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(Task<AuthResult> task) {
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                    if (task.isSuccessful()) {
-                                        String fullName = account.getDisplayName();
-                                        if(fullName == null){
-                                            Utils.showErrorToast(ActivityLogin.this, getString(R.string.missing_google_username));
-                                            Utils.dbStoreUser(TAG, "user", "", "");
-                                        }
-                                        else{
-                                            String[] names = fullName.split(" ");
-                                            //try to obtain both first and second names
-                                            String first = "";
-                                            String second = "";
-                                            if(names.length == 2){
-                                                first = names[0];
-                                                second = names[1];
-                                            }
-                                            else
-                                                first = names[0];
-                                            Utils.dbStoreUser(TAG, first, second, "");
-                                        }
-
-                                        Utils.showSuccessLoginToast(ActivityLogin.this);
-                                        startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
-                                        finish();
-                                    } else
-                                        Utils.showErrorToast(ActivityLogin.this, task.getException());
-                                }
-                        });
-                }
-            } catch (ApiException e) {
-                //The exception with code 12501 is a feedback from google that the sign in was cancelled by the user,
-                //so it isn't an exception that requires to be handled or shown
-                if(e.getStatusCode() == 12501){
-                    Log.w(TAG, "Exception: " + e.toString());
-                }else {
-                    Log.w(TAG, "Exception: " + e.toString());
-                    Utils.showErrorToast(this, e);
-                }
-                progressBar.setVisibility(View.INVISIBLE);
-            }
+            performGoogleLogin(data);
         }
     }
 
@@ -215,5 +170,92 @@ public class ActivityLogin extends AppCompatActivity {
             backToast.show();
         }
         backPressedTime = System.currentTimeMillis();
+    }
+
+
+    void performGoogleLogin(Intent data){
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        try {
+            final GoogleSignInAccount account = task.getResult(ApiException.class);
+            if(account == null){
+                Utils.showErrorToast(this, getString(R.string.unknown_error));
+            }
+            else{
+                final AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                fAuth.signInWithCredential(credential)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(Task<AuthResult> task) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                if (task.isSuccessful()) {
+                                    //check if we need to store the user info, maybe it's the first time that
+                                    //the user signs in
+                                    checkIfUserExists(); //asynchronous
+                                } else
+                                    Utils.showErrorToast(ActivityLogin.this, task.getException());
+                            }
+                        });
+            }
+        } catch (ApiException e) {
+            //The exception with code 12501 is a feedback from google that the sign in was cancelled by the user,
+            //so it isn't an exception that requires to be handled or shown
+            if(e.getStatusCode() == 12501){
+                Log.w(TAG, "Exception: " + e.toString());
+            }else {
+                Log.w(TAG, "Exception: " + e.toString());
+                Utils.showErrorToast(this, e);
+            }
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
+     * This calls createUser() if the user does not exists anywhere in the database. Then login proceeds.
+     */
+
+    private void checkIfUserExists(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = fAuth.getCurrentUser();
+        DatabaseReference ref = db.child("users").child(user.getUid());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists())
+                    createUser();
+                Utils.showSuccessLoginToast(ActivityLogin.this);
+                startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                finish();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Utils.showErrorToast(ActivityLogin.this, getString(R.string.unexpected_error));
+            }
+        });
+    }
+
+    /**
+     * creates a new user, saving his information in the database
+     */
+
+    private void createUser(){
+        String fullName = fAuth.getCurrentUser().getDisplayName();
+        if(fullName == null || fullName.isEmpty()){
+            Utils.showErrorToast(ActivityLogin.this, getString(R.string.missing_google_username));
+            Utils.dbStoreNewUser(TAG, "user", "", "");
+        }
+        else{
+            String[] names = fullName.split(" ");
+            //try to obtain both first and second names
+            String first;
+            String second = "";
+            if(names.length == 2){
+                first = names[0];
+                second = names[1];
+            }
+            else
+                first = names[0];
+            Utils.dbStoreNewUser(TAG, first, second, "");
+        }
     }
 }
