@@ -19,18 +19,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 public class ActivityRegister extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     private TextView selectedDate;
-    private static final String TAG = "RegisterActivity";
+    private static final String TAG = "ActivityRegister";
 
     String name, surname, email, emailConf,pass, passConf;
+
+    boolean userSkipsDate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +72,12 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
 
                 String missingField = getString(R.string.field_missing);
 
-                if(selectedDate.getText().toString().equals(getString(R.string.act_register_select_date)))
-                    Toast.makeText(ActivityRegister.this, R.string.select_birth_date, Toast.LENGTH_SHORT).show();
+                nameEd.setError(null);
+                surnameEd.setError(null);
+                emailConfEd.setError(null);
+                emailEd.setError(null);
+                passEd.setError(null);
+                passConfEd.setError(null);
 
                 if(TextUtils.isEmpty(name))
                     nameEd.setError(missingField);
@@ -107,6 +110,13 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
                         emailConfEd.getError() != null || passConfEd.getError() != null )
                     return;
 
+                //birth date is not mandatory; user is prompted once to insert it if it's missing
+                if(!userSkipsDate && selectedDate.getText().toString().equals(getString(R.string.act_register_select_date))){
+                    Toast.makeText(ActivityRegister.this, R.string.select_birth_date, Toast.LENGTH_SHORT).show();
+                    userSkipsDate = true;
+                    return;
+                }
+
                 progressBar.setVisibility(View.VISIBLE);
 
                 //everything is fine, create an account
@@ -133,30 +143,21 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
      * Shows date picker dialog after user hits select date text view
      */
     private void showDatePickerDialog(){
+        Calendar c = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, this,
-                Calendar.getInstance().get(Calendar.YEAR),
-                Calendar.getInstance().get(Calendar.MONTH),
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+                c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
 
     /**
-     * sets the date after the user picked it
+     * Sets the date after the user picked it
      */
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar c = Calendar.getInstance();
         c.set(year, month, dayOfMonth);
-        String r = c.getDisplayName(Calendar.DATE, Calendar.SHORT, Locale.getDefault());
         selectedDate.setTextColor(getResources().getColor(R.color.black));
-        selectedDate.setText(r);
-    }
-
-    /**
-     * hitting back will return to Login Activity
-     */
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(this, ActivityLogin.class));
-        super.onBackPressed();
+        selectedDate.setText(Utils.getDate(c.getTimeInMillis()));
     }
 }

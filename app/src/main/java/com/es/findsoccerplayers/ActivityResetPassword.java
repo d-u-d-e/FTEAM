@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ActivityResetPassword extends AppCompatActivity {
 
-    private static final String TAG = "ResetPasswordActivity";
+    private static final String TAG = "ActivityResetPassword";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +29,20 @@ public class ActivityResetPassword extends AppCompatActivity {
         Button reset = findViewById(R.id.rst_btn);
         final EditText email = findViewById(R.id.rst_email);
 
-
          /* When the reset button is pressed, an email is sent to the user to reset his password.
-         * If the email is not found, an error is shown */
+          * If the email is not found, an error is shown */
 
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 String emailAddress = email.getText().toString();
+
+                if(emailAddress.isEmpty()){
+                    Utils.showErrorToast(ActivityResetPassword.this, getString(R.string.field_missing));
+                    return;
+                }
+
                 auth.sendPasswordResetEmail(emailAddress)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override

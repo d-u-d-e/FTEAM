@@ -45,6 +45,9 @@
     <string name="act_register_date_birth">Birthdate:</string>
 
     <string name="act_main_title">MAIN ACTIVITY</string>
+    <string name="act_main_frag_avail_title">AVAILABLE MATCHES</string>
+    <string name="act_main_frag_booked_title">BOOKED MATCHES</string>
+    <string name="act_main_frag_yours_title">YOUR MATCHES</string>
 
     <string name="act_reset_sentence">Insert the email you used to register:</string>
     <string name="act_reset_title">RESET PASSWORD</string>

@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -40,7 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 public class ActivityLogin extends AppCompatActivity{
 
     private static final int RC_GOOGLE_SIGN_IN = 100;
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = "ActivityLogin";
     private FirebaseAuth fAuth;
     private long backPressedTime;
     private Toast backToast;
@@ -56,7 +57,7 @@ public class ActivityLogin extends AppCompatActivity{
 
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser autUser = fAuth.getCurrentUser();
-        //if someone has already logged, start ActivityMain
+        //if someone has already logged, start ActivityMain (auto login)
         if(autUser != null) {
             startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
             finish();
@@ -158,7 +159,7 @@ public class ActivityLogin extends AppCompatActivity{
     }
 
     /**
-     * requested 2 taps at most 2 seconds apart in order to exit
+     * Requested 2 taps at most 2 seconds apart in order to exit
      */
     @Override
     public void onBackPressed() {
@@ -203,7 +204,7 @@ public class ActivityLogin extends AppCompatActivity{
                 Log.w(TAG, "Exception: " + e.toString());
             }else {
                 Log.w(TAG, "Exception: " + e.toString());
-                Utils.showErrorToast(this, e);
+                Utils.showErrorToast(this, CommonStatusCodes.getStatusCodeString(e.getStatusCode()));
             }
             progressBar.setVisibility(View.INVISIBLE);
         }
@@ -235,7 +236,7 @@ public class ActivityLogin extends AppCompatActivity{
     }
 
     /**
-     * creates a new user, saving his information in the database
+     * Creates a new user, saving his information in the database
      */
 
     private void createUser(){

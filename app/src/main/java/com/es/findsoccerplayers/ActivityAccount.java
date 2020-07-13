@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 /**
- * shows the account info for the current user
+ * Shows the account information for the current user
  * */
 
 public class ActivityAccount extends AppCompatActivity {

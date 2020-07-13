@@ -7,14 +7,12 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
@@ -28,7 +26,6 @@ import com.es.findsoccerplayers.position.MapElements;
 import com.es.findsoccerplayers.position.PositionClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -76,7 +73,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_location);
+        setContentView(R.layout.act_set_location);
 
         Toolbar toolbar = findViewById(R.id.location_maps_toolbar);
         setSupportActionBar(toolbar);

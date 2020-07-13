@@ -20,7 +20,7 @@ import com.google.android.material.tabs.TabLayout;
 
 public class ActivityMain extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "ActivityMain";
     private long backPressedTime = 0;
     private Toast backToast;
 
@@ -28,16 +28,16 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
-        Log.w(TAG, "MainActivity creata");
+        Log.w(TAG, "ActivityMain created");
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
         TabLayout tabs = findViewById(R.id.main_tabs);
         ViewPager vp = findViewById(R.id.main_vp);
         ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-        adapter.addFragment(new FragmentAvailableMatches(), "AVAILABLE MATCHES");
-        adapter.addFragment(new FragmentBookedMatches(), "BOOKED MATCHES");
-        adapter.addFragment(new FragmentYourMatches(), "YOUR MATCHES");
+        adapter.addFragment(new FragmentAvailableMatches(), getString(R.string.act_main_frag_avail_title));
+        adapter.addFragment(new FragmentBookedMatches(), getString(R.string.act_main_frag_booked_title));
+        adapter.addFragment(new FragmentYourMatches(), getString(R.string.act_main_frag_yours_title));
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
     }
@@ -58,6 +58,7 @@ public class ActivityMain extends AppCompatActivity {
                 return true;
             //show settings
             case R.id.acc_settings:
+                //TODO activity settings?
                 startActivity(new Intent(this, ActivitySetLocation.class));
                 return true;
             default:
@@ -66,13 +67,13 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     /**
-     * requested 2 taps at most 2 seconds apart in order to exit
+     * Requested 2 taps at most 2 seconds apart in order to exit
      */
     @Override
     public void onBackPressed() {
         if(backPressedTime + 2000 > System.currentTimeMillis()){
             backToast.cancel();
-            super.onBackPressed(); //the default finish the current activity
+            super.onBackPressed(); //the default finishes the current activity
         }else{
             backToast = Toast.makeText(getApplicationContext(), R.string.double_back, Toast.LENGTH_SHORT);
             backToast.show();
