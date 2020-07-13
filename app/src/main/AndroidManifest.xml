@@ -62,7 +62,8 @@
             android:name=".ActivityRegister"
             android:parentActivityName=".ActivityLogin"
             android:screenOrientation="portrait" />
-        <activity android:name=".ActivityMain" />
+        <activity android:name=".ActivityMain"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ActivityLogin"
             android:screenOrientation="portrait">

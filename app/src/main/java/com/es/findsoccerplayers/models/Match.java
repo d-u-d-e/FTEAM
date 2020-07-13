@@ -3,8 +3,8 @@ package com.es.findsoccerplayers.models;
 public class Match {
 
     private String placeName;
-    private String matchData;
-    private String matchHour;
+    private String matchDate;
+    private String matchTime;
     private int playersNumber;
     private double latitude;
     private double longitude;
@@ -15,10 +15,10 @@ public class Match {
     public Match(){
     }
 
-    public Match(String placeName, String matchData, String matchHour, int playerNumber, double latitude, double longitude, String description, String creatorID) {
+    public Match(String placeName, String matchDate, String matchHour, int playerNumber, double latitude, double longitude, String description, String creatorID) {
         this.placeName = placeName;
-        this.matchData = matchData;
-        this.matchHour = matchHour;
+        this.matchDate = matchDate;
+        this.matchTime = matchHour;
         this.playersNumber = playerNumber;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -34,20 +34,20 @@ public class Match {
         this.placeName = placeName;
     }
 
-    public String getMatchData() {
-        return matchData;
+    public String getMatchDate() {
+        return matchDate;
     }
 
-    public void setMatchData(String matchData) {
-        this.matchData = matchData;
+    public void setMatchDate(String matchDate) {
+        this.matchDate = matchDate;
     }
 
-    public String getMatchHour() {
-        return matchHour;
+    public String getMatchTime() {
+        return matchTime;
     }
 
-    public void setMatchHour(String matchHour) {
-        this.matchHour = matchHour;
+    public void setMatchTime(String matchHour) {
+        this.matchTime = matchHour;
     }
 
     public int getPlayersNumber() {

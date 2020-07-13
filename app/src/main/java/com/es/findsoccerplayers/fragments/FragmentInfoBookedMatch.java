@@ -28,7 +28,6 @@ public class FragmentInfoBookedMatch extends Fragment {
     private Match m;
 
     public FragmentInfoBookedMatch(String relatedMatch){
-        super();
         this.relatedMatch = relatedMatch;
     }
 
@@ -61,8 +60,8 @@ public class FragmentInfoBookedMatch extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 m = dataSnapshot.getValue(Match.class);
                 field.setText(m.getPlaceName());
-                day.setText(m.getMatchData());
-                time.setText(m.getMatchHour());
+                day.setText(m.getMatchDate());
+                time.setText(m.getMatchTime());
                 money.setText("----");                                              //TODO
                 missingPlayers.setText(Integer.toString(m.getPlayersNumber()));
                 description.setText(m.getDescription());

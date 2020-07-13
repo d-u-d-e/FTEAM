@@ -76,23 +76,21 @@ public class FragmentBookedMatches extends Fragment {
                     String key = snapshot.getKey();
                     Boolean isMember = snapshot.child("member").getValue(Boolean.class);
                     if(isMember == null) throw new IllegalStateException("missing member field in database");
-                    if(isMember){
-                        ref = db.getReference("matches/" + key);
-                        ref.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Match m = dataSnapshot.getValue(Match.class);
-                                if(m != null){
-                                    matches.add(m);
-                                    matchAdapter.notifyItemInserted(matches.size()-1);
-                                }
+                    ref = db.getReference("matches/" + key);
+                    ref.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Match m = dataSnapshot.getValue(Match.class);
+                            if(m != null){
+                                matches.add(m);
+                                matchAdapter.notifyItemInserted(matches.size()-1);
                             }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-                    }
+                        }
+                    });
                 }
 
             }

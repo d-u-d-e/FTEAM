@@ -17,15 +17,15 @@ import com.es.findsoccerplayers.pickers.NumberPickerDialog;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class ActivityCreateMatch extends AppCompatActivity {
 
     private TextView matchDate;
-    private TextView matchHour;
+    private TextView matchTime;
     private TextView missingPlayers;
     private TextView placeText;
     private EditText description;
@@ -55,7 +55,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
 
         //Find the view
         matchDate = findViewById(R.id.cr_match_dateText);
-        matchHour = findViewById(R.id.cr_match_timeText);
+        matchTime = findViewById(R.id.cr_match_timeText);
         missingPlayers = findViewById(R.id.cr_match_playersNumber);
         placeText = findViewById(R.id.cr_match_addPosition);
         description = findViewById(R.id.cr_match_descriptionField);
@@ -63,7 +63,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
 
         if(savedInstanceState != null){
             matchDate.setText(savedInstanceState.getString(MATCH_DATE));
-            matchHour.setText(savedInstanceState.getString(MATCH_HOUR));
+            matchTime.setText(savedInstanceState.getString(MATCH_HOUR));
             placeText.setText(savedInstanceState.getString(PLACE_NAME));
             description.setText(savedInstanceState.getString(DESCRIPTION));
             longitude = savedInstanceState.getDouble(LONGITUDE);
@@ -73,13 +73,19 @@ public class ActivityCreateMatch extends AppCompatActivity {
         } else {
             //Current value for default
             final Calendar c = Calendar.getInstance();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+            String[] strings = sdf.format(c.getTime()).split(" ");
+            matchDate.setText(strings[0]);
+            matchTime.setText(strings[1]);
+            /*
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH) + 1;
             int day = c.get(Calendar.DAY_OF_MONTH);
             matchDate.setText(day + "/" + month + "/" + year);
-            matchHour.setText(hour + ":" + minute);
+            matchHour.setText(hour + ":" + minute);*/
         }
 
         //Set the date number with dialog
@@ -92,7 +98,7 @@ public class ActivityCreateMatch extends AppCompatActivity {
         });
 
         //Set the hour number with dialog
-        matchHour.setOnClickListener(new View.OnClickListener() {
+        matchTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogFragment timePicker = new TimePickerFragment();
@@ -129,8 +135,8 @@ public class ActivityCreateMatch extends AppCompatActivity {
                     Toast.makeText(ActivityCreateMatch.this, R.string.all_fields_required, Toast.LENGTH_SHORT).show();
                 }else{
                     mMatch.setDescription(description.getText().toString());
-                    mMatch.setMatchData(matchDate.getText().toString()); //
-                    mMatch.setMatchHour(matchHour.getText().toString());
+                    mMatch.setMatchDate(matchDate.getText().toString());
+                    mMatch.setMatchTime(matchTime.getText().toString());
                     mMatch.setPlaceName(placeText.getText().toString());
                     mMatch.setLongitude(longitude);
                     mMatch.setLatitude(latitude);
@@ -171,13 +177,12 @@ public class ActivityCreateMatch extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
 
         outState.putString(MATCH_DATE, matchDate.getText().toString());
-        outState.putString(MATCH_HOUR, matchHour.getText().toString());
+        outState.putString(MATCH_HOUR, matchTime.getText().toString());
         outState.putString(PLACE_NAME, placeText.getText().toString());
         outState.putString(DESCRIPTION, description.getText().toString());
         outState.putDouble(LONGITUDE, longitude);
         outState.putDouble(LATITUDE, latitude);
         outState.putString(PLAYERS_NUMBER, missingPlayers.getText().toString());
-
         super.onSaveInstanceState(outState);
     }
 }

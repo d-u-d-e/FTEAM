@@ -10,7 +10,10 @@ import androidx.fragment.app.DialogFragment;
 
 import com.es.findsoccerplayers.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -28,7 +31,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         TextView timeDate = getActivity().findViewById(R.id.cr_match_timeText);
-        timeDate.setText(String.format("%02d : %02d", hourOfDay, minute));
+        timeDate.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute));
     }
 
 }

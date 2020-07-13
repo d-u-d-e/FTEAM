@@ -1,22 +1,22 @@
 package com.es.findsoccerplayers.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.es.findsoccerplayers.ActivityInfoBookedMatch;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.R;
 
-import java.util.Calendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHolder>{
     private Context context;
@@ -32,14 +32,14 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
     }
 
     public static class MatchViewHolder extends RecyclerView.ViewHolder{
-        public TextView day, month, field, hour, desc;
+        public TextView day, month, field, time, desc;
 
         public MatchViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
             day = itemView.findViewById(R.id.match_element_gg);
             month = itemView.findViewById(R.id.match_element_mm);
             field = itemView.findViewById(R.id.match_element_field);
-            hour = itemView.findViewById(R.id.match_element_time);
+            time = itemView.findViewById(R.id.match_element_time);
             desc = itemView.findViewById(R.id.match_element_desc);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -70,11 +70,23 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
     @Override
     public void onBindViewHolder(MatchViewHolder holder, int position) {
         Match m = matches.get(position);
-        holder.day.setText(" "+Utils.extractDay(m.getMatchData()));
-        holder.month.setText(" "+Utils.extractMonth(m.getMatchData()));
-        holder.field.setText(" "+m.getPlaceName());
-        holder.hour.setText(" "+m.getMatchHour());
-        holder.desc.setText(" "+Utils.getPreviewDescription(m.getDescription()));
+        String date = m.getMatchDate();
+
+        try{
+            SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            Date d = sdf1.parse(date);
+            String day = new SimpleDateFormat("EE", Locale.getDefault()).format(d);
+            String month = new SimpleDateFormat("MMM", Locale.getDefault()).format(d);
+            holder.day.setText(" " + day);
+            holder.month.setText(" " + month);
+        }
+        catch(ParseException e){
+            throw new IllegalStateException("cannot parse date in Match Adapter");
+        }
+
+        holder.field.setText(" " + m.getPlaceName());
+        holder.time.setText(" " + m.getMatchTime());
+        holder.desc.setText(" " + Utils.getPreviewDescription(m.getDescription()));
     }
 
     @Override
