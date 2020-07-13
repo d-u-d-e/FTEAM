@@ -17,9 +17,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Month;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Utils {
@@ -102,5 +106,31 @@ public class Utils {
         else {
             return (description.substring(0, 21) + "...");
         }
+    }
+
+    public static String getDate(long timestamp){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        return sdf.format(c.getTime());
+    }
+
+    public static String getTime(long timestamp){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        return sdf.format(c.getTime());
+    }
+
+    public static String getDay(long timestamp){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timestamp);
+        return String.valueOf(c.get(Calendar.DAY_OF_MONTH));
+    }
+
+    public static String getMonth(long timestamp) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timestamp);
+        return c.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
     }
 }

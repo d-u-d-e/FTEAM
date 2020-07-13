@@ -70,22 +70,13 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
     @Override
     public void onBindViewHolder(MatchViewHolder holder, int position) {
         Match m = matches.get(position);
-        String date = m.getMatchDate();
+        long timestamp = m.getTimestamp();
 
-        try{
-            SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            Date d = sdf1.parse(date);
-            String day = new SimpleDateFormat("dd", Locale.getDefault()).format(d);
-            String month = new SimpleDateFormat("MMM", Locale.getDefault()).format(d);
-            holder.day.setText(" " + day);
-            holder.month.setText(" " + month);
-        }
-        catch(ParseException e){
-            throw new IllegalStateException("cannot parse date in Match Adapter");
-        }
+        holder.day.setText(Utils.getDay(timestamp));
+        holder.month.setText(Utils.getMonth(timestamp));
 
         holder.field.setText(" " + m.getPlaceName());
-        holder.time.setText(" " + m.getMatchTime());
+        holder.time.setText(" " + Utils.getTime(timestamp));
         holder.desc.setText(" " + Utils.getPreviewDescription(m.getDescription()));
     }
 

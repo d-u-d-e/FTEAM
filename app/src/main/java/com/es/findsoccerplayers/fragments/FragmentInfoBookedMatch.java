@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.es.findsoccerplayers.R;
+import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.Match;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 public class FragmentInfoBookedMatch extends Fragment {
 
     private String relatedMatch;
-    private TextView field, day, time, money, missingPlayers, description;
+    private TextView field, date, time, money, missingPlayers, description;
     private Button retireBtn;
     private FirebaseDatabase db;
     private Match m;
@@ -36,7 +37,7 @@ public class FragmentInfoBookedMatch extends Fragment {
         View view = inflater.inflate(R.layout.frag_info_booked_match, container, false);
 
         field = view.findViewById(R.id.frag_info_booked_match_fieldTV);
-        day = view.findViewById(R.id.frag_info_booked_match_dayTV);
+        date = view.findViewById(R.id.frag_info_booked_match_dayTV);
         time = view.findViewById(R.id.frag_info_booked_match_timeTV);
         money= view.findViewById(R.id.frag_info_booked_match_moneyTV);
         missingPlayers = view.findViewById(R.id.frag_info_booked_match_missingPlayersTV);
@@ -60,8 +61,11 @@ public class FragmentInfoBookedMatch extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 m = dataSnapshot.getValue(Match.class);
                 field.setText(m.getPlaceName());
-                day.setText(m.getMatchDate());
-                time.setText(m.getMatchTime());
+
+                long timestamp = m.getTimestamp();
+
+                date.setText(Utils.getDate(timestamp));
+                time.setText(Utils.getTime(timestamp));
                 money.setText("----");                                              //TODO
                 missingPlayers.setText(Integer.toString(m.getPlayersNumber()));
                 description.setText(m.getDescription());

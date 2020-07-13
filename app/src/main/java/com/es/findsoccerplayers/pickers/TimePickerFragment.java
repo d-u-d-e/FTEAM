@@ -2,6 +2,7 @@ package com.es.findsoccerplayers.pickers;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -17,6 +18,13 @@ import java.util.Locale;
 
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+
+    public interface OnCompleteListener {
+        void onTimeSet(int hour, int minute);
+    }
+
+    private TimePickerFragment.OnCompleteListener mListener;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current time as the default values for the picker
@@ -29,9 +37,13 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
                 true);
     }
 
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        TextView timeDate = getActivity().findViewById(R.id.cr_match_timeText);
-        timeDate.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute));
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.mListener = (TimePickerFragment.OnCompleteListener)context;
     }
 
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        mListener.onTimeSet(hourOfDay, minute);
+    }
 }
