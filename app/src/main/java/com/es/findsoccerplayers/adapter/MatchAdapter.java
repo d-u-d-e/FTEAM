@@ -75,7 +75,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         try{
             SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
             Date d = sdf1.parse(date);
-            String day = new SimpleDateFormat("EE", Locale.getDefault()).format(d);
+            String day = new SimpleDateFormat("dd", Locale.getDefault()).format(d);
             String month = new SimpleDateFormat("MMM", Locale.getDefault()).format(d);
             holder.day.setText(" " + day);
             holder.month.setText(" " + month);
