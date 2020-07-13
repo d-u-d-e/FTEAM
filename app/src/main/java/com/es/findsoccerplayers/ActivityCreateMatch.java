@@ -124,8 +124,9 @@ public class ActivityCreateMatch extends AppCompatActivity {
         matchFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(description.getText().toString().equals("")){
-                    Toast.makeText(ActivityCreateMatch.this, "Insert a description", Toast.LENGTH_SHORT).show();
+                if(placeText.getText().toString().equals(getString(R.string.add_position)) ||
+                    missingPlayers.getText().toString().equals(getString(R.string.players))){
+                    Toast.makeText(ActivityCreateMatch.this, R.string.all_fields_required, Toast.LENGTH_SHORT).show();
                 }else{
                     mMatch.setDescription(description.getText().toString());
                     mMatch.setMatchData(matchDate.getText().toString()); //

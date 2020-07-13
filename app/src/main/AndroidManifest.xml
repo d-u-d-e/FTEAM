@@ -6,7 +6,7 @@
             The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
             Google Maps Android API v2, but you must specify either coarse or fine
             location permissions for the 'MyLocation' functionality.
-       -->
+    -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -18,7 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="ExtraText">
-
+        <activity
+            android:name=".ActivitySetLocation"
+            android:parentActivityName=".ActivityMain"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -33,50 +35,40 @@
 
         <activity
             android:name=".ActivityMaps"
-            android:parentActivityName=".ActivityCreateMatch"/>
-
+            android:parentActivityName=".ActivityCreateMatch" />
         <activity
             android:name=".ActivityCreateMatch"
-            android:parentActivityName=".ActivityMain"/>
+            android:parentActivityName=".ActivityMain" />
         <activity
             android:name=".ActivityInfoBookedMatch"
-            android:parentActivityName=".ActivityMain"/>
-
+            android:parentActivityName=".ActivityMain" />
         <activity
             android:name=".ActivityEditMatch"
-            android:parentActivityName=".ActivityMain"/>
-
+            android:parentActivityName=".ActivityMain" />
         <activity
             android:name=".ActivityAccount"
             android:parentActivityName=".ActivityMain" />
-
         <activity
             android:name=".ActivityInfoMatch"
-            android:parentActivityName=".ActivityMain"/>
-
+            android:parentActivityName=".ActivityMain" />
         <activity
             android:name=".ActivitySettings"
-            android:parentActivityName=".ActivityMain"/>
+            android:parentActivityName=".ActivityMain" />
         <activity
             android:name=".ActivityResetPassword"
             android:parentActivityName=".ActivityLogin"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ActivityRegister"
             android:parentActivityName=".ActivityLogin"
-            android:screenOrientation="portrait"
-            />
-
+            android:screenOrientation="portrait" />
         <activity android:name=".ActivityMain" />
-
-
         <activity
             android:name=".ActivityLogin"
             android:screenOrientation="portrait">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

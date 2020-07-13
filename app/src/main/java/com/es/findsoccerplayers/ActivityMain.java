@@ -58,8 +58,7 @@ public class ActivityMain extends AppCompatActivity {
                 return true;
             //show settings
             case R.id.acc_settings:
-                Utils.showUnimplementedToast(this);
-                //TODO: creare entity delle impostazioni
+                startActivity(new Intent(this, ActivitySetLocation.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
