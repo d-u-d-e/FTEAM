@@ -42,16 +42,16 @@ public class ActivityLogin extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.w(TAG, "LoginActivity creata");
         super.onCreate(savedInstanceState);
+        Log.w(TAG, "LoginActivity created");
         setContentView(R.layout.act_login);
         Toolbar toolbar = findViewById(R.id.log_toolbar);
         setSupportActionBar(toolbar);
 
         fAuth = FirebaseAuth.getInstance();
-        FirebaseUser acct = fAuth.getCurrentUser();
-        //if someone has already logged, start MainActivity
-        if(acct !=null) {
+        FirebaseUser autUser = fAuth.getCurrentUser();
+        //if someone has already logged, start ActivityMain
+        if(autUser != null) {
             startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
             finish();
             return;
@@ -70,7 +70,6 @@ public class ActivityLogin extends AppCompatActivity {
         Button btnLogin = findViewById(R.id.log_loginBtn);
         final TextView forgottenPsw = findViewById(R.id.log_forgottenPsw);
 
-
         //options required to log in with Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -79,7 +78,7 @@ public class ActivityLogin extends AppCompatActivity {
         final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
 
         //If btnLogin is pressed, login with standard firebase credentials. If login is successful,
-        //start MainActivity, otherwise show the error as a toast
+        //start ActivityMain, otherwise show the error as a toast
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +114,7 @@ public class ActivityLogin extends AppCompatActivity {
             }
         });
 
-        //start RegisterActivity if btnRegister is clicked
+        //start ActivityRegister if btnRegister is clicked
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,7 +132,7 @@ public class ActivityLogin extends AppCompatActivity {
             }
         });
 
-        //start RegisterActivity if btnRegister is clicked
+        //start ActivityResetPassword if forgottenPsw is clicked
         forgottenPsw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,26 +150,49 @@ public class ActivityLogin extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 final GoogleSignInAccount account = task.getResult(ApiException.class);
-                final AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                fAuth.signInWithCredential(credential)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(Task<AuthResult> task) {
-                                progressBar.setVisibility(View.INVISIBLE);
-                                if (task.isSuccessful()) {
-                                    Utils.showSuccessLoginToast(ActivityLogin.this);
-                                    startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
-                                    finish();
-                                } else
-                                    Utils.showErrorToast(ActivityLogin.this, task.getException());
-                            }
+                if(account == null){
+                    Utils.showErrorToast(this, getString(R.string.unknown_error));
+                }
+                else{
+                    final AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                    fAuth.signInWithCredential(credential)
+                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(Task<AuthResult> task) {
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    if (task.isSuccessful()) {
+                                        String fullName = account.getDisplayName();
+                                        if(fullName == null){
+                                            Utils.showErrorToast(ActivityLogin.this, getString(R.string.missing_google_username));
+                                            Utils.dbStoreUser(TAG, "user", "", "");
+                                        }
+                                        else{
+                                            String[] names = fullName.split(" ");
+                                            //try to obtain both first and second names
+                                            String first = "";
+                                            String second = "";
+                                            if(names.length == 2){
+                                                first = names[0];
+                                                second = names[1];
+                                            }
+                                            else
+                                                first = names[0];
+                                            Utils.dbStoreUser(TAG, first, second, "");
+                                        }
+
+                                        Utils.showSuccessLoginToast(ActivityLogin.this);
+                                        startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                                        finish();
+                                    } else
+                                        Utils.showErrorToast(ActivityLogin.this, task.getException());
+                                }
                         });
-                Toast.makeText(ActivityLogin.this, R.string.login_success, Toast.LENGTH_SHORT).show();
+                }
             } catch (ApiException e) {
                 //The exception with code 12501 is a feedback from google that the sign in was cancelled by the user,
                 //so it isn't an exception that requires to be handled or shown
-                if(e.toString().equals("com.google.android.gms.common.api.ApiException: 12501: ")){
-
+                if(e.getStatusCode() == 12501){
+                    Log.w(TAG, "Exception: " + e.toString());
                 }else {
                     Log.w(TAG, "Exception: " + e.toString());
                     Utils.showErrorToast(this, e);

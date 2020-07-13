@@ -30,6 +30,10 @@ public class Utils {
         Toast.makeText(c, error, Toast.LENGTH_LONG).show();
     }
 
+    static void showErrorToast(Context c, String s){
+        Toast.makeText(c, s, Toast.LENGTH_LONG).show();
+    }
+
     static void showSuccessLoginToast(Context c){
         Toast.makeText(c, R.string.login_success, Toast.LENGTH_SHORT).show();
     }
@@ -54,7 +58,7 @@ public class Utils {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(Exception e) {
-                Log.w(tag, "Database update error: " + e.toString());
+                //TODO what if connection is suddenly turned off?
             }
         });
     }
