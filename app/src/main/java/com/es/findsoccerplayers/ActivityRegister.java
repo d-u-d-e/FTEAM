@@ -15,10 +15,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
@@ -30,6 +34,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
     String name, surname, email, emailConf,pass, passConf;
 
     boolean userSkipsDate = false;
+    FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +54,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
         final ProgressBar progressBar = findViewById(R.id.reg_progressBar);
         selectedDate = findViewById(R.id.reg_selectDate);
 
-        final FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        fAuth = FirebaseAuth.getInstance();
 
         selectedDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,12 +130,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
                     public void onComplete(Task<AuthResult> task) {
                         progressBar.setVisibility(View.INVISIBLE);
                         if(task.isSuccessful()){
-                            Utils.showSuccessLoginToast(ActivityRegister.this);
-                            Utils.dbStoreNewUser(TAG, name, surname, selectedDate.getText().toString());
-                            Intent i = new Intent(ActivityRegister.this, ActivityLogin.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                            startActivity(i);
-                            finish();
+                            createFirebaseUser(name, surname, selectedDate.getText().toString());
                         }else
                             Utils.showErrorToast(ActivityRegister.this, task.getException());
                     }
@@ -159,5 +159,27 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
         c.set(year, month, dayOfMonth);
         selectedDate.setTextColor(getResources().getColor(R.color.black));
         selectedDate.setText(Utils.getDate(c.getTimeInMillis()));
+    }
+
+    private void createFirebaseUser(String name, String surname, String date){
+
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), name, surname, date);
+
+        db.child("users").child(user.getId()).setValue(user, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null){
+                    Utils.showErrorToast(ActivityRegister.this, databaseError.getMessage());
+                }
+                else{
+                    Utils.showSuccessLoginToast(ActivityRegister.this);
+                    Intent i = new Intent(ActivityRegister.this, ActivityLogin.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(i);
+                    finish();
+                }
+            }
+        });
     }
 }

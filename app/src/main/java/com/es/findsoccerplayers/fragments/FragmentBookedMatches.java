@@ -51,7 +51,6 @@ public class FragmentBookedMatches extends Fragment {
         matchAdapter.setOnItemClickListener(new MatchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                matches.get(position);
                 Intent i = new Intent(getContext(), ActivityInfoBookedMatch.class);
                 i.putExtra("match", matches.get(position).getMatchID());
                 startActivity(i);

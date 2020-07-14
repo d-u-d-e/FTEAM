@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -15,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -191,7 +191,26 @@ public class ActivityLogin extends AppCompatActivity{
                                 if (task.isSuccessful()) {
                                     //check if we need to store the user info, maybe it's the first time that
                                     //the user signs in
-                                    checkIfUserExists(); //asynchronous
+                                    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                                    FirebaseAuth fAuth = FirebaseAuth.getInstance();
+                                    FirebaseUser user = fAuth.getCurrentUser();
+                                    DatabaseReference ref = db.child("users").child(user.getUid());
+                                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if(!dataSnapshot.exists())
+                                                createGoogleUser();
+                                            else{
+                                                Utils.showSuccessLoginToast(ActivityLogin.this);
+                                                startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                                                finish();
+                                            }
+                                        }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Utils.showErrorToast(ActivityLogin.this, getString(R.string.unexpected_error));
+                                        }
+                                    });
                                 } else
                                     Utils.showErrorToast(ActivityLogin.this, task.getException());
                             }
@@ -205,58 +224,49 @@ public class ActivityLogin extends AppCompatActivity{
             }else {
                 Log.w(TAG, "Exception: " + e.toString());
                 Utils.showErrorToast(this, CommonStatusCodes.getStatusCodeString(e.getStatusCode()));
+                //TODO maybe show an even better description
+                // (for network errors is just a simple and ugly string "NETWORK_ERROR")
             }
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
 
     /**
-     * This calls createUser() if the user does not exists anywhere in the database. Then login proceeds.
-     */
-
-    private void checkIfUserExists(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        FirebaseAuth fAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = fAuth.getCurrentUser();
-        DatabaseReference ref = db.child("users").child(user.getUid());
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists())
-                    createUser();
-                Utils.showSuccessLoginToast(ActivityLogin.this);
-                startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
-                finish();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Utils.showErrorToast(ActivityLogin.this, getString(R.string.unexpected_error));
-            }
-        });
-    }
-
-    /**
      * Creates a new user, saving his information in the database
      */
 
-    private void createUser(){
+    private void createGoogleUser(){
         String fullName = fAuth.getCurrentUser().getDisplayName();
+        String name, surname = "";
         if(fullName == null || fullName.isEmpty()){
             Utils.showErrorToast(ActivityLogin.this, getString(R.string.missing_google_username));
-            Utils.dbStoreNewUser(TAG, "user", "", "");
+            name = "user";
         }
         else{
             String[] names = fullName.split(" ");
             //try to obtain both first and second names
-            String first;
-            String second = "";
             if(names.length == 2){
-                first = names[0];
-                second = names[1];
+                name = names[0];
+                surname = names[1];
             }
             else
-                first = names[0];
-            Utils.dbStoreNewUser(TAG, first, second, "");
+                name = names[0];
         }
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), name, surname, "");
+
+        db.child("users").child(user.getId()).setValue(user, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null){
+                    Utils.showErrorToast(ActivityLogin.this, databaseError.getMessage());
+                }
+                else{
+                    Utils.showSuccessLoginToast(ActivityLogin.this);
+                    startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                    finish();
+                }
+            }
+        });
     }
 }

@@ -52,12 +52,12 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng myPosition;
     private boolean locationAccess;
 
-
-    public final String LONGITUDE = "longitude";
-    public final String LATITUDE = "latitude";
-    public final String PLACE_NAME = "place name";
+    static final String LONGITUDE = "longitude";
+    static final String LATITUDE = "latitude";
+    static final String PLACE_NAME = "placeName";
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    public static final int GPS_REQUEST = 1001;
+    private static final int GPS_REQUEST = 1001;
+
     LocationCallback mLocationCallback;
     private boolean mapReady = false;
     private boolean isTracking = false;
