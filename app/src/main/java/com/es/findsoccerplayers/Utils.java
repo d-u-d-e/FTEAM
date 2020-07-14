@@ -11,34 +11,34 @@ import java.util.Locale;
 
 public class Utils {
 
-    static void showErrorToast(Context c, Exception ex){
+    public static void showErrorToast(Context c, Exception ex){
         String error = c.getString(R.string.unknown_error);
         if(ex != null) error = ex.getMessage();
         Toast.makeText(c, error, Toast.LENGTH_LONG).show();
     }
 
-    static void showErrorToast(Context c, String s){
+    public static void showErrorToast(Context c, String s){
         Toast.makeText(c, s, Toast.LENGTH_LONG).show();
     }
 
-    static void showSuccessLoginToast(Context c){
+    public static void showSuccessLoginToast(Context c){
         Toast.makeText(c, R.string.login_success, Toast.LENGTH_SHORT).show();
     }
 
-    static void showSuccessRegisterToast(Context c){
+    public static void showSuccessRegisterToast(Context c){
         Toast.makeText(c, R.string.register_success, Toast.LENGTH_SHORT).show();
     }
 
 
-    static void showUnimplementedToast(Context c){
+    public static void showUnimplementedToast(Context c){
         Toast.makeText(c, R.string.unimplemented, Toast.LENGTH_SHORT).show();
     }
 
-    static void showOfflineToast(Context c){
+    public static void showOfflineToast(Context c){
         Toast.makeText(c, R.string.offline, Toast.LENGTH_SHORT).show();
     }
 
-    static void showSuccessResetPswToast(Context c){
+    public static void showSuccessResetPswToast(Context c){
         Toast.makeText(c, R.string.reset_psw_success, Toast.LENGTH_SHORT).show();
     }
 

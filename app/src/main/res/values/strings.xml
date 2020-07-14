@@ -88,7 +88,7 @@
     <string name="frag_info_booked_match_missingPlayers">MISSING PLAYERS: </string>
     <string name="frag_info_booked_match_description">DESCRIPTION: </string>
     <string name="frag_info_booked_match_quota">QUOTA:</string>
-    <string name="frag_info_booked_match_description_retireBtn">RETIRE</string>
+    <string name="frag_info_booked_match_description_dropoutBtn">DROP OUT</string>
 
 
     <!--ActivitySetLocation strings-->

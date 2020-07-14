@@ -1,5 +1,7 @@
 package com.es.findsoccerplayers;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
@@ -29,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 
 public class ActivityCreateMatch extends AppCompatActivity implements DatePickerFragment.OnCompleteListener,
         TimePickerFragment.OnCompleteListener{
@@ -198,18 +201,15 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-        String path = "users/" + user.getUid() + "/matches";
+        String path = "users/" + user.getUid() + "/createdMatches";
 
         DatabaseReference ref = db.getReference(path).push();
         String key = ref.getKey();
-        m.setMatchID(key);
 
         Map<String, Object> map = new HashMap<>();
-        map.put(path + "/" + key + "/member", true); //TODO should be custom
-        map.put(path + "/" + key + "/creator", true);
-
-        path = "matches/" + key;
-        map.put(path, m);
+        map.put(path + "/" + key, true);
+        m.setMatchID(key);
+        map.put("matches/" + key, m);
 
         db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
             @Override
@@ -221,6 +221,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                 }
             }
         });
+
 
         if(!Utils.isOnline(this))
             Utils.showOfflineToast(this);

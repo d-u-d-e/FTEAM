@@ -35,9 +35,11 @@ public class ActivityMain extends AppCompatActivity {
         TabLayout tabs = findViewById(R.id.main_tabs);
         ViewPager vp = findViewById(R.id.main_vp);
         ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-        adapter.addFragment(new FragmentAvailableMatches(), getString(R.string.act_main_frag_avail_title));
-        adapter.addFragment(new FragmentBookedMatches(), getString(R.string.act_main_frag_booked_title));
         adapter.addFragment(new FragmentYourMatches(), getString(R.string.act_main_frag_yours_title));
+        adapter.addFragment(new FragmentBookedMatches(), getString(R.string.act_main_frag_booked_title));
+        adapter.addFragment(new FragmentAvailableMatches(), getString(R.string.act_main_frag_avail_title));
+
+        vp.setOffscreenPageLimit(adapter.getCount()-1); //2
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
     }

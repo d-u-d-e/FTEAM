@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/frag_info_booked_match_missingPlayersLyt"
-        app:layout_constraintBottom_toTopOf="@+id/frag_info_booked_match_retireBtn"
+        app:layout_constraintBottom_toTopOf="@+id/frag_info_booked_match_dropBtn"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="40dp">
         <TextView
@@ -128,14 +128,14 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/frag_info_booked_match_retireBtn"
+        android:id="@+id/frag_info_booked_match_dropBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/frag_info_booked_match_descriptionLyt"
-        android:text="@string/frag_info_booked_match_description_retireBtn"/>
+        android:text="@string/frag_info_booked_match_description_dropoutBtn"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

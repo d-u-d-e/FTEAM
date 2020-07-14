@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.es.findsoccerplayers.ActivityInfoBookedMatch;
+import com.es.findsoccerplayers.ActivityBookedMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,62 +30,62 @@ import java.util.List;
 public class FragmentBookedMatches extends Fragment {
 
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private List<Match> matches;
     private MatchAdapter matchAdapter;
-    RecyclerView recyclerView;
-    LinearLayoutManager linearLayoutManager;
-    private List<Match> matches = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_booked_matches, container, false);
 
-        recyclerView = view.findViewById(R.id.frag_booked_list);
-        recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(getContext());
+        //this should be called once from the view pager, because the offscreen page limit is set to 2
+
+        matches = new ArrayList<>();
         matchAdapter = new MatchAdapter(matches);
-
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(matchAdapter);
-        recyclerView.setItemAnimator(null);
-
         matchAdapter.setOnItemClickListener(new MatchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Intent i = new Intent(getContext(), ActivityInfoBookedMatch.class);
+                Intent i = new Intent(getContext(), ActivityBookedMatch.class);
                 i.putExtra("match", matches.get(position).getMatchID());
                 startActivity(i);
             }
         });
+
+        View view = inflater.inflate(R.layout.frag_booked_matches, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.frag_booked_list);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+        recyclerView.setAdapter(matchAdapter);
+        //recyclerView.setItemAnimator(null);
+
+        sync();
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference ref =
-                db.getReference().child("users").child(user.getUid()).child("matches");
+    private void sync(){
+            //called every time the "user" joins a new match, or drops out
+            //since both operations affect the users/"user"/matches list
 
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                matches.clear();
-                DatabaseReference ref;
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    String key = snapshot.getKey();
-                    Boolean isMember = snapshot.child("member").getValue(Boolean.class);
-                    if(isMember == null) throw new IllegalStateException("missing member field in database");
-                    ref = db.getReference("matches/" + key);
-                    ref.addValueEventListener(new ValueEventListener() {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            DatabaseReference ref =
+                    db.getReference().child("users").child(user.getUid()).child("bookedMatches");
+
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    //user joins a match
+                    final String matchKey = dataSnapshot.getKey();
+                    DatabaseReference ref = db.getReference().child("matches").child(matchKey);
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Match m = dataSnapshot.getValue(Match.class);
-                            if(m != null){
+                            synchronized (FragmentBookedMatches.this){
                                 matches.add(m);
                                 matchAdapter.notifyItemInserted(matches.size()-1);
                             }
                         }
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
 
@@ -92,12 +93,33 @@ public class FragmentBookedMatches extends Fragment {
                     });
                 }
 
-            }
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) { //drop out
+                    synchronized (FragmentBookedMatches.this){
+                        String matchKey = dataSnapshot.getKey();
+                        int i = 0;
+                        for(i = 0; i < matches.size(); i++){
+                            if(matches.get(i).getMatchID().equals(matchKey))
+                                break;
+                        }
+                        matches.remove(i);
+                        matchAdapter.notifyItemRemoved(i);
+                    }
+                }
 
-            }
-        });
-    }
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
 }

@@ -12,14 +12,9 @@ import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.R;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHolder>{
-    private Context context;
     private List<Match> matches;
     private OnItemClickListener listener;
 
@@ -28,13 +23,13 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
-        this.listener=listener;
+        this.listener = listener;
     }
 
-    public static class MatchViewHolder extends RecyclerView.ViewHolder{
-        public TextView day, month, field, time, desc;
+    static class MatchViewHolder extends RecyclerView.ViewHolder{
+        TextView day, month, field, time, desc;
 
-        public MatchViewHolder(View itemView, final OnItemClickListener listener) {
+        MatchViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
             day = itemView.findViewById(R.id.match_element_gg);
             month = itemView.findViewById(R.id.match_element_mm);
@@ -63,7 +58,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
     @Override
     public MatchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.frag_match_item, parent, false);
-        return new MatchViewHolder(view,listener);
+        return new MatchViewHolder(view, listener);
     }
 
 

@@ -40,7 +40,7 @@
             android:name=".ActivityCreateMatch"
             android:parentActivityName=".ActivityMain" />
         <activity
-            android:name=".ActivityInfoBookedMatch"
+            android:name=".ActivityBookedMatch"
             android:parentActivityName=".ActivityMain" />
         <activity
             android:name=".ActivityEditMatch"

@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.es.findsoccerplayers.R;
@@ -24,8 +23,6 @@ public class FragmentInfoBookedMatch extends Fragment {
 
     private String relatedMatch;
     private TextView field, date, time, money, missingPlayers, description;
-    private Button retireBtn;
-    private FirebaseDatabase db;
     private Match m;
 
     public FragmentInfoBookedMatch(String relatedMatch){
@@ -42,23 +39,21 @@ public class FragmentInfoBookedMatch extends Fragment {
         money= view.findViewById(R.id.frag_info_booked_match_moneyTV);
         missingPlayers = view.findViewById(R.id.frag_info_booked_match_missingPlayersTV);
         description = view.findViewById(R.id.frag_info_booked_match_descriptionTV);
-        retireBtn = view.findViewById(R.id.frag_info_booked_match_retireBtn);
+        Button dropBtn = view.findViewById(R.id.frag_info_booked_match_dropBtn);
 
-        retireBtn.setOnClickListener(new View.OnClickListener() {
+        dropBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "TODO", Toast.LENGTH_SHORT).show();
+                Utils.showUnimplementedToast(getActivity());
             }
         });
 
-        db = FirebaseDatabase.getInstance();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference ref = db.getReference("matches").child(relatedMatch);
-
-
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 m = dataSnapshot.getValue(Match.class);
                 field.setText(m.getPlaceName());
 
@@ -72,7 +67,7 @@ public class FragmentInfoBookedMatch extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
