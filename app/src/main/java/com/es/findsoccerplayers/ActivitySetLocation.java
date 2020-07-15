@@ -42,10 +42,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ActivitySetLocation extends AppCompatActivity implements OnMapReadyCallback {
 
-    public final String LONGITUDE = "longitude";
-    public final String LATITUDE = "latitude";
-    public final String RADIUS = "radius";
-    public static final int GPS_REQUEST = 1001;
+    public static final String LONGITUDE = "longitude";
+    public static final String LATITUDE = "latitude";
+    public static final String RADIUS = "radius";
+    private static final int GPS_REQUEST = 1001;
 
 
     private GoogleMap map;
