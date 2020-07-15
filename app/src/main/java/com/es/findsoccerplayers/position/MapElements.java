@@ -9,6 +9,4 @@ public class MapElements {
             map.setMyLocationEnabled(true); // show a small blue circle for my position
             map.getUiSettings().setMyLocationButtonEnabled(false);// I create my own beautiful position floating action button. Don't need this
     }
-
-
 }

@@ -1,14 +1,11 @@
 package com.es.findsoccerplayers.position;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 
 import android.content.IntentSender;
 import android.location.LocationManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -26,19 +23,18 @@ import com.google.android.gms.tasks.OnFailureListener;
 
 public class PositionClient {
 
-    public static final int GPS_REQUEST = 1001;
-    public static final String TAG = "PositionClient";
+    private static final int GPS_REQUEST = 1001;
+    private static final String TAG = "PositionClient";
 
     /*Location Request builder.
     * A data object that contains quality of service parameters for requests to the FusedLocationProviderClient.*/
-    public static LocationRequest getLocationReq() {
+    private static LocationRequest getLocationReq() {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(5000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return locationRequest;
     }
-
 
     /* FusedLocationProviderClient is the main entry point for interacting with the fused location provider.
     * Start or remove a LocationUpdate. When it starts, the result come in a LocationCallback. Needs a LocationRequest builder to
@@ -51,18 +47,13 @@ public class PositionClient {
         fusedLocationProviderClient.requestLocationUpdates(getLocationReq(), locationCallback, null );
     }
 
-
-
     public static boolean isGpsOFF(Context context){
         /* context.getSystemService return the handle to a system-level service by name.
         * The class of the returned object varies by the requested name.
         * Context.LOCATION_SERVICE is the "location" string.*/
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            return true;
-        }else {
-            return false;
-        }
+        assert locationManager != null;
+        return !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     public static void turnGPSon(final Context context){

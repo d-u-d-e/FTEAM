@@ -27,20 +27,20 @@ public class ActivitySettings extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        settElemList.add(new SettingsElement(R.drawable.ic_account,"Account","View and modify account options"));
-        settElemList.add(new SettingsElement(R.drawable.ic_edit_location_24,"Edit search range","Modify the searching distance for the available matches"));
-        settElemList.add(new SettingsElement(R.drawable.ic_log_out_24,"Log out","Disconnect from your account"));
+        settElemList.add(new SettingsElement(R.drawable.ic_account, "Account", "View and modify account options"));
+        settElemList.add(new SettingsElement(R.drawable.ic_edit_location_24, "Edit search range", "Modify the searching distance for the available matches"));
+        settElemList.add(new SettingsElement(R.drawable.ic_log_out_24, "Log out", "Disconnect from your account"));
 
-        RecyclerView mRecyclerView = findViewById(R.id.settings_recyclerview);
-        mRecyclerView.setHasFixedSize(true);
+        RecyclerView recyclerView = findViewById(R.id.settings_recyclerview);
+        recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        SettingsAdapter mAdapter = new SettingsAdapter(settElemList);
+        SettingsAdapter adapter = new SettingsAdapter(settElemList);
 
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+        recyclerView.setAdapter(adapter);
 
-        mAdapter.setOnItemClickListener(new SettingsAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new SettingsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 if(position == 0){
@@ -49,6 +49,7 @@ public class ActivitySettings extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), ActivitySetLocation.class));
                 }else if(position == 2){
                     Utils.showUnimplementedToast(getApplicationContext());
+                    //TODO
                 }
             }
         });

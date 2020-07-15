@@ -11,21 +11,21 @@ import java.util.Locale;
 
 public class Utils {
 
-    public static void showErrorToast(Context c, Exception ex){
+    static void showErrorToast(Context c, Exception ex){
         String error = c.getString(R.string.unknown_error);
         if(ex != null) error = ex.getMessage();
         Toast.makeText(c, error, Toast.LENGTH_LONG).show();
     }
 
-    public static void showErrorToast(Context c, String s){
+    static void showErrorToast(Context c, String s){
         Toast.makeText(c, s, Toast.LENGTH_LONG).show();
     }
 
-    public static void showSuccessLoginToast(Context c){
+    static void showSuccessLoginToast(Context c){
         Toast.makeText(c, R.string.login_success, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showSuccessRegisterToast(Context c){
+    static void showSuccessRegisterToast(Context c){
         Toast.makeText(c, R.string.register_success, Toast.LENGTH_SHORT).show();
     }
 
@@ -34,11 +34,11 @@ public class Utils {
         Toast.makeText(c, R.string.unimplemented, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showOfflineToast(Context c){
+    static void showOfflineToast(Context c){
         Toast.makeText(c, R.string.offline, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showSuccessResetPswToast(Context c){
+    static void showSuccessResetPswToast(Context c){
         Toast.makeText(c, R.string.reset_psw_success, Toast.LENGTH_SHORT).show();
     }
 
@@ -83,8 +83,8 @@ public class Utils {
     static boolean isOnline(Context context)
     {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert connectivityManager != null;
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
-
 }

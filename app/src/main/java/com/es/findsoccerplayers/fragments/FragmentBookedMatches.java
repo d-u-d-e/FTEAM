@@ -75,6 +75,7 @@ public class FragmentBookedMatches extends Fragment {
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     //user joins a match
                     final String matchKey = dataSnapshot.getKey();
+                    assert matchKey != null;
                     DatabaseReference ref = db.getReference().child("matches").child(matchKey);
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

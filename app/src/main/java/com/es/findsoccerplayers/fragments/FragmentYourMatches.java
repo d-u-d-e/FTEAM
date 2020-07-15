@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.es.findsoccerplayers.ActivityCreateMatch;
 import com.es.findsoccerplayers.ActivityEditMatch;
 import com.es.findsoccerplayers.R;
-import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -84,6 +83,7 @@ public class FragmentYourMatches extends Fragment {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 //user creates a match or joins a match
                 final String matchKey = dataSnapshot.getKey();
+                assert matchKey != null;
                 DatabaseReference ref = db.getReference().child("matches").child(matchKey);
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

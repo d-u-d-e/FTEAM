@@ -18,8 +18,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.BoringLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -93,6 +91,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.maps_map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
         confirm_fab = findViewById(R.id.maps_confirm_fab);
@@ -110,7 +109,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         };
-
 
         //check if the GPS is disabled or locationAccess enabled and set the right configuration
         if(PositionClient.isGpsOFF(getApplicationContext()) || !locationAccess){
@@ -131,10 +129,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                     resultIntent.putExtra(LONGITUDE, longitude);
                     resultIntent.putExtra(PLACE_NAME, placeName);
                     setResult(RESULT_OK, resultIntent);
-                    if(isTracking){
+                    if(isTracking)
                         PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
-                        isTracking = true;
-                    }
                     finish();
                 }
 
@@ -165,23 +161,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == REQUEST_LOCATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //If we have the permission to access to the location set locationAccess to true
-                locationAccess = true;
-                //if the GPS is turned off, we turn it on
-                if(PositionClient.isGpsOFF(getApplicationContext())){
-                    PositionClient.turnGPSon(ActivityMaps.this);
-                } else if(!isTracking){
-                    isTracking = true;
-                    PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
-                    MapElements.showMyLocation(map);
-                }
-            }
-        }
-    }
 
     //Insert the menu
     @Override
@@ -220,7 +199,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         map = googleMap;
         mapReady = true;
 
-
         if(locationAccess){
             if(PositionClient.isGpsOFF(ActivityMaps.this)){
                 PositionClient.turnGPSon(ActivityMaps.this);
@@ -230,12 +208,10 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-
         //if I have an initial position from sharedPreferences and the GPS is Off, the start the map from that position
         if(initPosition != null && PositionClient.isGpsOFF(ActivityMaps.this)){
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(initPosition, 12));
-            }
-
+        }
 
         if(!isTracking && locationAccess){
             PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
@@ -246,8 +222,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         setPoiClick(map);  //add a marker in a POI
         setInfoWindowClick(map); // choose the selected position if the user clicks in the info window
         onMapMoving(map); //if the camera moves because the user move it, stop tracking location. He's looking for a place.
-
-
     }
 
     // onMapMoving stops the tracking location if the user starts moving the camera.
@@ -298,7 +272,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 myMarker.showInfoWindow();
             }
         });
-
     }
 
     /*POI is the "Point Of Interest". Many structures already exist in
@@ -348,18 +321,35 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //If we have the permission to access to the location set locationAccess to true
+                locationAccess = true;
+                //if the GPS is turned off, we turn it on
+                if(PositionClient.isGpsOFF(getApplicationContext())){
+                    PositionClient.turnGPSon(ActivityMaps.this);
+                } else if(!isTracking){
+                    isTracking = true;
+                    PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
+                    MapElements.showMyLocation(map);
+                }
+            }
+        }
+    }
+
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
+        if (requestCode == GPS_REQUEST && resultCode == Activity.RESULT_OK) {
             //The response come from the turGPSon()
-            if (requestCode == GPS_REQUEST) {
-                //If the user choose to turn on the GPS then start tracking and set the widget in the correct colors etc
-                // otherwise do nothing. He will zoom the map manually
-                PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
-                MapElements.showMyLocation(map);
-                position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
-            }
+            //If the user choose to turn on the GPS then start tracking and set the widget in the correct colors etc
+            // otherwise do nothing. He will zoom the map manually
+            PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
+            MapElements.showMyLocation(map);
+            position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
         }
     }
 }

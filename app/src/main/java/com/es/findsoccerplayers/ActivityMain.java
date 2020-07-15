@@ -55,7 +55,6 @@ public class ActivityMain extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.acc_settings:
-                //TODO activity settings?
                 startActivity(new Intent(this, ActivitySettings.class));
                 return true;
             default:

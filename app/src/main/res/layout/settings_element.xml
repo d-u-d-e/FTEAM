@@ -37,12 +37,12 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/settings_element_text1"
+            android:layout_marginStart="80dp"
             android:layout_marginBottom="20sp"
+            android:text="prova"
             android:textSize="15sp"
-            android:text="ciao dome va la vita in quela di milano poca madosca"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="80dp"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
         

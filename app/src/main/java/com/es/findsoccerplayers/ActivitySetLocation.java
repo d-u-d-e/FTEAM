@@ -33,7 +33,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -45,15 +44,15 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
     public final String LONGITUDE = "longitude";
     public final String LATITUDE = "latitude";
-    public final String RADIUSVALUE = "radiusValue";
+    public final String RADIUS = "radius";
     public static final int GPS_REQUEST = 1001;
 
 
-    private GoogleMap mMap;
+    private GoogleMap map;
     private String latitude;
     private String longitude;
-    private FusedLocationProviderClient mFusedLocationClient;
-    LocationCallback mLocationCallback;
+    private FusedLocationProviderClient fusedLocationClient;
+    LocationCallback locationCallback;
     private LatLng myPosition;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private boolean locationAccess;
@@ -61,14 +60,12 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
     private FloatingActionButton position_fab;
 
     //Layout elements
-    private SeekBar radius;
-    private Button save;
-    private TextView distance;
-    private String distaceValue;
+    private SeekBar radiusBar;
+    private TextView distanceView;
+    private String distance;
     private boolean mapReady = false;
     private boolean isTracking = false;
-    private double i;
-
+    private double index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,24 +81,25 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.setting_map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
 
         position_fab = findViewById(R.id.setting_position_fab);
-        distance = findViewById(R.id.radius);
-        radius = findViewById(R.id.seek_bar);
-        save = findViewById(R.id.save_button);
+        distanceView = findViewById(R.id.radius);
+        radiusBar = findViewById(R.id.seek_bar);
+        Button save = findViewById(R.id.save_button);
 
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         //create a callback when receive a location result
-        mLocationCallback = new LocationCallback(){
+        locationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 myPosition = new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
                 position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
                 if(mapReady){
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 12));
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 12));
                 }
             }
         };
@@ -128,11 +126,11 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                     } else {
                         // Go to the new view in the map and change the color
                         if(!isTracking){
-                            PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
+                            PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
                             isTracking = true;
-                            mMap.clear();
+                            map.clear();
                             position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
-                            radius.setProgress(0);
+                            radiusBar.setProgress(0);
                         }
                     }
 
@@ -142,26 +140,26 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         });
 
 
-        radius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if(isTracking){
-                    PositionClient.stopTrackingPosition(mFusedLocationClient, mLocationCallback);
+                    PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
                     isTracking = false;
                 }
                 if(myPosition != null){
-                    drawCircle(mMap, myPosition, progress * 500);
+                    drawCircle(map, myPosition, progress * 500);
                     if(progress <= 10){
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 12));
-                    } else if(progress > 10 && progress < 20){
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 11));
-                    } else if(progress >= 20 && progress < 40){
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 10));
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 12));
+                    } else if(progress < 20){
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 11));
+                    } else if(progress < 40){
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 10));
                     }else {
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 9));
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 9));
                     }
-                    i = progress * 0.5;
-                    distance.setText(i + " km");
+                    index = progress * 0.5;
+                    distanceView.setText(index + " km");
                 }
             }
 
@@ -174,7 +172,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if(myPosition == null){
                     Toast.makeText(ActivitySetLocation.this, "Enable GPS to set your position", Toast.LENGTH_SHORT).show();
-                    radius.setProgress(0);
+                    radiusBar.setProgress(0);
                 }
             }
         });
@@ -182,18 +180,18 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myPosition == null || i <= 0){
+                if(myPosition == null || index <= 0){
                     Toast.makeText(ActivitySetLocation.this, R.string.complete_preferences, Toast.LENGTH_SHORT).show();
                 } else {
                     latitude = String.valueOf(myPosition.latitude);
                     longitude = String.valueOf(myPosition.longitude);
-                    distaceValue = String.valueOf(i * 1000);
+                    distance = String.valueOf(index * 1000);
 
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(LATITUDE, latitude);
                     editor.putString(LONGITUDE, longitude);
-                    editor.putString(RADIUSVALUE, distaceValue);
+                    editor.putString(RADIUS, distance);
 
                     editor.commit();
                     //TODO: delete the toast and add a finish() to go back in ActivityMain
@@ -205,31 +203,28 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
     }
 
-
-
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        map = googleMap;
         mapReady = true;
 
         if(locationAccess){
             if(PositionClient.isGpsOFF(ActivitySetLocation.this)){
                 PositionClient.turnGPSon(ActivitySetLocation.this);
             } else{
-                MapElements.showMyLocation(mMap);
+                MapElements.showMyLocation(map);
             }
         }
 
 
         if(!isTracking && locationAccess){
-            PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
+            PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
             isTracking = true;
         }
 
 
-        onMapMoving(mMap);//if the camera moves because the user move it, stop tracking location. He's looking for a place.
-        setMapLongClick(mMap);// Add a marker in a long position click
+        onMapMoving(map);//if the camera moves because the user move it, stop tracking location. He's looking for a place.
+        setMapLongClick(map);// Add a marker in a long position click
 
     }
 
@@ -240,7 +235,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
             public void onCameraMoveStarted(int reason) {
                 if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE){
                     if(isTracking){
-                        PositionClient.stopTrackingPosition(mFusedLocationClient, mLocationCallback);
+                        PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
                         isTracking = false;
                     }
                 }
@@ -256,10 +251,10 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
             public void onMapLongClick(LatLng latLng) {
                 map.clear();
                 if(isTracking){
-                    PositionClient.stopTrackingPosition(mFusedLocationClient, mLocationCallback);
+                    PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
                     isTracking = false;
                 }
-                radius.setProgress(0);
+                radiusBar.setProgress(0);
                 map.addMarker(new MarkerOptions().position(latLng)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                 myPosition = latLng;
@@ -282,24 +277,22 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                     PositionClient.turnGPSon(ActivitySetLocation.this);
                 }else if(!isTracking){
                     isTracking = true;
-                    PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
-                    MapElements.showMyLocation(mMap);
+                    PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
+                    MapElements.showMyLocation(map);
                 }
             }
         }
     }
 
 
-
     public void drawCircle(GoogleMap map, LatLng latlng, int radius){
         map.clear();
-        Circle circle = map.addCircle(new CircleOptions()
+        map.addCircle(new CircleOptions()
         .center(latlng)
         .strokeColor(Color.BLUE)
         .strokeWidth(1)
         .radius(radius)
         .fillColor(Color.parseColor("#500084d3")));
-
     }
 
     @Override
@@ -307,8 +300,8 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GPS_REQUEST) {
-                PositionClient.startTrackingPosition(mFusedLocationClient, mLocationCallback);
-                MapElements.showMyLocation(mMap);
+                PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
+                MapElements.showMyLocation(map);
                 position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
             }
         }
@@ -322,15 +315,13 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         }
     }
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         if(isTracking){
-            PositionClient.stopTrackingPosition(mFusedLocationClient, mLocationCallback);
+            PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
             isTracking = false;
         }
     }
-
 
 }

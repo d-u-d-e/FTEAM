@@ -25,11 +25,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         this.listener=listener;
     }
 
-    public static class SettingsViewHolder extends RecyclerView.ViewHolder {
-        public ImageView im;
-        public TextView tx1, tx2;
+    static class SettingsViewHolder extends RecyclerView.ViewHolder {
+        ImageView im;
+        TextView tx1, tx2;
 
-        public SettingsViewHolder(View itemView, final OnItemClickListener listener) {
+        SettingsViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
             im = itemView.findViewById(R.id.settings_element_img);
             tx1 = itemView.findViewById(R.id.settings_element_text1);
