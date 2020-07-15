@@ -54,14 +54,9 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            //show user account
-            case R.id.acc_account:
-                startActivity(new Intent(this, ActivityAccount.class));
-                return true;
-            //show settings
             case R.id.acc_settings:
                 //TODO activity settings?
-                startActivity(new Intent(this, ActivitySetLocation.class));
+                startActivity(new Intent(this, ActivitySettings.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

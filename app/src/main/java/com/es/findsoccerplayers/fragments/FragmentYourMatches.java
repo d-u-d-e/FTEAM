@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.es.findsoccerplayers.ActivityCreateMatch;
+import com.es.findsoccerplayers.ActivityEditMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
@@ -46,7 +47,7 @@ public class FragmentYourMatches extends Fragment {
         matchAdapter.setOnItemClickListener(new MatchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Utils.showUnimplementedToast(getActivity());
+                startActivity(new Intent(getActivity(), ActivityEditMatch.class));
             }
         });
 

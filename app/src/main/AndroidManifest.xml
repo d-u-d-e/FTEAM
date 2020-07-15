@@ -20,7 +20,7 @@
         tools:ignore="ExtraText">
         <activity
             android:name=".ActivitySetLocation"
-            android:parentActivityName=".ActivityMain"/>
+            android:parentActivityName=".ActivitySettings"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -47,7 +47,7 @@
             android:parentActivityName=".ActivityMain" />
         <activity
             android:name=".ActivityAccount"
-            android:parentActivityName=".ActivityMain" />
+            android:parentActivityName=".ActivitySettings" />
         <activity
             android:name=".ActivityInfoMatch"
             android:parentActivityName=".ActivityMain" />
