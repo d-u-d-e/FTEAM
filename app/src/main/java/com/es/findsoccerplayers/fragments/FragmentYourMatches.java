@@ -73,7 +73,7 @@ public class FragmentYourMatches extends Fragment {
     }
 
     private void sync(){
-        //called every time the "user" create a new match
+        //called every time the "user" creates a new match or deletes a previously created match
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref =
                 db.getReference().child("users").child(user.getUid()).child("createdMatches");
@@ -108,6 +108,7 @@ public class FragmentYourMatches extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) { //match deleted
+                //TODO deletion is not implemented yet, but the list can handle it
                 String matchKey = dataSnapshot.getKey();
                 int i = 0;
                 synchronized (FragmentYourMatches.this){

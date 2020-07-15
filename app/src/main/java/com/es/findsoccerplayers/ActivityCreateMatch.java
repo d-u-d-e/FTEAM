@@ -1,7 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
@@ -51,7 +49,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
     private static final String PLAYERS_NUMBER = "playerNumber";
     private static final String DESCRIPTION = "description";
 
-    private Match mMatch;
+    private Match match;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,8 +128,8 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                     Toast.makeText(ActivityCreateMatch.this, R.string.all_fields_required,
                             Toast.LENGTH_SHORT).show();
                 }else{
-                    mMatch = new Match();
-                    mMatch.setDescription(description.getText().toString());
+                    match = new Match();
+                    match.setDescription(description.getText().toString());
 
                     String dateTime = matchDate.getText().toString() + " " + matchTime.getText().toString();
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
@@ -140,17 +138,17 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                         Date d = sdf.parse(dateTime);
                         if(d == null)
                             throw new IllegalStateException("Parsing of date has failed");
-                        mMatch.setTimestamp(d.getTime());
+                        match.setTimestamp(d.getTime());
                     } catch (ParseException e) {
                         throw new IllegalStateException("Parsing of date has failed");
                     }
 
-                    mMatch.setPlaceName(placeText.getText().toString());
-                    mMatch.setLongitude(longitude);
-                    mMatch.setLatitude(latitude);
-                    mMatch.setPlayersNumber(Integer.parseInt(players.getText().toString()));
-                    mMatch.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    createMatch(mMatch);
+                    match.setPlaceName(placeText.getText().toString());
+                    match.setLongitude(longitude);
+                    match.setLatitude(latitude);
+                    match.setPlayersNumber(Integer.parseInt(players.getText().toString()));
+                    match.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    createMatch(match);
                 }
 
             }

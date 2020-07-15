@@ -99,6 +99,7 @@ public class FragmentBookedMatches extends Fragment {
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) { //drop out
+                    //TODO drop out is not implemented yet, but the list can handle it
                     synchronized (FragmentBookedMatches.this){
                         String matchKey = dataSnapshot.getKey();
                         int i = 0;
