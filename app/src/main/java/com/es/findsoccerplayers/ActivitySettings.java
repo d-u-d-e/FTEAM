@@ -43,7 +43,6 @@ public class ActivitySettings extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new SettingsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                settElemList.get(position);
                 if(position == 0){
                     startActivity(new Intent(getApplicationContext(), ActivityAccount.class));
                 }else if(position == 1){
