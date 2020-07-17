@@ -1,5 +1,7 @@
 package com.es.findsoccerplayers;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
@@ -54,6 +56,8 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
 
     private Match match, matchSaved;
 
+    boolean edit = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,12 +78,13 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         //read the intent extra data: if it has a value, the activity has been called from
         //editMatch, so it will change an existing match, otherwise it will create a new match
         Intent intent = getIntent();
-        final String relatedMatch = intent.getStringExtra("match");
-        Log.w(TAG, relatedMatch);
+        final String matchID = intent.getStringExtra("match");
+        assert matchID != null;
+        if(!matchID.isEmpty()) edit = true;
 
-        if(!relatedMatch.isEmpty()){
+        if(edit){
             FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference ref = db.getReference("matches").child(relatedMatch);
+            DatabaseReference ref = db.getReference("matches").child(matchID);
 
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -184,10 +189,12 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                     match.setPlayersNumber(Integer.parseInt(players.getText().toString()));
                     match.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                    if (relatedMatch.isEmpty())
+                    if (matchID.isEmpty())
                         createMatch(match);
-                    else
-                        updateMatch(match, relatedMatch);
+                    else{
+                        match.setMatchID(matchID);  //TODO here longitude as well as latitude is 0 if the user doesn't touch the map
+                        updateMatch(match);
+                    }
                 }
 
             }
@@ -269,25 +276,20 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         finish();
     }
 
-    private void updateMatch(Match m, String relatedMatch){
+    private void updateMatch(Match m){
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("matches/" + relatedMatch, m);
-
-        db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
+        ref.setValue(m, new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if(databaseError != null)
-                    Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
-                else{ //match successfully created
-                    Toast.makeText(ActivityCreateMatch.this, "Match successfully created", Toast.LENGTH_SHORT).show();
+            public void onComplete(DatabaseError error, DatabaseReference ref) {
+                if(error != null)
+                    Utils.showErrorToast(ActivityCreateMatch.this, error.getMessage());
+                else{ //match successfully updated
+                    Toast.makeText(ActivityCreateMatch.this, "Match successfully updated", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
 
         if(!Utils.isOnline(this))
             Utils.showOfflineToast(this);

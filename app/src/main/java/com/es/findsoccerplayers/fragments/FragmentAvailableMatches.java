@@ -34,7 +34,7 @@ import java.util.List;
 
 public class FragmentAvailableMatches extends Fragment {
 
-    private static final String TAG = "AvailbleMatches";
+    private static final String TAG = "AvailableMatches";
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private List<Match> matches;
     private MatchAdapter matchAdapter;

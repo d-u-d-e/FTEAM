@@ -35,7 +35,7 @@ public class FragmentInfoBookedMatch extends Fragment {
         field = view.findViewById(R.id.frag_info_booked_match_fieldTV);
         date = view.findViewById(R.id.frag_info_booked_match_dayTV);
         time = view.findViewById(R.id.frag_info_booked_match_timeTV);
-        money= view.findViewById(R.id.frag_info_booked_match_moneyTV);
+        money = view.findViewById(R.id.frag_info_booked_match_moneyTV);
         missingPlayers = view.findViewById(R.id.frag_info_booked_match_missingPlayersTV);
         description = view.findViewById(R.id.frag_info_booked_match_descriptionTV);
         Button dropBtn = view.findViewById(R.id.frag_info_booked_match_dropBtn);

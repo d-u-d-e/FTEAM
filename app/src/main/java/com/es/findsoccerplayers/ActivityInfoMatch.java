@@ -91,14 +91,12 @@ public class ActivityInfoMatch extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.acc_edit:
-                Intent i = new Intent(getApplicationContext(), ActivityCreateMatch.class);
-                i.putExtra("match", relatedMatch);
-                startActivity(i);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.acc_edit) {
+            Intent i = new Intent(getApplicationContext(), ActivityCreateMatch.class);
+            i.putExtra("match", relatedMatch);
+            startActivity(i);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 }
