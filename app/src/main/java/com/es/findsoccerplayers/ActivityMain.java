@@ -23,6 +23,7 @@ public class ActivityMain extends AppCompatActivity {
     private static final String TAG = "ActivityMain";
     private long backPressedTime = 0;
     private Toast backToast;
+    FragmentAvailableMatches availableMatches;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,8 @@ public class ActivityMain extends AppCompatActivity {
         ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
         adapter.addFragment(new FragmentYourMatches(), getString(R.string.act_main_frag_yours_title));
         adapter.addFragment(new FragmentBookedMatches(), getString(R.string.act_main_frag_booked_title));
-        adapter.addFragment(new FragmentAvailableMatches(), getString(R.string.act_main_frag_avail_title));
+        availableMatches = new FragmentAvailableMatches();
+        adapter.addFragment(availableMatches, getString(R.string.act_main_frag_avail_title));
 
         vp.setOffscreenPageLimit(adapter.getCount()-1); //2
         vp.setAdapter(adapter);
@@ -52,14 +54,22 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.acc_settings:
-                startActivity(new Intent(this, ActivitySettings.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String action = intent.getAction();
+        if(action != null && action.equals(ActivitySetLocation.LOCATION_SET_ACTION)){
+            Log.d(TAG, "settings updated, triggering updateListWithNewPositionSettings() in fragment available matches");
+            availableMatches.updateListWithNewPositionSettings();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.acc_settings) {
+            startActivity(new Intent(this, ActivitySettings.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

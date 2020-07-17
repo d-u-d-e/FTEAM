@@ -22,6 +22,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.es.findsoccerplayers.fragments.FragmentAvailableMatches;
 import com.es.findsoccerplayers.position.MapElements;
 import com.es.findsoccerplayers.position.PositionClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -45,6 +46,8 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
     public static final String LONGITUDE = "longitude";
     public static final String LATITUDE = "latitude";
     public static final String RADIUS = "radius";
+    public static final String LOCATION_SET_ACTION = "locationSet";
+
     private static final int GPS_REQUEST = 1001;
 
 
@@ -113,7 +116,6 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         } else {
             position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
         }
-
 
         position_fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,9 +195,12 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                     editor.putString(LONGITUDE, longitude);
                     editor.putString(RADIUS, distance);
 
+
                     editor.commit();
-                    //TODO: delete the toast and add a finish() to go back in ActivityMain
                     Toast.makeText(ActivitySetLocation.this, "Preferences Saved!", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(LOCATION_SET_ACTION, null, ActivitySetLocation.this, ActivityMain.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(i);
                 }
 
             }

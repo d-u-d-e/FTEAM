@@ -26,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +36,12 @@ public class FragmentAvailableMatches extends Fragment {
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private List<Match> matches;
     private MatchAdapter matchAdapter;
-    private LatLng preferredPosition;
-    private double preferredRadius;
+
+    private static class PositionSettings{
+        LatLng position;
+        double radius;
+    }
+    private PositionSettings positionSettings;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,49 +67,91 @@ public class FragmentAvailableMatches extends Fragment {
         recyclerView.setAdapter(matchAdapter);
         //recyclerView.setItemAnimator(null);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-        String lng = sharedPreferences.getString(ActivitySetLocation.LONGITUDE, null);
-        String lat = sharedPreferences.getString(ActivitySetLocation.LATITUDE, null);
-        String rad =  sharedPreferences.getString(ActivitySetLocation.RADIUS, null);
+        positionSettings = getPositionSettings();
 
-        if(lng == null || lat == null || rad == null){
-            Toast.makeText(this.getActivity(), R.string.preferred_pos_not_set, Toast.LENGTH_SHORT).show();
-            //TODO should open settings?
+        if(positionSettings == null){
+            //TODO launch activity set location?
+            Toast.makeText(getActivity(), R.string.preferred_pos_not_set, Toast.LENGTH_SHORT).show();
         }
-        else{
-            preferredPosition = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
-            preferredRadius = Double.parseDouble(rad); //it's already in meters
-            sync();
-        }
+        sync(); //onChildAdded is called once for each element at the start
         return view;
     }
 
     private boolean isLocationNearby(double latitude, double longitude){
+
+        /* this will show every match, regardless of its position in the world, if the user
+           didn't set any preferred position */ //TODO is this ok?
+        if(positionSettings == null) return true;
+
         float[] result = new float[1];
-        Location.distanceBetween(latitude, longitude,
-                preferredPosition.latitude, preferredPosition.longitude, result); //result in meters
-        return (result[0] <= preferredRadius);
+        Location.distanceBetween(positionSettings.position.latitude, positionSettings.position.longitude,
+                latitude, longitude, result); //result in meters
+        return (result[0] <= positionSettings.radius);
     }
 
-    private void sync(){
-        DatabaseReference ref = db.getReference().child("matches"); //this is expensive for huge data, but we
+    private PositionSettings getPositionSettings(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        String pLng = sharedPreferences.getString(ActivitySetLocation.LONGITUDE, null);
+        String pLat = sharedPreferences.getString(ActivitySetLocation.LATITUDE, null);
+        String pRad =  sharedPreferences.getString(ActivitySetLocation.RADIUS, null);
+
+        if(pLat == null || pLng == null) return null;
+        assert pRad != null;
+
+        PositionSettings ps = new PositionSettings();
+        ps.position = new LatLng(Double.parseDouble(pLat), Double.parseDouble(pLng));
+        ps.radius = Double.parseDouble(pRad);
+        return ps;
+    }
+
+    public void updateListWithNewPositionSettings(){ //triggered when position settings are updated
+
+        //the user has updated the position settings
+        positionSettings = getPositionSettings();
+
+        assert positionSettings != null;
+
+        DatabaseReference ref = db.getReference().child("matches");
+        //this is expensive for huge data, but we
         //have no means to select matches distant x meters apart from the user position directly
         //in the database
 
-
-
-        ref.addChildEventListener(new ChildEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                //any user creates a match
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //prevent the attached listener to update the list
+                //in the middle of a full read
+                synchronized (FragmentAvailableMatches.this){
+                    matches.clear();
+                    for(DataSnapshot data: dataSnapshot.getChildren()){
+                        Match m = data.getValue(Match.class);
+                        assert m != null;
+                        if(isLocationNearby(m.getLatitude(), m.getLongitude()))
+                            matches.add(m);
+                    }
+                    matchAdapter.notifyDataSetChanged();
+                } //release the object only when we have read everything
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void sync(){
+        DatabaseReference ref = db.getReference().child("matches");
+        //this is expensive for huge data, but we have no means to select matches
+        // distant x meters apart from the user position directly in the database
+
+        ChildEventListener syncListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) { //match created by some user
                 Match m = dataSnapshot.getValue(Match.class);
                 assert m != null;
-                if(isLocationNearby(m.getLatitude(), m.getLongitude())){ //is the location relevant?
-                    synchronized (FragmentAvailableMatches.this){
-                        matches.add(m);
-                        matchAdapter.notifyItemInserted(matches.size()-1);
-                    }
-                }
+                if(isLocationNearby(m.getLatitude(), m.getLongitude()))
+                    FragmentAvailableMatches.this.addUI(m);
             }
 
             @Override
@@ -113,35 +160,10 @@ public class FragmentAvailableMatches extends Fragment {
                 Match m = dataSnapshot.getValue(Match.class);
                 assert m != null;
                 int i;
-                synchronized (FragmentAvailableMatches.this){
-                    //check if we have this match in the list
-                    for(i = 0; i < matches.size(); i++){
-                        if(matches.get(i).getMatchID().equals(m.getMatchID())){
-                            break;
-                        }
-                    }
-
-                    if(i == matches.size()) { //we don't have it
-                        if(isLocationNearby(m.getLatitude(), m.getLongitude())){
-                            //it is relevant (this means some user changed the position of
-                            //this match and it became relevant for us)
-                            matches.add(m);
-                            matchAdapter.notifyItemInserted(matches.size()-1);
-                        }
-                        //otherwise it's not relevant, so we don't want to add it
-                    }
-                    else{ //we have it and some user changed some information
-                        if(!isLocationNearby(m.getLatitude(), m.getLongitude())){
-                            //not relevant anymore, this means he changed the position
-                            matches.remove(i);
-                            matchAdapter.notifyItemRemoved(i);
-                        }
-                        else{ //just update in this case, he might have changed the description for example
-                            matches.set(i, m);
-                            matchAdapter.notifyItemChanged(i);
-                        }
-                    }
-                }
+                if (isLocationNearby(m.getLatitude(), m.getLongitude()))
+                    FragmentAvailableMatches.this.addUI(m); //update entry or add a new entry
+                else
+                    FragmentAvailableMatches.this.removeUI(m); //delete entry if exists
             }
 
             @Override
@@ -149,20 +171,7 @@ public class FragmentAvailableMatches extends Fragment {
                 //some user deleted this match from the database
                 Match m = dataSnapshot.getValue(Match.class);
                 assert m != null;
-                int i;
-                synchronized (FragmentAvailableMatches.this){
-                    //check if we have this match in the list
-                    for(i = 0; i < matches.size(); i++){
-                        if(matches.get(i).getMatchID().equals(m.getMatchID())){
-                            break;
-                        }
-                    }
-
-                    if(i != matches.size()) { //we have it, so we must delete it
-                        matches.remove(i);
-                        matchAdapter.notifyItemRemoved(i);
-                    }
-                }
+                FragmentAvailableMatches.this.removeUI(m); //delete entry if exists
             }
 
             @Override
@@ -174,6 +183,43 @@ public class FragmentAvailableMatches extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        ref.addChildEventListener(syncListener);
+    }
+
+    private synchronized void addUI(Match m){
+        //check if we have this match in the list
+        int i;
+        for(i = 0; i < matches.size(); i++){
+            if(matches.get(i).getMatchID().equals(m.getMatchID())){
+                break;
+            }
+        }
+
+        if(i == matches.size()) { //we don't have it
+                matches.add(m);
+                matchAdapter.notifyItemInserted(matches.size()-1);
+        }
+        else{
+            //just update in this case, he might have changed the description for example
+            matches.set(i, m);
+            matchAdapter.notifyItemChanged(i);
+        }
+    }
+
+    private synchronized void removeUI(Match m){
+        //check if we have this match in the list
+        int i;
+        for(i = 0; i < matches.size(); i++){
+            if(matches.get(i).getMatchID().equals(m.getMatchID())){
+                break;
+            }
+        }
+
+        if(i != matches.size()) { //we have it, so we must delete it
+            matches.remove(i);
+            matchAdapter.notifyItemRemoved(i);
+        }
     }
 }
