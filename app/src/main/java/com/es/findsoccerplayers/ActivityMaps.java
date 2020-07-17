@@ -199,6 +199,8 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         map = googleMap;
         mapReady = true;
 
+        Toast.makeText(this, "Connecting to GPS...", Toast.LENGTH_SHORT).show();
+
         if(locationAccess){
             if(PositionClient.isGpsOFF(ActivityMaps.this)){
                 PositionClient.turnGPSon(ActivityMaps.this);

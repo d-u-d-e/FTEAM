@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import java.util.List;
 
 public class FragmentAvailableMatches extends Fragment {
 
+    private static final String TAG = "AvailbleMatches";
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private List<Match> matches;
     private MatchAdapter matchAdapter;

@@ -44,7 +44,7 @@
             android:parentActivityName=".ActivityMain" />
         <activity
             android:name=".ActivityEditMatch"
-            android:parentActivityName=".ActivityMain" />
+            android:parentActivityName=".ActivityInfoMatch" />
         <activity
             android:name=".ActivityAccount"
             android:parentActivityName=".ActivitySettings" />

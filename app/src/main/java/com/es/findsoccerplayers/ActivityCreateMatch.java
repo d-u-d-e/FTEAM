@@ -6,6 +6,7 @@ import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,9 +19,11 @@ import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,7 +52,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
     private static final String PLAYERS_NUMBER = "playerNumber";
     private static final String DESCRIPTION = "description";
 
-    private Match match;
+    private Match match, matchSaved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,21 +71,53 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         description = findViewById(R.id.cr_match_descriptionField);
         FloatingActionButton matchFab = findViewById(R.id.cr_match_fab);
 
-        if(savedInstanceState != null){
-            matchDate.setText(savedInstanceState.getString(MATCH_DATE));
-            matchTime.setText(savedInstanceState.getString(MATCH_HOUR));
-            placeText.setText(savedInstanceState.getString(ActivityMaps.PLACE_NAME));
-            description.setText(savedInstanceState.getString(DESCRIPTION));
-            longitude = savedInstanceState.getDouble(ActivityMaps.LONGITUDE);
-            latitude = savedInstanceState.getDouble(ActivityMaps.LATITUDE);
-            players.setText(savedInstanceState.getString(PLAYERS_NUMBER));
+        //read the intent extra data: if it has a value, the activity has been called from
+        //editMatch, so it will change an existing match, otherwise it will create a new match
+        Intent intent = getIntent();
+        final String relatedMatch = intent.getStringExtra("match");
+        Log.w(TAG, relatedMatch);
 
-        } else {
-            long timestamp = Calendar.getInstance().getTimeInMillis();
-            matchDate.setText(Utils.getDate(timestamp));
-            matchTime.setText(Utils.getTime(timestamp));
+        if(!relatedMatch.isEmpty()){
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference ref = db.getReference("matches").child(relatedMatch);
+
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    matchSaved = dataSnapshot.getValue(Match.class);
+                    assert matchSaved != null;
+                    placeText.setText(matchSaved.getPlaceName());
+
+                    long timestamp = matchSaved.getTimestamp();
+
+                    matchDate.setText(Utils.getDate(timestamp));
+                    matchTime.setText(Utils.getTime(timestamp));
+                    //money.setText("----");                                              //TODO
+                    players.setText(Integer.toString(matchSaved.getPlayersNumber()));
+                    description.setText(matchSaved.getDescription());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }else {
+            if (savedInstanceState != null) {
+                matchDate.setText(savedInstanceState.getString(MATCH_DATE));
+                matchTime.setText(savedInstanceState.getString(MATCH_HOUR));
+                placeText.setText(savedInstanceState.getString(ActivityMaps.PLACE_NAME));
+                description.setText(savedInstanceState.getString(DESCRIPTION));
+                longitude = savedInstanceState.getDouble(ActivityMaps.LONGITUDE);
+                latitude = savedInstanceState.getDouble(ActivityMaps.LATITUDE);
+                players.setText(savedInstanceState.getString(PLAYERS_NUMBER));
+
+            } else {
+                long timestamp = Calendar.getInstance().getTimeInMillis();
+                matchDate.setText(Utils.getDate(timestamp));
+                matchTime.setText(Utils.getTime(timestamp));
+            }
         }
-
         //Sets the date with a dialog
         matchDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,7 +183,11 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                     match.setLatitude(latitude);
                     match.setPlayersNumber(Integer.parseInt(players.getText().toString()));
                     match.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    createMatch(match);
+
+                    if (relatedMatch.isEmpty())
+                        createMatch(match);
+                    else
+                        updateMatch(match, relatedMatch);
                 }
 
             }
@@ -208,6 +247,35 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         map.put(path + "/" + key, true);
         m.setMatchID(key);
         map.put("matches/" + key, m);
+
+        db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null)
+                    Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
+                else{ //match successfully created
+                    Toast.makeText(ActivityCreateMatch.this, "Match successfully created", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        if(!Utils.isOnline(this))
+            Utils.showOfflineToast(this);
+
+        Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(i);
+        finish();
+    }
+
+    private void updateMatch(Match m, String relatedMatch){
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("matches/" + relatedMatch, m);
 
         db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
             @Override

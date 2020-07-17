@@ -2,6 +2,7 @@ package com.es.findsoccerplayers.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.es.findsoccerplayers.ActivityBookedMatch;
 import com.es.findsoccerplayers.ActivityCreateMatch;
 import com.es.findsoccerplayers.ActivityEditMatch;
+import com.es.findsoccerplayers.ActivityInfoMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
@@ -30,23 +33,26 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 public class FragmentYourMatches extends Fragment {
 
+    private static final String TAG = "YourMatches";
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private List<Match> matches;
     private MatchAdapter matchAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         //this should be called once from the view pager, because the offscreen page limit is set to 2
-
         matches = new ArrayList<>();
         matchAdapter = new MatchAdapter(matches);
         matchAdapter.setOnItemClickListener(new MatchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                startActivity(new Intent(getActivity(), ActivityEditMatch.class));
+                Intent i = new Intent(getContext(), ActivityInfoMatch.class);
+                i.putExtra("match", matches.get(position).getMatchID());
+                startActivity(i);
             }
         });
 
@@ -64,7 +70,9 @@ public class FragmentYourMatches extends Fragment {
         fabCreateMatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ActivityCreateMatch.class));
+                Intent i = new Intent(getContext(), ActivityCreateMatch.class);
+                i.putExtra("match", "");
+                startActivity(i);
             }
         });
 
@@ -132,6 +140,7 @@ public class FragmentYourMatches extends Fragment {
 
             }
         });
+
     }
 }
 
