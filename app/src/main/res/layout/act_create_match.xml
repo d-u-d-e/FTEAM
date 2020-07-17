@@ -38,7 +38,7 @@
         android:id="@+id/cr_match_dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="56dp"
         android:layout_marginTop="16dp"
         android:textSize="15sp"
         android:text="TextView"

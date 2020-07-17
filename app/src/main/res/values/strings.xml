@@ -66,7 +66,7 @@
     <string name="players">Players</string>
     <string name="description">Description</string>
     <string name="create_game">Create game</string>
-    <string name="add_position">Add position: </string>
+    <string name="add_position">Click here to add your position </string>
     <string name="title_activity_maps">Map</string>
     <string name="all_fields_required">All fields are required</string>
 
@@ -101,6 +101,7 @@
     <string name="match_element_field_label">FIELD:</string>
     <string name="match_element_time_label">HOUR:</string>
     <string name="match_element_desc_label">DESCRIPTION:</string>
+    <string name="info_match_delete">DELETE MATCH</string>
 
 
 </resources>

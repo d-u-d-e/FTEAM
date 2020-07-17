@@ -10,7 +10,7 @@ public class ActivityEditMatch extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.act_edit_match);
+        setContentView(R.layout.act_create_match);
 
         Toolbar toolbar = findViewById(R.id.edit_toolbar);
         setSupportActionBar(toolbar);
