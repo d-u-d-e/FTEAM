@@ -73,7 +73,7 @@ public class FragmentAvailableMatches extends Fragment {
         }
         else{
             preferredPosition = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
-            preferredRadius = Double.parseDouble(rad) * 1000; //in meters
+            preferredRadius = Double.parseDouble(rad); //it's already in meters
             sync();
         }
         return view;
@@ -87,10 +87,11 @@ public class FragmentAvailableMatches extends Fragment {
     }
 
     private void sync(){
-        final DatabaseReference ref =
-                db.getReference().child("matches"); //this is expensive for huge data, but we
+        DatabaseReference ref = db.getReference().child("matches"); //this is expensive for huge data, but we
         //have no means to select matches distant x meters apart from the user position directly
         //in the database
+
+
 
         ref.addChildEventListener(new ChildEventListener() {
             @Override
