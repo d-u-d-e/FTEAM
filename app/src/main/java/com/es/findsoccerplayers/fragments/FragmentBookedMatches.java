@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.es.findsoccerplayers.ActivityBookedMatch;
+import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
@@ -43,8 +43,9 @@ public class FragmentBookedMatches extends Fragment {
         matchAdapter.setOnItemClickListener(new MatchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Intent i = new Intent(getContext(), ActivityBookedMatch.class);
-                i.putExtra("match", matches.get(position).getMatchID());
+                Intent i = new Intent(getContext(), ActivitySelectMatch.class);
+                i.putExtra("match", matches.get(position));
+                i.putExtra("type", "booked");
                 startActivity(i);
             }
         });

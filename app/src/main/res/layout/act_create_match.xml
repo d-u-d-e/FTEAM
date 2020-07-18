@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        app:srcCompat="@drawable/ic_man_run_"
+        app:srcCompat="@drawable/ic_player"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cr_match_timeText" />
 

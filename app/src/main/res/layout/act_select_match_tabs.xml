@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityBookedMatch"
+    tools:context=".ActivitySelectMatch"
     android:orientation="vertical">
 
     <include
-        android:id="@+id/info_match_booked_toolbar"
-        layout="@layout/toolbar"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="0dp" />
+        android:id="@+id/act_select_match_toolbar"
+        layout="@layout/toolbar" />
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
@@ -28,4 +26,4 @@
         android:layout_height="match_parent"
         android:id="@+id/info_match_booked_vp"/>
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

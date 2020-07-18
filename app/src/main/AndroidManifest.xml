@@ -40,17 +40,11 @@
             android:name=".ActivityCreateMatch"
             android:parentActivityName=".ActivityMain" />
         <activity
-            android:name=".ActivityBookedMatch"
+            android:name=".ActivitySelectMatch"
             android:parentActivityName=".ActivityMain" />
-        <activity
-            android:name=".ActivityEditMatch"
-            android:parentActivityName=".ActivityInfoMatch" />
         <activity
             android:name=".ActivityAccount"
             android:parentActivityName=".ActivitySettings" />
-        <activity
-            android:name=".ActivityInfoMatch"
-            android:parentActivityName=".ActivityMain" />
         <activity
             android:name=".ActivitySettings"
             android:parentActivityName=".ActivityMain" />

@@ -2,7 +2,6 @@ package com.es.findsoccerplayers.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.es.findsoccerplayers.ActivityBookedMatch;
 import com.es.findsoccerplayers.ActivityCreateMatch;
-import com.es.findsoccerplayers.ActivityEditMatch;
-import com.es.findsoccerplayers.ActivityInfoMatch;
+import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
@@ -33,8 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
-
 public class FragmentYourMatches extends Fragment {
 
     private static final String TAG = "YourMatches";
@@ -50,8 +45,9 @@ public class FragmentYourMatches extends Fragment {
         matchAdapter.setOnItemClickListener(new MatchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Intent i = new Intent(getContext(), ActivityInfoMatch.class);
-                i.putExtra("match", matches.get(position).getMatchID());
+                Intent i = new Intent(getContext(), ActivitySelectMatch.class);
+                i.putExtra("match", matches.get(position));
+                i.putExtra("type", "your");
                 startActivity(i);
             }
         });
@@ -71,7 +67,6 @@ public class FragmentYourMatches extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getContext(), ActivityCreateMatch.class);
-                i.putExtra("match", "");
                 startActivity(i);
             }
         });

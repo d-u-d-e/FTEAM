@@ -1,6 +1,9 @@
 package com.es.findsoccerplayers.models;
 
-public class Match {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Match implements Parcelable {
 
     private String placeName;
     private int playersNumber;
@@ -14,7 +17,7 @@ public class Match {
     public Match(){
     }
 
-    public Match(String placeName, long timestamp, int playerNumber, double latitude, double longitude, String description, String creatorID) {
+    public Match(String placeName, long timestamp, int playerNumber, double latitude, double longitude, String description, String creatorID){
         this.placeName = placeName;
         this.timestamp = timestamp;
         this.playersNumber = playerNumber;
@@ -88,4 +91,41 @@ public class Match {
         this.timestamp = timestamp;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[]{
+                placeName, Integer.toString(playersNumber), Double.toString(latitude),
+                Double.toString(longitude), description, matchID, creatorID, Long.toString(timestamp)
+        });
+    }
+
+    public Match(Parcel in){
+        String[] data = new String[8];
+        in.readStringArray(data);
+        placeName = data[0];
+        playersNumber = Integer.parseInt(data[1]);
+        latitude = Double.parseDouble(data[2]);
+        longitude = Double.parseDouble(data[3]);
+        description = data[4];
+        matchID = data[5];
+        creatorID = data[6];
+        timestamp = Long.parseLong(data[7]);
+    }
+
+    public static final Creator<Match> CREATOR = new Creator<Match>() {
+        @Override
+        public Match createFromParcel(Parcel in) {
+            return new Match(in);
+        }
+
+        @Override
+        public Match[] newArray(int size) {
+            return new Match[size];
+        }
+    };
 }

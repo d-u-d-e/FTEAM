@@ -84,8 +84,8 @@
 
 
     <!--InfoBookedMatch fragment strings-->
-    <string name="frag_info_booked_match_campo">FIELD: </string>
-    <string name="frag_info_booked_match_giorno">DAY: </string>
+    <string name="frag_info_booked_match_field">PLACE: </string>
+    <string name="frag_info_booked_match_day">DAY: </string>
     <string name="frag_info_booked_match_missingPlayers">MISSING PLAYERS: </string>
     <string name="frag_info_booked_match_description">DESCRIPTION: </string>
     <string name="frag_info_booked_match_quota">QUOTA:</string>

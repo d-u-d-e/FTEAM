@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.ActivitySetLocation;
 import com.es.findsoccerplayers.R;
-import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.gms.maps.model.LatLng;
@@ -45,6 +44,8 @@ public class FragmentAvailableMatches extends Fragment {
     }
     private PositionSettings positionSettings;
 
+    //TODO show only matches for which missing players is not zero
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         matches = new ArrayList<>();
@@ -52,11 +53,10 @@ public class FragmentAvailableMatches extends Fragment {
         matchAdapter.setOnItemClickListener(new MatchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Utils.showUnimplementedToast(FragmentAvailableMatches.this.getActivity());
-
-                //Intent i = new Intent(getContext(), ActivityMatch.class);
-                //i.putExtra("match", matches.get(position).getMatchID());
-                //startActivity(i);
+                Intent i = new Intent(getContext(), ActivitySelectMatch.class);
+                i.putExtra("match", matches.get(position));
+                i.putExtra("type", "available");
+                startActivity(i);
             }
         });
 
