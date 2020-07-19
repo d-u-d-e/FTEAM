@@ -19,6 +19,7 @@
     <string name="default_username">User</string>
     <string name="unexpected_error">Unexpected error. If the error is due to network issues, please try later</string>
     <string name="offline">You appear to be offline. Any performed operation will be queued and sent when the application is online</string>
+    <string name="preferred_pos_not_set">Please check your settings and set a range in order to find matches</string>
 
     <!--activities strings-->
     <string name="act_account_title">SIGNED IN WITH</string>
@@ -65,7 +66,7 @@
     <string name="players">Players</string>
     <string name="description">Description</string>
     <string name="create_game">Create game</string>
-    <string name="add_position">Add position: </string>
+    <string name="add_position">Click here to add your position </string>
     <string name="title_activity_maps">Map</string>
     <string name="all_fields_required">All fields are required</string>
 
@@ -83,8 +84,8 @@
 
 
     <!--InfoBookedMatch fragment strings-->
-    <string name="frag_info_booked_match_campo">FIELD: </string>
-    <string name="frag_info_booked_match_giorno">DAY: </string>
+    <string name="frag_info_booked_match_field">PLACE: </string>
+    <string name="frag_info_booked_match_day">DAY: </string>
     <string name="frag_info_booked_match_missingPlayers">MISSING PLAYERS: </string>
     <string name="frag_info_booked_match_description">DESCRIPTION: </string>
     <string name="frag_info_booked_match_quota">QUOTA:</string>
@@ -100,6 +101,7 @@
     <string name="match_element_field_label">FIELD:</string>
     <string name="match_element_time_label">HOUR:</string>
     <string name="match_element_desc_label">DESCRIPTION:</string>
+    <string name="info_match_delete">DELETE MATCH</string>
 
 
 </resources>

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.es.findsoccerplayers.ActivityCreateMatch;
-import com.es.findsoccerplayers.ActivityEditMatch;
+import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
@@ -32,21 +32,23 @@ import java.util.List;
 
 public class FragmentYourMatches extends Fragment {
 
+    private static final String TAG = "YourMatches";
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private List<Match> matches;
     private MatchAdapter matchAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         //this should be called once from the view pager, because the offscreen page limit is set to 2
-
         matches = new ArrayList<>();
         matchAdapter = new MatchAdapter(matches);
         matchAdapter.setOnItemClickListener(new MatchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                startActivity(new Intent(getActivity(), ActivityEditMatch.class));
+                Intent i = new Intent(getContext(), ActivitySelectMatch.class);
+                i.putExtra("match", matches.get(position));
+                i.putExtra("type", "your");
+                startActivity(i);
             }
         });
 
@@ -64,7 +66,8 @@ public class FragmentYourMatches extends Fragment {
         fabCreateMatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ActivityCreateMatch.class));
+                Intent i = new Intent(getContext(), ActivityCreateMatch.class);
+                startActivity(i);
             }
         });
 
@@ -132,6 +135,7 @@ public class FragmentYourMatches extends Fragment {
 
             }
         });
+
     }
 }
 

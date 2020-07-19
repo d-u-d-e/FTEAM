@@ -18,9 +18,11 @@ import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,7 +70,8 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         description = findViewById(R.id.cr_match_descriptionField);
         FloatingActionButton matchFab = findViewById(R.id.cr_match_fab);
 
-        if(savedInstanceState != null){
+
+        if (savedInstanceState != null) {
             matchDate.setText(savedInstanceState.getString(MATCH_DATE));
             matchTime.setText(savedInstanceState.getString(MATCH_HOUR));
             placeText.setText(savedInstanceState.getString(ActivityMaps.PLACE_NAME));
@@ -150,7 +153,6 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                     match.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     createMatch(match);
                 }
-
             }
         });
     }
@@ -228,5 +230,25 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
         finish();
+    }
+
+    private void updateMatch(Match m){ //TODO this has to be moved to the proper class, when edit is working
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
+
+        ref.setValue(m, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, DatabaseReference ref) {
+                if(error != null)
+                    Utils.showErrorToast(ActivityCreateMatch.this, error.getMessage());
+                else{ //match successfully updated
+                    Toast.makeText(ActivityCreateMatch.this, "Match successfully updated", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        if(!Utils.isOnline(this))
+            Utils.showOfflineToast(this);
+
     }
 }

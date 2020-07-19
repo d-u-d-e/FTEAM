@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/frag_info_booked_match_campo"
+            android:text="@string/frag_info_booked_match_field"
             android:textStyle="bold"
             />
         <TextView
@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/frag_info_booked_match_giorno"
+            android:text="@string/frag_info_booked_match_day"
             android:textStyle="bold"
             />
         <TextView

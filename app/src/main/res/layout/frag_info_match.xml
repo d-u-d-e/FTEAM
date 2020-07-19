@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/info_match_scrollview"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".ActivityInfoMatch">
+
+            <ImageView
+                android:id="@+id/info_match_imagePosition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_location"
+                android:scaleX="2"
+                android:scaleY="2"
+                />
+
+
+        <TextView
+            android:id="@+id/info_match_placeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="30dp"
+            android:text="@string/frag_info_booked_match_field"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/info_match_imagePosition"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/info_match_placeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/info_match_placeTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            android:textSize="20sp"
+            android:text="place text"
+            android:enabled="false"
+            />
+
+        <ImageView
+            android:id="@+id/info_match_imageDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="45dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/info_match_imagePosition"
+            app:srcCompat="@drawable/ic_today"
+            android:scaleX="2"
+            android:scaleY="2"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/frag_info_booked_match_day"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/info_match_placeTextView"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="50dp"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="@id/info_match_imageDay"
+            android:id="@+id/info_match_dayTextView"
+            />
+
+
+        <TextView
+            android:id="@+id/info_match_dayText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/info_match_dayTextView"
+            app:layout_constraintTop_toBottomOf="@id/info_match_placeText"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="20dp"
+            android:textSize="20sp"
+            android:text="day text"
+            android:enabled="false"
+            />
+
+
+        <ImageView
+            android:id="@+id/info_match_imageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="45dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/info_match_imageDay"
+            app:srcCompat="@drawable/ic_access_time"
+            android:scaleX="2"
+            android:scaleY="2"
+            />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TIME:"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/info_match_dayText"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="50dp"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="@id/info_match_imageTime"
+            android:id="@+id/info_match_timeTextView"
+            />
+
+        <TextView
+            android:id="@+id/info_match_timeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/info_match_timeTextView"
+            app:layout_constraintTop_toBottomOf="@id/info_match_dayText"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="20dp"
+            android:textSize="20sp"
+            android:text="time text"
+            android:enabled="false"
+            />
+
+            <ImageView
+                android:id="@+id/info_match_imagePlayer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="40dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/info_match_imageTime"
+                app:srcCompat="@drawable/ic_player"
+                android:scaleX="2"
+                android:scaleY="2"
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/frag_info_booked_match_missingPlayers"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/info_match_timeTextView"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="50dp"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="@id/info_match_imagePlayer"
+                android:id="@+id/info_match_playersTextView"
+                />
+
+            <TextView
+                android:id="@+id/info_match_playersText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/info_match_playersTextView"
+                app:layout_constraintTop_toBottomOf="@id/info_match_timeText"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="20dp"
+                android:textSize="20sp"
+                android:text="players"
+                android:enabled="false"
+                />
+
+
+            <TextView
+                android:id="@+id/info_match_moneyTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/info_match_playersTextView"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="30dp"
+                android:textSize="20sp"
+                android:text="MONEY:"
+                android:textStyle="bold"
+                />
+
+
+            <TextView
+                android:id="@+id/info_match_moneyText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/info_match_moneyTextView"
+                app:layout_constraintTop_toBottomOf="@id/info_match_playersText"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="20dp"
+                android:textSize="20sp"
+                android:text="money text"
+                android:enabled="false"
+                />
+
+            <TextView
+                android:id="@+id/info_match_descriptionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/info_match_moneyText"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp"
+                android:text="DESCRIPTION:"
+                android:textStyle="bold"
+                />
+
+            <EditText
+                android:id="@+id/info_match_descriptionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/info_match_descriptionTextView"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:text="description text"
+                android:padding="20dp"
+                android:background="@android:color/transparent"
+                android:enabled="false"
+                />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_height="200dp"
+                app:layout_constraintTop_toBottomOf="@id/info_match_descriptionText"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="30dp"
+                android:id="@+id/info_match_mapPreview"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/info_match_mapPreview"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="30dp"
+                android:text="DELETE/DROP/JOIN"
+                android:id="@+id/info_match_btn"
+                >
+            </Button>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</LinearLayout>
+
+

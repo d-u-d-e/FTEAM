@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,16 +32,16 @@ public class FragmentChat extends Fragment {
     private FirebaseUser currentUser;
 
     private EditText messageText;
-    private String relatedMatch;
+    private String matchID;
 
     private MessageAdapter messageAdapter;
     private List<Message> chats;
     private RecyclerView recyclerView;
 
 
-    public FragmentChat(String relatedMatch){
+    public FragmentChat(String matchID){
         super();
-        this.relatedMatch = relatedMatch;
+        this.matchID = matchID;
     }
 
     @Override
@@ -78,14 +77,14 @@ public class FragmentChat extends Fragment {
     }
 
     private void sendMessage(String message){
-        DatabaseReference ref = db.getReference("chats").child(relatedMatch);
+        DatabaseReference ref = db.getReference("chats").child(matchID);
         Message m = new Message(currentUser.getUid(), currentUser.getDisplayName(), message, System.currentTimeMillis());
         ref.push().setValue(m);
     }
 
     private void readMessages(){
         chats = new ArrayList<>();
-        DatabaseReference ref = db.getReference("chats").child(relatedMatch);
+        DatabaseReference ref = db.getReference("chats").child(matchID);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

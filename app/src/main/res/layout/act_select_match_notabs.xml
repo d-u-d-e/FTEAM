@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActivitySelectMatch"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/act_select_match_toolbar"
+        layout="@layout/toolbar" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/act_select_match_fragContainer">
+    </androidx.fragment.app.FragmentContainerView>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
