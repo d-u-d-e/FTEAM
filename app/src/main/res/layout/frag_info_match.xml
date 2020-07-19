@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:id="@+id/info_match_scrollview"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             tools:context=".ActivityInfoMatch">
 
             <ImageView
@@ -24,245 +23,306 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="28dp"
+                android:scaleX="1"
+                android:scaleY="1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_location"
-                android:scaleX="2"
-                android:scaleY="2"
-                />
+                app:srcCompat="@drawable/ic_location" />
 
 
-        <TextView
-            android:id="@+id/info_match_placeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="30dp"
-            android:text="@string/frag_info_booked_match_field"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="@id/info_match_imagePosition"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/info_match_placeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:text="@string/frag_info_booked_match_field"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="@id/info_match_imagePosition"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/info_match_placeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@id/info_match_placeTextView"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="30dp"
-            android:layout_marginStart="20dp"
-            android:textSize="20sp"
-            android:text="place text"
-            android:enabled="false"
-            />
+            <TextView
+                android:id="@+id/info_match_placeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:text="place text"
+                app:layout_constraintLeft_toRightOf="@id/info_match_placeTextView"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/info_match_imageDay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="45dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/info_match_imagePosition"
-            app:srcCompat="@drawable/ic_today"
-            android:scaleX="2"
-            android:scaleY="2"
-            />
+            <ImageView
+                android:id="@+id/info_match_imageEditPosition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toRightOf="@id/info_match_placeText"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_edit_24_blue" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/frag_info_booked_match_day"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/info_match_placeTextView"
-            android:layout_marginTop="40dp"
-            android:layout_marginStart="50dp"
-            android:textSize="20sp"
-            app:layout_constraintLeft_toLeftOf="@id/info_match_imageDay"
-            android:id="@+id/info_match_dayTextView"
-            />
+            <ImageView
+                android:id="@+id/info_match_imageDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="35dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/info_match_imagePosition"
+                app:srcCompat="@drawable/ic_today" />
 
-
-        <TextView
-            android:id="@+id/info_match_dayText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@id/info_match_dayTextView"
-            app:layout_constraintTop_toBottomOf="@id/info_match_placeText"
-            android:layout_marginTop="40dp"
-            android:layout_marginStart="20dp"
-            android:textSize="20sp"
-            android:text="day text"
-            android:enabled="false"
-            />
+            <TextView
+                android:id="@+id/info_match_dayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="40dp"
+                android:text="@string/frag_info_booked_match_day"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="@id/info_match_imageDay"
+                app:layout_constraintTop_toBottomOf="@id/info_match_placeTextView" />
 
 
-        <ImageView
-            android:id="@+id/info_match_imageTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="45dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/info_match_imageDay"
-            app:srcCompat="@drawable/ic_access_time"
-            android:scaleX="2"
-            android:scaleY="2"
-            />
+            <TextView
+                android:id="@+id/info_match_dayText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="40dp"
+                android:text="day text"
+                app:layout_constraintLeft_toRightOf="@id/info_match_dayTextView"
+                app:layout_constraintTop_toBottomOf="@id/info_match_placeText" />
+
+            <ImageView
+                android:id="@+id/info_match_imageEditDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="40dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toRightOf="@id/info_match_dayText"
+                app:layout_constraintTop_toBottomOf="@id/info_match_placeText"
+                app:srcCompat="@drawable/ic_baseline_edit_24_blue" />
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TIME:"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/info_match_dayText"
-            android:layout_marginTop="40dp"
-            android:layout_marginStart="50dp"
-            android:textSize="20sp"
-            app:layout_constraintLeft_toLeftOf="@id/info_match_imageTime"
-            android:id="@+id/info_match_timeTextView"
-            />
+            <ImageView
+                android:id="@+id/info_match_imageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="35dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/info_match_imageDay"
+                app:srcCompat="@drawable/ic_access_time" />
 
-        <TextView
-            android:id="@+id/info_match_timeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@id/info_match_timeTextView"
-            app:layout_constraintTop_toBottomOf="@id/info_match_dayText"
-            android:layout_marginTop="40dp"
-            android:layout_marginStart="20dp"
-            android:textSize="20sp"
-            android:text="time text"
-            android:enabled="false"
-            />
+
+            <TextView
+                android:id="@+id/info_match_timeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="40dp"
+                android:text="TIME:"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="@id/info_match_imageTime"
+                app:layout_constraintTop_toBottomOf="@id/info_match_dayText" />
+
+            <TextView
+                android:id="@+id/info_match_timeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="40dp"
+                android:text="time text"
+                app:layout_constraintLeft_toRightOf="@id/info_match_timeTextView"
+                app:layout_constraintTop_toBottomOf="@id/info_match_dayText" />
+
+            <ImageView
+                android:id="@+id/info_match_imageEditTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="40dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toRightOf="@id/info_match_timeText"
+                app:layout_constraintTop_toBottomOf="@id/info_match_dayText"
+                app:srcCompat="@drawable/ic_baseline_edit_24_blue" />
 
             <ImageView
                 android:id="@+id/info_match_imagePlayer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="35dp"
+                android:scaleX="1"
+                android:scaleY="1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/info_match_imageTime"
-                app:srcCompat="@drawable/ic_player"
-                android:scaleX="2"
-                android:scaleY="2"
-                />
+                app:srcCompat="@drawable/ic_player" />
 
 
             <TextView
+                android:id="@+id/info_match_playersTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="40dp"
                 android:text="@string/frag_info_booked_match_missingPlayers"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/info_match_timeTextView"
-                android:layout_marginTop="40dp"
-                android:layout_marginStart="50dp"
-                android:textSize="20sp"
                 app:layout_constraintLeft_toLeftOf="@id/info_match_imagePlayer"
-                android:id="@+id/info_match_playersTextView"
-                />
+                app:layout_constraintTop_toBottomOf="@id/info_match_timeTextView" />
 
             <TextView
                 android:id="@+id/info_match_playersText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/info_match_playersTextView"
-                app:layout_constraintTop_toBottomOf="@id/info_match_timeText"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="40dp"
-                android:layout_marginStart="20dp"
-                android:textSize="20sp"
                 android:text="players"
-                android:enabled="false"
-                />
+                app:layout_constraintLeft_toRightOf="@id/info_match_playersTextView"
+                app:layout_constraintTop_toBottomOf="@id/info_match_timeText" />
+
+            <ImageView
+                android:id="@+id/info_match_imageEditPlayers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="40dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toRightOf="@id/info_match_playersText"
+                app:layout_constraintTop_toBottomOf="@id/info_match_timeText"
+                app:srcCompat="@drawable/ic_baseline_edit_24_blue" />
+
+            <ImageView
+                android:id="@+id/info_match_imageMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="36dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/info_match_imagePlayer"
+                app:srcCompat="@drawable/ic_baseline_euro_24" />
 
 
             <TextView
                 android:id="@+id/info_match_moneyTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/info_match_playersTextView"
-                android:layout_marginTop="40dp"
                 android:layout_marginStart="30dp"
-                android:textSize="20sp"
+                android:layout_marginTop="40dp"
                 android:text="MONEY:"
                 android:textStyle="bold"
-                />
+                app:layout_constraintLeft_toLeftOf="@+id/info_match_imageMoney"
+                app:layout_constraintTop_toBottomOf="@id/info_match_playersTextView" />
 
 
             <TextView
                 android:id="@+id/info_match_moneyText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@id/info_match_moneyTextView"
-                app:layout_constraintTop_toBottomOf="@id/info_match_playersText"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="40dp"
-                android:layout_marginStart="20dp"
-                android:textSize="20sp"
                 android:text="money text"
-                android:enabled="false"
-                />
+                app:layout_constraintLeft_toRightOf="@id/info_match_moneyTextView"
+                app:layout_constraintTop_toBottomOf="@id/info_match_playersText" />
+
+            <ImageView
+                android:id="@+id/info_match_imageEditMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="39dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toRightOf="@id/info_match_moneyText"
+                app:layout_constraintTop_toBottomOf="@id/info_match_playersText"
+                app:srcCompat="@drawable/ic_baseline_edit_24_blue" />
+
+            <ImageView
+                android:id="@+id/info_match_imageDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="37dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/info_match_imageMoney"
+                app:srcCompat="@drawable/ic_baseline_description_24" />
 
             <TextView
                 android:id="@+id/info_match_descriptionTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/info_match_moneyText"
-                android:layout_marginTop="30dp"
-                android:textSize="20sp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="40dp"
                 android:text="DESCRIPTION:"
                 android:textStyle="bold"
-                />
+                app:layout_constraintLeft_toLeftOf="@id/info_match_imageDescription"
+                app:layout_constraintTop_toBottomOf="@id/info_match_moneyText" />
 
-            <EditText
+            <ImageView
+                android:id="@+id/info_match_imageEditDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="96dp"
+                android:layout_marginTop="10dp"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/info_match_descriptionTextView"
+                app:srcCompat="@drawable/ic_baseline_edit_24_blue" />
+
+            <TextView
                 android:id="@+id/info_match_descriptionText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/info_match_descriptionTextView"
-                android:textSize="20sp"
-                android:textAlignment="center"
-                android:text="description text"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="40dp"
                 android:padding="20dp"
-                android:background="@android:color/transparent"
-                android:enabled="false"
-                />
+                android:text="description text"
+                app:layout_constraintLeft_toRightOf="@id/info_match_descriptionTextView"
+                app:layout_constraintTop_toBottomOf="@id/info_match_moneyText" />
 
             <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/info_match_mapPreview"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
                 android:layout_height="200dp"
-                app:layout_constraintTop_toBottomOf="@id/info_match_descriptionText"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="30dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginTop="30dp"
-                android:id="@+id/info_match_mapPreview"
-                />
+                app:layout_constraintTop_toBottomOf="@id/info_match_descriptionText" />
 
             <Button
+                android:id="@+id/info_match_btn"
                 android:layout_width="match_parent"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/info_match_mapPreview"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="30dp"
+                android:text="DELETE/DROP/JOIN"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginTop="30dp"
-                android:text="DELETE/DROP/JOIN"
-                android:id="@+id/info_match_btn"
-                >
-            </Button>
+                app:layout_constraintTop_toBottomOf="@id/info_match_mapPreview"></Button>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
 </LinearLayout>

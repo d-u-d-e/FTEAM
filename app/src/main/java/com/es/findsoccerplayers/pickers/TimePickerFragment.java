@@ -40,7 +40,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.mListener = (TimePickerFragment.OnCompleteListener)context;
+        this.mListener = (TimePickerFragment.OnCompleteListener) context;
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {

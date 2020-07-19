@@ -96,7 +96,6 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         });
 
         //Set the hour with a dialog
-
         matchTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -232,23 +231,4 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         finish();
     }
 
-    private void updateMatch(Match m){ //TODO this has to be moved to the proper class, when edit is working
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
-
-        ref.setValue(m, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError error, DatabaseReference ref) {
-                if(error != null)
-                    Utils.showErrorToast(ActivityCreateMatch.this, error.getMessage());
-                else{ //match successfully updated
-                    Toast.makeText(ActivityCreateMatch.this, "Match successfully updated", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        if(!Utils.isOnline(this))
-            Utils.showOfflineToast(this);
-
-    }
 }

@@ -45,15 +45,15 @@ import java.util.Locale;
 public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
-    private String placeName;
-    private double latitude;
-    private double longitude;
+    public String placeName;
+    public double latitude;
+    public double longitude;
     private LatLng initPosition;
     private LatLng myPosition;
 
-    static final String LONGITUDE = "longitude";
-    static final String LATITUDE = "latitude";
-    static final String PLACE_NAME = "placeName";
+    public static final String LONGITUDE = "longitude";
+    public static final String LATITUDE = "latitude";
+    public static final String PLACE_NAME = "placeName";
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private static final int GPS_REQUEST = 1001;
 

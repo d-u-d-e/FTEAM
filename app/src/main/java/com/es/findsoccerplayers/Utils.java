@@ -17,7 +17,7 @@ public class Utils {
         Toast.makeText(c, error, Toast.LENGTH_LONG).show();
     }
 
-    static void showErrorToast(Context c, String s){
+    public static void showErrorToast(Context c, String s){
         Toast.makeText(c, s, Toast.LENGTH_LONG).show();
     }
 
@@ -34,7 +34,7 @@ public class Utils {
         Toast.makeText(c, R.string.unimplemented, Toast.LENGTH_SHORT).show();
     }
 
-    static void showOfflineToast(Context c){
+    public static void showOfflineToast(Context c){
         Toast.makeText(c, R.string.offline, Toast.LENGTH_SHORT).show();
     }
 
@@ -80,7 +80,7 @@ public class Utils {
         return c.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
     }
 
-    static boolean isOnline(Context context)
+    public static boolean isOnline(Context context)
     {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         assert connectivityManager != null;
