@@ -23,7 +23,14 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         void onTimeSet(int hour, int minute);
     }
 
-    private TimePickerFragment.OnCompleteListener mListener;
+    private OnCompleteListener mListener;
+    private Context context;
+
+    public TimePickerFragment(Context c, TimePickerFragment.OnCompleteListener listener){
+        mListener = listener;
+        context = c;
+    }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -33,14 +40,8 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         int minute = c.get(Calendar.MINUTE);
 
         // Create a new instance of TimePickerDialog and return it
-        return new TimePickerDialog(getActivity(), this, hour, minute,
+        return new TimePickerDialog(context, this, hour, minute,
                 true);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.mListener = (TimePickerFragment.OnCompleteListener)context;
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {

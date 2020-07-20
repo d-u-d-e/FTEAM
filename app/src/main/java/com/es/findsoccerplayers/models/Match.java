@@ -3,7 +3,7 @@ package com.es.findsoccerplayers.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Match implements Parcelable {
+public class Match implements Parcelable{
 
     private String placeName;
     private int playersNumber;
@@ -15,6 +15,17 @@ public class Match implements Parcelable {
     private long timestamp;
 
     public Match(){
+    }
+
+    public Match(Match m){
+        placeName = m.placeName;
+        playersNumber = m.playersNumber;
+        latitude = m.latitude;
+        longitude = m.longitude;
+        description = m.description;
+        matchID = m.matchID;
+        creatorID = m.creatorID;
+        timestamp = m.timestamp;
     }
 
     public Match(String placeName, long timestamp, int playerNumber, double latitude, double longitude, String description, String creatorID){
