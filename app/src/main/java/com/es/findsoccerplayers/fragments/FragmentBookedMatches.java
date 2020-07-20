@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -73,23 +75,23 @@ public class FragmentBookedMatches extends Fragment {
 
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                     //user joins a match
                     final String matchKey = dataSnapshot.getKey();
                     assert matchKey != null;
                     DatabaseReference ref = db.getReference().child("matches").child(matchKey);
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    ref.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Match m = dataSnapshot.getValue(Match.class);
-                            synchronized (FragmentBookedMatches.this){
-                                matches.add(m);
-                                matchAdapter.notifyItemInserted(matches.size()-1);
-                            }
+                            if(snapshot.exists()) //TODO not sure if it works
+                                addUI(m);
+                            else
+                                removeUI(m);
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError error) {
 
                         }
                     });
@@ -125,4 +127,39 @@ public class FragmentBookedMatches extends Fragment {
                 }
             });
         }
+
+    private synchronized void addUI(Match m){
+        //check if we have this match in the list
+        int i;
+        for(i = 0; i < matches.size(); i++){
+            if(matches.get(i).getMatchID().equals(m.getMatchID())){
+                break;
+            }
+        }
+
+        if(i == matches.size()) { //we don't have it
+            matches.add(m);
+            matchAdapter.notifyItemInserted(matches.size()-1);
+        }
+        else{
+            //just update in this case, he might have changed the description for example
+            matches.set(i, m);
+            matchAdapter.notifyItemChanged(i);
+        }
+    }
+
+    private synchronized void removeUI(Match m){
+        //check if we have this match in the list
+        int i;
+        for(i = 0; i < matches.size(); i++){
+            if(matches.get(i).getMatchID().equals(m.getMatchID())){
+                break;
+            }
+        }
+
+        if(i != matches.size()) { //we have it, so we must delete it
+            matches.remove(i);
+            matchAdapter.notifyItemRemoved(i);
+        }
+    }
 }
