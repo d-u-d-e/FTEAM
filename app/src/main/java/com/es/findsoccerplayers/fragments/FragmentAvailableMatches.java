@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -70,6 +71,10 @@ public class FragmentAvailableMatches extends Fragment {
         //recyclerView.setItemAnimator(null);
 
         positionSettings = getPositionSettings();
+
+        TextView message = view.findViewById(R.id.availableMatchMessage);
+        int km = (int) positionSettings.radius/1000;
+        message.setText("You are searching matches in a range of " + km + " km");
 
         if(positionSettings == null){
             //TODO launch activity set location?

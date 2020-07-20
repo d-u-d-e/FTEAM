@@ -75,9 +75,14 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_set_location);
 
-        Toolbar toolbar = findViewById(R.id.location_maps_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent i = getIntent();
+        if (i.hasExtra("act")){
+            Toolbar toolbar = findViewById(R.id.location_maps_toolbar);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+
         getLocationPermission(); //get location permission if I don'have it
 
 

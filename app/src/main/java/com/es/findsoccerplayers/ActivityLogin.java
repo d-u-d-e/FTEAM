@@ -110,7 +110,7 @@ public class ActivityLogin extends AppCompatActivity{
                         progressBar.setVisibility(View.INVISIBLE);
                         if (task.isSuccessful()){
                             Utils.showSuccessLoginToast(ActivityLogin.this);
-                            startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                            startActivity(new Intent(ActivityLogin.this, ActivitySetLocation.class));
                             finish();
                         }else{
                             Utils.showErrorToast(ActivityLogin.this, task.getException());
@@ -202,7 +202,7 @@ public class ActivityLogin extends AppCompatActivity{
                                                 createGoogleUser();
                                             else{
                                                 Utils.showSuccessLoginToast(ActivityLogin.this);
-                                                startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                                                startActivity(new Intent(ActivityLogin.this, ActivitySetLocation.class));
                                                 finish();
                                             }
                                         }
@@ -263,7 +263,7 @@ public class ActivityLogin extends AppCompatActivity{
                 }
                 else{
                     Utils.showSuccessLoginToast(ActivityLogin.this);
-                    startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                    startActivity(new Intent(ActivityLogin.this, ActivitySetLocation.class));
                     finish();
                 }
             }
