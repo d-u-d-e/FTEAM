@@ -13,16 +13,14 @@ import android.widget.Toast;
 
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.pickers.DatePickerFragment;
-import com.es.findsoccerplayers.pickers.NumberPickerDialog;
+import com.es.findsoccerplayers.pickers.NumberPickerFragment;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,7 +32,7 @@ import java.util.Map;
 
 
 public class ActivityCreateMatch extends AppCompatActivity implements DatePickerFragment.OnCompleteListener,
-        TimePickerFragment.OnCompleteListener{
+        TimePickerFragment.OnCompleteListener, NumberPickerFragment.OnCompleteListener{
 
     private TextView matchDate;
     private TextView matchTime;
@@ -90,7 +88,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         matchDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment datePicker = new DatePickerFragment();
+                DialogFragment datePicker = new DatePickerFragment(ActivityCreateMatch.this, ActivityCreateMatch.this);
                 datePicker.show(getSupportFragmentManager(), "datePicker");
             }
         });
@@ -99,7 +97,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         matchTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment timePicker = new TimePickerFragment();
+                DialogFragment timePicker = new TimePickerFragment(ActivityCreateMatch.this, ActivityCreateMatch.this);
                 timePicker.show(getSupportFragmentManager(), "hourPicker");
             }
         });
@@ -108,7 +106,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         players.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment playerNumb = new NumberPickerDialog();
+                DialogFragment playerNumb = new NumberPickerFragment(ActivityCreateMatch.this, ActivityCreateMatch.this, getString(R.string.players_number));
                 playerNumb.show(getSupportFragmentManager(), "playerPicker");
             }
         });
@@ -195,6 +193,11 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         matchTime.setText(String.format("%02d:%02d", hour, minute));
     }
 
+    @Override
+    public void onNumberSet(int number) {
+        players.setText(Integer.toString(number));
+    }
+
     private void createMatch(Match m){
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -230,5 +233,6 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         startActivity(i);
         finish();
     }
+
 
 }

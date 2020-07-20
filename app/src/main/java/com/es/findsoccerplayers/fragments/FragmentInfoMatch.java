@@ -1,13 +1,11 @@
 package com.es.findsoccerplayers.fragments;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,13 +19,14 @@ import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.pickers.DatePickerFragment;
-import com.es.findsoccerplayers.pickers.NumberPickerDialog;
+import com.es.findsoccerplayers.pickers.NumberPickerFragment;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,7 +37,7 @@ import java.util.Calendar;
 import static android.app.Activity.RESULT_OK;
 
 public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, DatePickerFragment.OnCompleteListener,
-        TimePickerFragment.OnCompleteListener{
+        TimePickerFragment.OnCompleteListener, NumberPickerFragment.OnCompleteListener{
 
     private static final String TAG = "ActivityInfoMatch";
 
@@ -50,6 +49,8 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
     private double latitude;
 
     TextView place, date, time, money, missingPlayers, desc;
+
+    Marker marker;
 
     public FragmentInfoMatch(Match m, String type) {
         this.m = m;
@@ -73,7 +74,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         ImageView editTime = view.findViewById(R.id.info_match_imageEditTime);
         ImageView editPlayers = view.findViewById(R.id.info_match_imageEditPlayers);
         ImageView editMoney = view.findViewById(R.id.info_match_imageEditMoney);
-        ImageView editDesc = view.findViewById(R.id.info_match_imageEditDescription);
+        final ImageView editDesc = view.findViewById(R.id.info_match_imageEditDescription);
         Button btn = view.findViewById(R.id.info_match_btn);
         desc = view.findViewById(R.id.info_match_descriptionText);
 
@@ -122,24 +123,25 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         editDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment datePicker = new DatePickerFragment();
-                datePicker.show(getActivity().getSupportFragmentManager(),"datePicker");
+
+                DatePickerFragment dialog = new DatePickerFragment(getActivity(), FragmentInfoMatch.this);
+                dialog.show(manager,"datePicker");
             }
         });
 
         editTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(getActivity().getSupportFragmentManager(), "hourPicker");
+                DialogFragment timePicker = new TimePickerFragment(getActivity(), FragmentInfoMatch.this);
+                timePicker.show(manager, "hourPicker");
             }
         });
 
         editPlayers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment playerNumb = new NumberPickerDialog();
-                playerNumb.show(getActivity().getSupportFragmentManager(), "playerPicker");
+                DialogFragment playerNumb = new NumberPickerFragment(getActivity(), FragmentInfoMatch.this, getString(R.string.how_many_players));
+                playerNumb.show(manager, "playerPicker");
             }
         });
 
@@ -154,7 +156,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         editDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Utils.showUnimplementedToast(getContext());
             }
         });
 
@@ -164,10 +166,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        //map.setMyLocationEnabled(true);
         LatLng location = new LatLng(m.getLatitude(), m.getLongitude());
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
-        map.addMarker(new MarkerOptions().position(location).title(m.getPlaceName()));
+        marker = map.addMarker(new MarkerOptions().position(location).title(m.getPlaceName()));
     }
 
     @Override
@@ -177,12 +178,17 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             longitude = data.getDoubleExtra(ActivityMaps.LONGITUDE, longitude);
             latitude = data.getDoubleExtra(ActivityMaps.LATITUDE, latitude);
             String nameOfThePlace = data.getStringExtra(ActivityMaps.PLACE_NAME);
+            LatLng location = new LatLng(latitude, longitude);
+            marker.remove();
+            marker = map.addMarker(new MarkerOptions().position(location).title(nameOfThePlace));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
+
             place.setText(nameOfThePlace);
             m.setLatitude(latitude);
             m.setLongitude(longitude);
             m.setPlaceName(nameOfThePlace);
-            updateMatch(m);
-            Toast.makeText(getContext(), "Change saved!", Toast.LENGTH_SHORT).show();
+            updateMatch(m); //TODO not good here, only when user returns to main window
+            Toast.makeText(getContext(), "Changes saved!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -191,13 +197,16 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
         date.setText(Utils.getDate(c.getTimeInMillis()));
-        Toast.makeText(getContext(), "Change saved!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onTimeSet(int hour, int minute) {
         time.setText(String.format("%02d:%02d", hour, minute));
-        Toast.makeText(getContext(), "Change saved!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNumberSet(int number) {
+        missingPlayers.setText(Integer.toString(number));
     }
 
     private void updateMatch(Match m){ //TODO this has to be moved to the proper class, when edit is working
@@ -219,5 +228,4 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             Utils.showOfflineToast(getContext());
 
     }
-
 }
