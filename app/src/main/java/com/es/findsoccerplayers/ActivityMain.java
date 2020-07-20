@@ -2,6 +2,7 @@ package com.es.findsoccerplayers;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -24,6 +25,7 @@ public class ActivityMain extends AppCompatActivity {
     private long backPressedTime = 0;
     private Toast backToast;
     FragmentAvailableMatches availableMatches;
+    ViewPagerTabs adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +37,19 @@ public class ActivityMain extends AppCompatActivity {
 
         TabLayout tabs = findViewById(R.id.main_tabs);
         ViewPager vp = findViewById(R.id.main_vp);
-        ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-        adapter.addFragment(new FragmentYourMatches(), getString(R.string.act_main_frag_yours_title));
-        adapter.addFragment(new FragmentBookedMatches(), getString(R.string.act_main_frag_booked_title));
-        availableMatches = new FragmentAvailableMatches();
-        adapter.addFragment(availableMatches, getString(R.string.act_main_frag_avail_title));
+        adapter = new ViewPagerTabs(getSupportFragmentManager());
+
+        FragmentAvailableMatches am = new FragmentAvailableMatches();
+        FragmentYourMatches ym = new FragmentYourMatches();
+        FragmentBookedMatches bm = new FragmentBookedMatches();
+
+        ListsManager.setFragment(am);
+        ListsManager.setFragment(ym);
+        ListsManager.setFragment(bm);
+
+        adapter.addFragment(ym, getString(R.string.act_main_frag_yours_title));
+        adapter.addFragment(bm, getString(R.string.act_main_frag_booked_title));
+        adapter.addFragment(am, getString(R.string.act_main_frag_avail_title));
 
         vp.setOffscreenPageLimit(adapter.getCount()-1); //2
         vp.setAdapter(adapter);
@@ -59,7 +69,7 @@ public class ActivityMain extends AppCompatActivity {
         String action = intent.getAction();
         if(action != null && action.equals(ActivitySetLocation.LOCATION_SET_ACTION)){
             Log.d(TAG, "settings updated, triggering updateListWithNewPositionSettings() in fragment available matches");
-            availableMatches.updateListWithNewPositionSettings();
+            //availableMatches.updateListWithNewPositionSettings();
         }
     }
 

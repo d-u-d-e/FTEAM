@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.es.findsoccerplayers.ActivityMaps;
+import com.es.findsoccerplayers.ListsManager;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.Match;
@@ -37,7 +38,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -56,11 +56,13 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
     private Button editBtn;
     boolean[] edits = new boolean[6];
+    private int position;
 
-    public FragmentInfoMatch(Match m, String type) {
+    public FragmentInfoMatch(Match m, String type, int position) {
         originalMatch = m;
         editedMatch = new Match(m);
         this.type = type; //TODO change type string to enum (is it better?)
+        this.position = position;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo
+                //TODO
                 Utils.showUnimplementedToast(getActivity());
             }
         });
@@ -102,7 +104,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateMatch(editedMatch);
+                    editMatch(editedMatch);
                     editBtn.setEnabled(false);
                     originalMatch = new Match(editedMatch);
                     edits = new boolean[6];
@@ -273,7 +275,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         }
     }
 
-    private void updateMatch(Match m){ //TODO this has to be moved to the proper class, when edit is working
+    private void editMatch(final Match m){ //TODO this has to be moved to the proper class, when edit is working
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
 
@@ -284,11 +286,11 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                     Utils.showErrorToast(getActivity(), error.getMessage());
                 else{ //match successfully updated
                     Toast.makeText(getActivity(), "Match successfully updated", Toast.LENGTH_SHORT).show();
+                    if(!Utils.isOnline(getContext()))
+                        Utils.showOfflineToast(getContext());
+                    ListsManager.getFragmentYourMatches().onMatchEdited(position, m);
                 }
             }
         });
-
-        if(!Utils.isOnline(getContext()))
-            Utils.showOfflineToast(getContext());
     }
 }
