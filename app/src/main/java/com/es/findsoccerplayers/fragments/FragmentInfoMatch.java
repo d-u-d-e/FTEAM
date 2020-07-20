@@ -32,7 +32,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -41,19 +46,20 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
     private static final String TAG = "ActivityInfoMatch";
 
-    private Match m;
+    private Match editedMatch, originalMatch;
     private String type;
     private GoogleMap map;
     private static final int MAPS_REQUEST_CODE = 42;
-    private double longitude;
-    private double latitude;
 
-    TextView place, date, time, money, missingPlayers, desc;
+    private TextView place, date, time, money, missingPlayers, desc;
+    private Marker marker;
 
-    Marker marker;
+    private Button editBtn;
+    boolean[] edits = new boolean[6];
 
     public FragmentInfoMatch(Match m, String type) {
-        this.m = m;
+        originalMatch = m;
+        editedMatch = new Match(m);
         this.type = type; //TODO change type string to enum (is it better?)
     }
 
@@ -75,13 +81,14 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         ImageView editPlayers = view.findViewById(R.id.info_match_imageEditPlayers);
         ImageView editMoney = view.findViewById(R.id.info_match_imageEditMoney);
         final ImageView editDesc = view.findViewById(R.id.info_match_imageEditDescription);
-        Button btn = view.findViewById(R.id.info_match_btn);
+        Button actionBtn = view.findViewById(R.id.info_match_actionBtn);
+        editBtn = view.findViewById(R.id.info_match_editBtn);
         desc = view.findViewById(R.id.info_match_descriptionText);
 
         final FragmentManager manager = getChildFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.info_match_mapPreview);
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //todo
@@ -90,9 +97,19 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         });
 
         if (type.equals("your")) {
-            btn.setText("DELETE"); //TODO add to strings
+            actionBtn.setText("DELETE"); //TODO add to strings
+            editBtn.setVisibility(Button.VISIBLE);
+            editBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateMatch(editedMatch);
+                    editBtn.setEnabled(false);
+                    originalMatch = new Match(editedMatch);
+                    edits = new boolean[6];
+                }
+            });
         } else if (type.equals("available")) {
-            btn.setText("JOIN");
+            actionBtn.setText("JOIN");
             editDay.setVisibility(View.INVISIBLE);
             editDesc.setVisibility(View.INVISIBLE);
             editMoney.setVisibility(View.INVISIBLE);
@@ -100,17 +117,17 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             editTime.setVisibility(View.INVISIBLE);
             editPlayers.setVisibility(View.INVISIBLE);
         } else { //booked
-            btn.setText("DROP OUT");
+            actionBtn.setText("DROP OUT");
         }
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
-        place.setText(m.getPlaceName());
-        date.setText(Utils.getDate(m.getTimestamp()));
-        time.setText(Utils.getTime(m.getTimestamp()));
+        place.setText(originalMatch.getPlaceName());
+        date.setText(Utils.getDate(originalMatch.getTimestamp()));
+        time.setText(Utils.getTime(originalMatch.getTimestamp()));
         money.setText("---"); //TODO add money field to matches
-        missingPlayers.setText(Integer.toString(m.getPlayersNumber()));
-        desc.setText(m.getDescription());
+        missingPlayers.setText(Integer.toString(originalMatch.getPlayersNumber()));
+        desc.setText(originalMatch.getDescription());
 
         editPlace.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +140,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         editDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 DatePickerFragment dialog = new DatePickerFragment(getActivity(), FragmentInfoMatch.this);
                 dialog.show(manager,"datePicker");
             }
@@ -154,6 +170,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         });
 
         editDesc.setOnClickListener(new View.OnClickListener() {
+            //TODO
             @Override
             public void onClick(View v) {
                 Utils.showUnimplementedToast(getContext());
@@ -166,29 +183,34 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        LatLng location = new LatLng(m.getLatitude(), m.getLongitude());
+        LatLng location = new LatLng(originalMatch.getLatitude(), originalMatch.getLongitude());
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
-        marker = map.addMarker(new MarkerOptions().position(location).title(m.getPlaceName()));
+        marker = map.addMarker(new MarkerOptions().position(location).title(originalMatch.getPlaceName()));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == MAPS_REQUEST_CODE && resultCode == RESULT_OK){
-            longitude = data.getDoubleExtra(ActivityMaps.LONGITUDE, longitude);
-            latitude = data.getDoubleExtra(ActivityMaps.LATITUDE, latitude);
-            String nameOfThePlace = data.getStringExtra(ActivityMaps.PLACE_NAME);
-            LatLng location = new LatLng(latitude, longitude);
-            marker.remove();
-            marker = map.addMarker(new MarkerOptions().position(location).title(nameOfThePlace));
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
 
-            place.setText(nameOfThePlace);
-            m.setLatitude(latitude);
-            m.setLongitude(longitude);
-            m.setPlaceName(nameOfThePlace);
-            updateMatch(m); //TODO not good here, only when user returns to main window
-            Toast.makeText(getContext(), "Changes saved!", Toast.LENGTH_SHORT).show();
+            double lng = data.getDoubleExtra(ActivityMaps.LONGITUDE, originalMatch.getLongitude());
+            double lat = data.getDoubleExtra(ActivityMaps.LATITUDE, originalMatch.getLatitude());
+
+            String nameOfThePlace = data.getStringExtra(ActivityMaps.PLACE_NAME);
+            LatLng location = new LatLng(lat, lng);
+
+            if(editedMatch.getLongitude() != lng || editedMatch.getLatitude() != lat){
+                editedMatch.setLatitude(lat);
+                editedMatch.setLongitude(lng);
+                editedMatch.setPlaceName(nameOfThePlace);
+
+                marker.remove();
+                marker = map.addMarker(new MarkerOptions().position(location).title(nameOfThePlace));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
+                place.setText(nameOfThePlace);
+
+                updateEdits(lng != originalMatch.getLongitude() || lat != originalMatch.getLatitude(), 0);
+            }
         }
     }
 
@@ -196,17 +218,59 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
     public void onDateSet(int year, int month, int day) {
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
-        date.setText(Utils.getDate(c.getTimeInMillis()));
+        String dateStr = Utils.getDate(c.getTimeInMillis());
+        date.setText(dateStr);
+
+        String dateTime = dateStr + " " + time.getText().toString();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+        try {
+            Date date = sdf.parse(dateTime);
+            assert date != null;
+            long timestamp = date.getTime();
+
+            if(timestamp != editedMatch.getTimestamp()){
+                editedMatch.setTimestamp(timestamp);
+                updateEdits(originalMatch.getTimestamp() != timestamp, 1);
+            }
+
+        } catch (ParseException e) {
+            throw new IllegalStateException("Parsing of date failed");
+        }
+    }
+
+    private void updateEdits(boolean condition, int position){
+        edits[position] = condition;
+        int count = 0;
+
+        for(boolean b: edits)
+            if(b) count++;
+
+        editBtn.setEnabled(count > 0);
     }
 
     @Override
     public void onTimeSet(int hour, int minute) {
-        time.setText(String.format("%02d:%02d", hour, minute));
+        long editTimestamp = editedMatch.getTimestamp();
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(editTimestamp);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        long newTimestamp = c.getTimeInMillis();
+
+        if(newTimestamp != editTimestamp){
+            time.setText(Utils.getTime(newTimestamp));
+            editedMatch.setTimestamp(newTimestamp);
+            updateEdits(newTimestamp != originalMatch.getTimestamp(), 2);
+        }
     }
 
     @Override
     public void onNumberSet(int number) {
-        missingPlayers.setText(Integer.toString(number));
+        if(editedMatch.getPlayersNumber() != number){
+            missingPlayers.setText(Integer.toString(number));
+            editedMatch.setPlayersNumber(number);
+            updateEdits(number != originalMatch.getPlayersNumber(), 3);
+        }
     }
 
     private void updateMatch(Match m){ //TODO this has to be moved to the proper class, when edit is working
@@ -226,6 +290,5 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
         if(!Utils.isOnline(getContext()))
             Utils.showOfflineToast(getContext());
-
     }
 }

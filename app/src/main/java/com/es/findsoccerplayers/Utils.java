@@ -80,6 +80,10 @@ public class Utils {
         return c.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
     }
 
+    public static long getMillisTime(long timestamp){
+        return timestamp % (24 * 60 * 60 * 1000);
+    }
+
     public static boolean isOnline(Context context)
     {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

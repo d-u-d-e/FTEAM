@@ -298,31 +298,46 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/info_match_imageEditDescription" />
 
+
+            <Button
+                android:id="@+id/info_match_editBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:enabled="false"
+                android:visibility="gone"
+                android:text="EDIT MATCH"
+                app:layout_constraintTop_toBottomOf="@id/info_match_descriptionText"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/info_match_mapPreview"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/info_match_descriptionText" />
+                app:layout_constraintTop_toBottomOf="@id/info_match_editBtn" />
 
             <Button
-                android:id="@+id/info_match_btn"
+                android:id="@+id/info_match_actionBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="30dp"
                 android:text="DELETE/DROP/JOIN"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/info_match_mapPreview"></Button>
+                app:layout_constraintTop_toBottomOf="@id/info_match_mapPreview"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
