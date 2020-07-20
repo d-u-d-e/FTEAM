@@ -209,7 +209,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         String key = ref.getKey();
 
         Map<String, Object> map = new HashMap<>();
-        map.put(path + "/" + key, true);
+        map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
         m.setMatchID(key);
         map.put("matches/" + key, m);
 

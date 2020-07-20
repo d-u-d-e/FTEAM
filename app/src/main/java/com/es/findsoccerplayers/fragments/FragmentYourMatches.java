@@ -108,6 +108,32 @@ public class FragmentYourMatches extends Fragment {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                //user creates a match or joins a match
+                final String matchKey = dataSnapshot.getKey();
+                assert matchKey != null;
+                DatabaseReference ref = db.getReference().child("matches").child(matchKey);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Match m = dataSnapshot.getValue(Match.class);
+                        synchronized (FragmentYourMatches.this){
+                            int i;
+                            for(i = 0; i < matches.size(); i++)
+                                if(matches.get(i).getMatchID().equals(matchKey)){
+                                    break;
+                                }
+                            if(i == matches.size()) throw new IllegalStateException("can't find updated match in your matches list");
+                            matches.set(i, m);
+                            matchAdapter.notifyItemChanged(i);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                });
             }
 
             @Override
