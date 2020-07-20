@@ -46,7 +46,9 @@ public class ActivitySettings extends AppCompatActivity {
                 if(position == 0){
                     startActivity(new Intent(getApplicationContext(), ActivityAccount.class));
                 }else if(position == 1){
-                    startActivity(new Intent(getApplicationContext(), ActivitySetLocation.class));
+                    Intent i = new Intent(getApplicationContext(), ActivitySetLocation.class);
+                    i.putExtra("act", "sett");
+                    startActivity(i);
                 }else if(position == 2){
                     Utils.showUnimplementedToast(getApplicationContext());
                     //TODO
