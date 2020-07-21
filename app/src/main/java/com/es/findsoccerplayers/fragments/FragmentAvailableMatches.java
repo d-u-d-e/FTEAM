@@ -38,6 +38,8 @@ public class FragmentAvailableMatches extends Fragment {
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private List<Match> matches;
     private MatchAdapter matchAdapter;
+    private TextView message;
+    private int km;
 
     private static class PositionSettings{
         LatLng position;
@@ -72,8 +74,8 @@ public class FragmentAvailableMatches extends Fragment {
 
         positionSettings = getPositionSettings();
 
-        TextView message = view.findViewById(R.id.availableMatchMessage);
-        int km = (int) positionSettings.radius/1000;
+        message = view.findViewById(R.id.availableMatchMessage);
+        km = (int) positionSettings.radius/1000;
         message.setText("You are searching matches in a range of " + km + " km");
 
         if(positionSettings == null){
@@ -87,7 +89,7 @@ public class FragmentAvailableMatches extends Fragment {
     private boolean isLocationNearby(double latitude, double longitude){
 
         /* this will show every match, regardless of its position in the world, if the user
-           didn't set any preferred position */ //TODO is this ok?
+           didn't set any preferred position */
         if(positionSettings == null) return true;
 
         float[] result = new float[1];
@@ -117,6 +119,10 @@ public class FragmentAvailableMatches extends Fragment {
         positionSettings = getPositionSettings();
 
         assert positionSettings != null;
+
+
+        int km = (int) positionSettings.radius/1000;
+        message.setText("You are searching matches in a range of " + km + " km");
 
         DatabaseReference ref = db.getReference().child("matches");
         //this is expensive for huge data, but we

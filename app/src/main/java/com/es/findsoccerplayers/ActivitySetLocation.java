@@ -206,6 +206,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                     Intent i = new Intent(LOCATION_SET_ACTION, null, ActivitySetLocation.this, ActivityMain.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);
+                    finish();
                 }
 
             }
@@ -217,6 +218,8 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         mapReady = true;
+
+        Toast.makeText(this, "Connecting to GPS...", Toast.LENGTH_SHORT).show();
 
         if(locationAccess){
             if(PositionClient.isGpsOFF(ActivitySetLocation.this)){

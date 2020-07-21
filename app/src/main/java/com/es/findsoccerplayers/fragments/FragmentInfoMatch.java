@@ -9,14 +9,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.es.findsoccerplayers.ActivityAccount;
+import com.es.findsoccerplayers.ActivityLogin;
+import com.es.findsoccerplayers.ActivityMain;
 import com.es.findsoccerplayers.ActivityMaps;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
+import com.es.findsoccerplayers.dialogue.EditDescriptionDialogue;
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.pickers.DatePickerFragment;
 import com.es.findsoccerplayers.pickers.NumberPickerFragment;
@@ -37,17 +44,19 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
 
 public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, DatePickerFragment.OnCompleteListener,
-        TimePickerFragment.OnCompleteListener, NumberPickerFragment.OnCompleteListener{
+        TimePickerFragment.OnCompleteListener, NumberPickerFragment.OnCompleteListener, EditDescriptionDialogue.onDescriptionListener {
 
     private static final String TAG = "ActivityInfoMatch";
 
     private Match editedMatch, originalMatch;
-    private String type;
+    private String type, descPrev;
     private GoogleMap map;
     private static final int MAPS_REQUEST_CODE = 42;
 
@@ -84,6 +93,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         Button actionBtn = view.findViewById(R.id.info_match_actionBtn);
         editBtn = view.findViewById(R.id.info_match_editBtn);
         desc = view.findViewById(R.id.info_match_descriptionText);
+        descPrev = originalMatch.getDescription();
 
         final FragmentManager manager = getChildFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.info_match_mapPreview);
@@ -91,8 +101,31 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo
-                Utils.showUnimplementedToast(getActivity());
+                if (type.equals("your")) { //delete match case
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + originalMatch.getMatchID());
+                    ref.removeValue(new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError error, DatabaseReference ref) {
+                            if(error != null)
+                                Utils.showErrorToast(getActivity(), error.getMessage());
+                        }
+                    });
+                    ref = FirebaseDatabase.getInstance().getReference("users/" + originalMatch.getCreatorID() + "/createdMatches/" + originalMatch.getMatchID());
+                    ref.removeValue(new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError error, DatabaseReference ref) {
+                            if(error != null)
+                                Utils.showErrorToast(getActivity(), error.getMessage());
+                            else{ //match successfully updated
+                                Toast.makeText(getActivity(), "Match successfully cancelled!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+                getActivity().finish();
+                Intent i = new Intent(getContext(), ActivityMain.class);
+                startActivity(i);
+
             }
         });
 
@@ -170,10 +203,11 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         });
 
         editDesc.setOnClickListener(new View.OnClickListener() {
-            //TODO
             @Override
             public void onClick(View v) {
-                Utils.showUnimplementedToast(getContext());
+
+                EditDescriptionDialogue descDlg = new EditDescriptionDialogue(getActivity(), FragmentInfoMatch.this, getString(R.string.edit_description_dialogue_title), descPrev);
+                descDlg.show(manager, "edit desc");
             }
         });
 
@@ -290,5 +324,14 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
         if(!Utils.isOnline(getContext()))
             Utils.showOfflineToast(getContext());
+
+    }
+
+    @Override
+    public void onDescriptionSet(String desc) {
+        this.desc.setText(desc);
+        editedMatch.setDescription(desc);
+        descPrev=desc;
+        updateEdits(desc != originalMatch.getDescription(), 5);
     }
 }

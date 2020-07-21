@@ -102,6 +102,7 @@
     <string name="match_element_time_label">HOUR:</string>
     <string name="match_element_desc_label">DESCRIPTION:</string>
     <string name="info_match_delete">DELETE MATCH</string>
+    <string name="edit_description_dialogue_title">Insert a description</string>
 
 
 </resources>
