@@ -118,28 +118,13 @@ public class FragmentYourMatches extends Fragment {
                                 matches.add(m);
                                 matchAdapter.notifyItemInserted(matches.size()-1);
                             }
+
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) { //match deleted
-                String matchKey = dataSnapshot.getKey();
-                int i = 0;
-                synchronized (FragmentYourMatches.this){
-                    for(i = 0; i < matches.size(); i++){
-                        if(matches.get(i).getMatchID().equals(matchKey))
-                            break;
-                    }
-                    matches.remove(i);
-                    matchAdapter.notifyItemRemoved(i);
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
                 }
-            }
-                          
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
