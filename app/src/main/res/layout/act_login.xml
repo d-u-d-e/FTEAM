@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:text="@string/act_login_log_forgottenPass"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorPrimary"
         android:layout_marginTop="15sp"
         app:layout_constraintBottom_toTopOf="@id/log_progressBar"
         app:layout_constraintEnd_toEndOf="parent"

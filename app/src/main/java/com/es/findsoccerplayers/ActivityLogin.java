@@ -93,6 +93,8 @@ public class ActivityLogin extends AppCompatActivity{
             public void onClick(View v) {
                 String email = logEmail.getText().toString();
                 String psw = logPsw.getText().toString();
+
+                //Check if all the field are filled
                 if(TextUtils.isEmpty(email)){
                     logEmail.setError(getString(R.string.field_missing));
                 }
@@ -235,7 +237,6 @@ public class ActivityLogin extends AppCompatActivity{
     /**
      * Creates a new user, saving his information in the database
      */
-
     private void createGoogleUser(){
         String fullName = fAuth.getCurrentUser().getDisplayName();
         String name, surname = "";
