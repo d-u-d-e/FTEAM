@@ -102,6 +102,11 @@
     <string name="match_element_time_label">HOUR:</string>
     <string name="match_element_desc_label">DESCRIPTION:</string>
     <string name="info_match_delete">DELETE MATCH</string>
+    <string name="edit_description_dialogue_title">Insert a description</string>
+    <string name="availableMatchAlreadyBookedMsg">You are already joined in this match</string>
+    <string name="infoMatch_actionBtn_delete">DELETE MATCH</string>
+    <string name="infoMatch_actionBtn_join">JOIN</string>
+    <string name="infoMatch_actionBtn_dropOut">DROP OUT</string>
 
 
 </resources>
