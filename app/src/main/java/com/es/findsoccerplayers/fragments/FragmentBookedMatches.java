@@ -82,7 +82,7 @@ public class FragmentBookedMatches extends Fragment {
                     DatabaseReference ref = db.getReference().child("matches").child(matchKey);
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        public void onDataChange(DataSnapshot snapshot) {
                             Match m = dataSnapshot.getValue(Match.class);
                             if(snapshot.exists()) //TODO not sure if it works
                                 addUI(m);
