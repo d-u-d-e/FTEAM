@@ -22,8 +22,6 @@ import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,12 +35,9 @@ import java.util.List;
 public class FragmentAvailableMatches extends Fragment {
 
     private static final String TAG = "AvailableMatches";
-    private FirebaseUser user;
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private List<Match> matches;
     private MatchAdapter matchAdapter;
-    private TextView message;
-    private int km;
 
     private static class PositionSettings{
         LatLng position;
@@ -77,11 +72,9 @@ public class FragmentAvailableMatches extends Fragment {
 
         positionSettings = getPositionSettings();
 
-        message = view.findViewById(R.id.availableMatchMessage);
-        km = (int) positionSettings.radius/1000;
+        TextView message = view.findViewById(R.id.availableMatchMessage);
+        int km = (int) positionSettings.radius/1000;
         message.setText("You are searching matches in a range of " + km + " km");
-
-        user = FirebaseAuth.getInstance().getCurrentUser();
 
         if(positionSettings == null){
             //TODO launch activity set location?
@@ -94,7 +87,7 @@ public class FragmentAvailableMatches extends Fragment {
     private boolean isLocationNearby(double latitude, double longitude){
 
         /* this will show every match, regardless of its position in the world, if the user
-           didn't set any preferred position */
+           didn't set any preferred position */ //TODO is this ok?
         if(positionSettings == null) return true;
 
         float[] result = new float[1];
@@ -124,10 +117,6 @@ public class FragmentAvailableMatches extends Fragment {
         positionSettings = getPositionSettings();
 
         assert positionSettings != null;
-
-
-        int km = (int) positionSettings.radius/1000;
-        message.setText("You are searching matches in a range of " + km + " km");
 
         DatabaseReference ref = db.getReference().child("matches");
         //this is expensive for huge data, but we
@@ -207,26 +196,23 @@ public class FragmentAvailableMatches extends Fragment {
     }
 
     private synchronized void addUI(Match m){
-        if(!user.getUid().equals(m.getCreatorID())){
-            //check if we have this match in the list
-            int i;
-            for(i = 0; i < matches.size(); i++){
-                if(matches.get(i).getMatchID().equals(m.getMatchID())){
-                    break;
-                }
-            }
-
-            if(i == matches.size()) { //we don't have it
-                matches.add(m);
-                matchAdapter.notifyItemInserted(matches.size()-1);
-            }
-            else{
-                //just update in this case, he might have changed the description for example
-                matches.set(i, m);
-                matchAdapter.notifyItemChanged(i);
+        //check if we have this match in the list
+        int i;
+        for(i = 0; i < matches.size(); i++){
+            if(matches.get(i).getMatchID().equals(m.getMatchID())){
+                break;
             }
         }
 
+        if(i == matches.size()) { //we don't have it
+                matches.add(m);
+                matchAdapter.notifyItemInserted(matches.size()-1);
+        }
+        else{
+            //just update in this case, he might have changed the description for example
+            matches.set(i, m);
+            matchAdapter.notifyItemChanged(i);
+        }
     }
 
     private synchronized void removeUI(Match m){
@@ -243,5 +229,4 @@ public class FragmentAvailableMatches extends Fragment {
             matchAdapter.notifyItemRemoved(i);
         }
     }
-
 }

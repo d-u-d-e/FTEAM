@@ -68,7 +68,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         description = findViewById(R.id.cr_match_descriptionField);
         FloatingActionButton matchFab = findViewById(R.id.cr_match_fab);
 
-        //Restoring info from the instance state if there are some
+
         if (savedInstanceState != null) {
             matchDate.setText(savedInstanceState.getString(MATCH_DATE));
             matchTime.setText(savedInstanceState.getString(MATCH_HOUR));
@@ -77,8 +77,8 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
             longitude = savedInstanceState.getDouble(ActivityMaps.LONGITUDE);
             latitude = savedInstanceState.getDouble(ActivityMaps.LATITUDE);
             players.setText(savedInstanceState.getString(PLAYERS_NUMBER));
+
         } else {
-            //Show the actual date and time
             long timestamp = Calendar.getInstance().getTimeInMillis();
             matchDate.setText(Utils.getDate(timestamp));
             matchTime.setText(Utils.getTime(timestamp));
@@ -120,19 +120,17 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
             }
         });
 
-        //If fab is pressed
         matchFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Checking if all the required field are filled
                 if(placeText.getText().toString().equals(getString(R.string.add_position)) ||
                     players.getText().toString().equals(getString(R.string.players))){
                     Toast.makeText(ActivityCreateMatch.this, R.string.all_fields_required,
                             Toast.LENGTH_SHORT).show();
                 }else{
-                    //All field are complete -> save the match
                     match = new Match();
                     match.setDescription(description.getText().toString());
+
                     String dateTime = matchDate.getText().toString() + " " + matchTime.getText().toString();
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
 

@@ -2,7 +2,6 @@ package com.es.findsoccerplayers.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,11 +83,11 @@ public class FragmentBookedMatches extends Fragment {
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                           Match m = snapshot.getValue(Match.class);
-                           if(snapshot.exists())
-                               addUI(m);
-                           else
-                               removeUI(m);
+                            Match m = dataSnapshot.getValue(Match.class);
+                            if(snapshot.exists()) //TODO not sure if it works
+                                addUI(m);
+                            else
+                                removeUI(m);
                         }
 
                         @Override
@@ -130,18 +129,15 @@ public class FragmentBookedMatches extends Fragment {
         }
 
     private synchronized void addUI(Match m){
-        Log.w("bookedmatch","dentro add");
         //check if we have this match in the list
         int i;
         for(i = 0; i < matches.size(); i++){
             if(matches.get(i).getMatchID().equals(m.getMatchID())){
-                Log.w("bookedmatch","ho brekato");
                 break;
             }
         }
 
         if(i == matches.size()) { //we don't have it
-            Log.w("bookedmatch","ho aggiunto");
             matches.add(m);
             matchAdapter.notifyItemInserted(matches.size()-1);
         }
