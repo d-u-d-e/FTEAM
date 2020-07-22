@@ -107,7 +107,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             @Override
             public void onClick(View v) {
                 if (type.equals("your")) { //delete match case
-                    removeMatch();
+                    ListsManager.getFragmentYourMatches().onMatchDeleted(position);
                 }else if (type.equals("available")){
                     joinMatch();
                 }else{
@@ -308,7 +308,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         }
     }
 
-    private void updateMatch(Match m){
+    private void editMatch(final Match m){
         //update the match on the db if some value are changed
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
         ref.setValue(m, new DatabaseReference.CompletionListener() {
@@ -377,27 +377,5 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             }
         });
     }
-
-    public void removeMatch(){
-        //Delete the match from the db
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + originalMatch.getMatchID());
-        ref.removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError error, DatabaseReference ref) {
-                if(error != null)
-                    Utils.showErrorToast(getActivity(), error.getMessage());
-            }
-        });
-        ref = FirebaseDatabase.getInstance().getReference("users/" + originalMatch.getCreatorID() + "/createdMatches/" + originalMatch.getMatchID());
-        ref.removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError error, DatabaseReference ref) {
-                if(error != null)
-                    Utils.showErrorToast(getActivity(), error.getMessage());
-                else{ //match successfully updated
-                    Toast.makeText(getActivity(), "Match successfully cancelled!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
+    
 }
