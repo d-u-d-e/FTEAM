@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,13 +20,12 @@ import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +48,10 @@ public class FragmentYourMatches extends Fragment {
                 Intent i = new Intent(getContext(), ActivitySelectMatch.class);
                 i.putExtra("match", matches.get(position));
                 i.putExtra("type", "your");
+                i.putExtra("position", position);
                 startActivity(i);
             }
         });
-
 
         View view = inflater.inflate(R.layout.frag_your_matches, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.frag_yours_list);
@@ -60,6 +60,9 @@ public class FragmentYourMatches extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(matchAdapter);
+
+        readMatches();
+
         //recyclerView.setItemAnimator(null);
 
         FloatingActionButton fabCreateMatch = view.findViewById(R.id.fab_create_match);
@@ -70,71 +73,55 @@ public class FragmentYourMatches extends Fragment {
                 startActivity(i);
             }
         });
-
-        sync();
         return view;
     }
 
-    private void sync(){
-        //called every time the "user" creates a new match or deletes a previously created match
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference ref =
-                db.getReference().child("users").child(user.getUid()).child("createdMatches");
+    public void onMatchCreated(Match m){
+        synchronized (this){
+            matches.add(m);
+            matchAdapter.notifyItemInserted(matches.size()-1);
+        }
+    }
 
-        ref.addChildEventListener(new ChildEventListener() {
+    public void onMatchDeleted(int position){
+        synchronized (this){
+            matches.remove(position);
+            matchAdapter.notifyItemRemoved(position);
+        }
+    }
+
+    void onMatchEdited(int position, Match newMatch){
+        synchronized (this){
+            matches.set(position, newMatch);
+            matchAdapter.notifyItemChanged(position);
+        }
+    }
+
+    private void readMatches() { //done only at beginning
+
+        String path = "users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/createdMatches";
+
+        DatabaseReference ref = db.getReference(path);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                //user creates a match or joins a match
-                final String matchKey = dataSnapshot.getKey();
-                assert matchKey != null;
-                DatabaseReference ref = db.getReference().child("matches").child(matchKey);
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Match m = dataSnapshot.getValue(Match.class);
-                        synchronized (FragmentYourMatches.this){
-                            matches.add(m);
-                            matchAdapter.notifyItemInserted(matches.size()-1);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    String key = ds.getKey();
+                    DatabaseReference r = db.getReference("matches/" + key);
+                    r.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Match m = snapshot.getValue(Match.class);
+                            assert  m!= null;
+                            synchronized (FragmentYourMatches.this){
+                                matches.add(m);
+                                matchAdapter.notifyItemInserted(matches.size()-1);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-
-                });
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                //user creates a match or joins a match
-                final String matchKey = dataSnapshot.getKey();
-                assert matchKey != null;
-                DatabaseReference ref = db.getReference().child("matches").child(matchKey);
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Match m = dataSnapshot.getValue(Match.class);
-                        synchronized (FragmentYourMatches.this){
-                            int i;
-                            for(i = 0; i < matches.size(); i++)
-                                if(matches.get(i).getMatchID().equals(matchKey)){
-                                    break;
-                                }
-                            if(i == matches.size()) throw new IllegalStateException("can't find updated match in your matches list");
-                            matches.set(i, m);
-                            matchAdapter.notifyItemChanged(i);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-
-                });
-            }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) { //match deleted
@@ -149,18 +136,17 @@ public class FragmentYourMatches extends Fragment {
                     matchAdapter.notifyItemRemoved(i);
                 }
             }
-
+                          
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-
     }
 }
 
