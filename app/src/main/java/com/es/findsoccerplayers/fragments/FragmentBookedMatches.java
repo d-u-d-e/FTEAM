@@ -83,7 +83,7 @@ public class FragmentBookedMatches extends Fragment {
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            Match m = dataSnapshot.getValue(Match.class);
+                            Match m = snapshot.getValue(Match.class);
                             if(snapshot.exists()) //TODO not sure if it works
                                 addUI(m);
                             else
