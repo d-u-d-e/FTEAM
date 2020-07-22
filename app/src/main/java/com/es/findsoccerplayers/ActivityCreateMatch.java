@@ -200,7 +200,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         players.setText(Integer.toString(number));
     }
 
-    private void createMatch(Match m){
+    private void createMatch(final Match m){
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -222,6 +222,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                     Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
                 else{ //match successfully created
                     Toast.makeText(ActivityCreateMatch.this, "Match successfully created", Toast.LENGTH_SHORT).show();
+                    ListsManager.getFragmentYourMatches().onMatchCreated(m);
                 }
             }
         });
@@ -235,6 +236,4 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         startActivity(i);
         finish();
     }
-
-
 }

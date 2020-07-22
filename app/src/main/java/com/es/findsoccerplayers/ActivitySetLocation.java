@@ -203,7 +203,8 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
                     editor.commit();
                     Toast.makeText(ActivitySetLocation.this, "Preferences Saved!", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(LOCATION_SET_ACTION, null, ActivitySetLocation.this, ActivityMain.class);
+                    ListsManager.getFragmentAvailableMatches().updateListWithNewPositionSettings();
+                    Intent i = new Intent(ActivitySetLocation.this, ActivityMain.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);
                     finish();
