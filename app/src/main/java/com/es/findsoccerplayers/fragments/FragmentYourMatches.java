@@ -138,7 +138,6 @@ public class FragmentYourMatches extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) { //match deleted
-                //TODO deletion is not implemented yet, but the list can handle it
                 String matchKey = dataSnapshot.getKey();
                 int i = 0;
                 synchronized (FragmentYourMatches.this){

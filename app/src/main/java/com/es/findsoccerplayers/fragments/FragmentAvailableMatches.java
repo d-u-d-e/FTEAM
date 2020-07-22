@@ -22,6 +22,8 @@ import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +37,7 @@ import java.util.List;
 public class FragmentAvailableMatches extends Fragment {
 
     private static final String TAG = "AvailableMatches";
+    private FirebaseUser user;
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private List<Match> matches;
     private MatchAdapter matchAdapter;
@@ -77,6 +80,8 @@ public class FragmentAvailableMatches extends Fragment {
         message = view.findViewById(R.id.availableMatchMessage);
         km = (int) positionSettings.radius/1000;
         message.setText("You are searching matches in a range of " + km + " km");
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         if(positionSettings == null){
             //TODO launch activity set location?
@@ -202,23 +207,26 @@ public class FragmentAvailableMatches extends Fragment {
     }
 
     private synchronized void addUI(Match m){
-        //check if we have this match in the list
-        int i;
-        for(i = 0; i < matches.size(); i++){
-            if(matches.get(i).getMatchID().equals(m.getMatchID())){
-                break;
+        if(!user.getUid().equals(m.getCreatorID())){
+            //check if we have this match in the list
+            int i;
+            for(i = 0; i < matches.size(); i++){
+                if(matches.get(i).getMatchID().equals(m.getMatchID())){
+                    break;
+                }
+            }
+
+            if(i == matches.size()) { //we don't have it
+                matches.add(m);
+                matchAdapter.notifyItemInserted(matches.size()-1);
+            }
+            else{
+                //just update in this case, he might have changed the description for example
+                matches.set(i, m);
+                matchAdapter.notifyItemChanged(i);
             }
         }
 
-        if(i == matches.size()) { //we don't have it
-                matches.add(m);
-                matchAdapter.notifyItemInserted(matches.size()-1);
-        }
-        else{
-            //just update in this case, he might have changed the description for example
-            matches.set(i, m);
-            matchAdapter.notifyItemChanged(i);
-        }
     }
 
     private synchronized void removeUI(Match m){
@@ -235,4 +243,5 @@ public class FragmentAvailableMatches extends Fragment {
             matchAdapter.notifyItemRemoved(i);
         }
     }
+
 }
