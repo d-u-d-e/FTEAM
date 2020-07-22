@@ -15,6 +15,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.es.findsoccerplayers.ActivityMain;
 import com.es.findsoccerplayers.ActivityMaps;
 import com.es.findsoccerplayers.ListsManager;
 import com.es.findsoccerplayers.R;
@@ -30,9 +31,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.es.findsoccerplayers.dialogue.EditDescriptionDialogue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,7 +47,8 @@ import java.util.Locale;
 import static android.app.Activity.RESULT_OK;
 
 public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, DatePickerFragment.OnCompleteListener,
-        TimePickerFragment.OnCompleteListener, NumberPickerFragment.OnCompleteListener{
+        TimePickerFragment.OnCompleteListener, NumberPickerFragment.OnCompleteListener,
+        EditDescriptionDialogue.onDescriptionListener {
 
     private static final String TAG = "ActivityInfoMatch";
 
@@ -307,10 +312,11 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
     @Override
     public void onDescriptionSet(String desc) {
-        this.desc.setText(desc);
-        editedMatch.setDescription(desc);
-        descPrev = desc;
-        updateEdits(!desc.equals(originalMatch.getDescription()), 5);
+        if(!editedMatch.getDescription().equals(desc)){
+            this.desc.setText(desc);
+            editedMatch.setDescription(desc);
+            updateEdits(!desc.equals(originalMatch.getDescription()), 5);
+        }
     }
 
     private void joinMatch(){
