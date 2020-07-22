@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.fragment.app.DialogFragment;
 
 import androidx.fragment.app.Fragment;
@@ -93,8 +94,17 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
-                Utils.showUnimplementedToast(getActivity());
+                if (type.equals("your")) { //delete match case
+                    ListsManager.getFragmentYourMatches().onMatchDeleted(position);
+                }else if (type.equals("available")){
+                    joinMatch();
+                }else{
+                    dropOut();
+                }
+                getActivity().finish(); //terminate selectMatch (TODO do we really need to go back to main?)
+                Intent i = new Intent(getContext(), ActivityMain.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
             }
         });
 
@@ -275,7 +285,8 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         }
     }
 
-    private void editMatch(final Match m){ //TODO this has to be moved to the proper class, when edit is working
+    private void editMatch(final Match m){
+        //update the match on the db if some value are changed
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
 
@@ -293,4 +304,49 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             }
         });
     }
+
+    @Override
+    public void onDescriptionSet(String desc) {
+        this.desc.setText(desc);
+        editedMatch.setDescription(desc);
+        descPrev = desc;
+        updateEdits(!desc.equals(originalMatch.getDescription()), 5);
+    }
+
+    private void joinMatch(){
+        //Add to the current user the matchID which he joined on the database
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+
+        String key = originalMatch.getMatchID();
+
+        db.getReference("users/" + user.getUid() + "/bookedMatches/" + key).
+                setValue(Calendar.getInstance().getTimeInMillis(), new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, DatabaseReference ref) {
+                if(error != null)
+                    Utils.showErrorToast(getContext(), error.getMessage());
+                else{ //match successfully created
+                    Toast.makeText(getContext(), "You joined in the match", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void dropOut(){
+        //Remove from the current user the matchID which he dropped out
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users/" + user.getUid() + "/bookedMatches/" + originalMatch.getMatchID());
+        ref.removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, DatabaseReference ref) {
+                if(error != null)
+                    Utils.showErrorToast(getActivity(), error.getMessage());
+                else{ //match successfully updated
+                    Toast.makeText(getActivity(), "You retired from the match", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+    
 }

@@ -118,12 +118,11 @@ public class FragmentYourMatches extends Fragment {
                                 matches.add(m);
                                 matchAdapter.notifyItemInserted(matches.size()-1);
                             }
+
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError error) {}
                     });
                 }
             }
