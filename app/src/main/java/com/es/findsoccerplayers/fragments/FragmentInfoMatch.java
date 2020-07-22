@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import androidx.fragment.app.Fragment;
@@ -113,10 +114,10 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 }else{
                     dropOut();
                 }
-                getActivity().finish();
+                getActivity().finish(); //terminate selectMatch (TODO do we really need to go back to main?)
                 Intent i = new Intent(getContext(), ActivityMain.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
-              
             }
         });
 
@@ -324,37 +325,29 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 }
             }
         });
-
-        if(!Utils.isOnline(getContext()))
-            Utils.showOfflineToast(getContext());
-
     }
 
     @Override
     public void onDescriptionSet(String desc) {
         this.desc.setText(desc);
         editedMatch.setDescription(desc);
-        descPrev=desc;
-        updateEdits(desc != originalMatch.getDescription(), 5);
+        descPrev = desc;
+        updateEdits(!desc.equals(originalMatch.getDescription()), 5);
     }
 
-    public void joinMatch(){
+    private void joinMatch(){
         //Add to the current user the matchID which he joined on the database
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-        String path = "users/" + user.getUid() + "/bookedMatches";
-        DatabaseReference ref = db.getReference(path).push();
         String key = originalMatch.getMatchID();
 
-        Map<String, Object> map = new HashMap<>();
-        map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
-        originalMatch.setMatchID(key);
-        db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
+        db.getReference("users/" + user.getUid() + "/bookedMatches/" + key).
+                setValue(Calendar.getInstance().getTimeInMillis(), new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if(databaseError != null)
-                    Utils.showErrorToast(getContext(), databaseError.getMessage());
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if(error != null)
+                    Utils.showErrorToast(getContext(), error.getMessage());
                 else{ //match successfully created
                     Toast.makeText(getContext(), "You joined in the match", Toast.LENGTH_SHORT).show();
                 }
@@ -362,7 +355,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         });
     }
 
-    public void dropOut(){
+    private void dropOut(){
         //Remove from the current user the matchID which he dropped out
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users/" + user.getUid() + "/bookedMatches/" + originalMatch.getMatchID());
