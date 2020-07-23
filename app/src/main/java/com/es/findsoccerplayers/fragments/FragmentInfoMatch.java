@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.es.findsoccerplayers.ActivityMaps;
 import com.es.findsoccerplayers.ListsManager;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
+import com.es.findsoccerplayers.models.CustomMapView;
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.pickers.DatePickerFragment;
 import com.es.findsoccerplayers.pickers.NumberPickerFragment;
@@ -61,7 +63,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
     private Marker marker;
 
     private Button editBtn;
-    boolean[] edits = new boolean[6];
+    private boolean[] edits = new boolean[6];
     private int position;
 
     public FragmentInfoMatch(Match m, String type, int position) {
@@ -93,8 +95,13 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         editBtn = view.findViewById(R.id.info_match_editBtn);
         desc = view.findViewById(R.id.info_match_descriptionText);
 
+        CustomMapView mapView = view.findViewById(R.id.info_match_mapPreview);
+
         final FragmentManager manager = getChildFragmentManager();
-        SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.info_match_mapPreview);
+        SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.info_match_mapFragment);
+        assert mapFragment != null;
+        mapView.setScrollView((ScrollView)view.findViewById(R.id.info_match_scrollview));
+        mapFragment.getMapAsync(this);
 
         actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,8 +143,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         } else { //booked
             actionBtn.setText("DROP OUT");
         }
-        assert mapFragment != null;
-        mapFragment.getMapAsync(this);
 
         place.setText(originalMatch.getPlaceName());
         date.setText(Utils.getDate(originalMatch.getTimestamp()));
