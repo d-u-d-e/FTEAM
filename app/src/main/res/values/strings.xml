@@ -83,7 +83,7 @@
     <string name="select_a_place">Select a Place</string>
 
 
-    <!--InfoBookedMatch fragment strings-->
+    <!--FragmentInfoMatch strings-->
     <string name="frag_info_booked_match_field">PLACE: </string>
     <string name="frag_info_booked_match_day">DAY: </string>
     <string name="frag_info_booked_match_missingPlayers">MISSING PLAYERS: </string>
@@ -91,6 +91,10 @@
     <string name="frag_info_booked_match_quota">QUOTA:</string>
     <string name="frag_info_booked_match_description_dropoutBtn">DROP OUT</string>
 
+
+    <!--FragmentAvailableMatches strings-->
+
+    <string name="frag_avail_matches_preference_msg">You are searching matches in a range of %1d km</string>
 
     <!--ActivitySetLocation strings-->
     <string name="complete_preferences">Select a distance and a position please!</string>

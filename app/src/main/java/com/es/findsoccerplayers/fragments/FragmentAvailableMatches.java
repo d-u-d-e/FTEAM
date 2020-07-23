@@ -1,10 +1,13 @@
 package com.es.findsoccerplayers.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +47,7 @@ public class FragmentAvailableMatches extends Fragment {
         double radius;
     }
     private PositionSettings positionSettings;
+    private TextView message;
 
     //TODO show only matches for which missing players is not zero
 
@@ -73,23 +77,31 @@ public class FragmentAvailableMatches extends Fragment {
 
         positionSettings = getPositionSettings();
 
-        TextView message = view.findViewById(R.id.availableMatchMessage);
-        int km = (int) positionSettings.radius/1000;
-        message.setText("You are searching matches in a range of " + km + " km");
+        message = view.findViewById(R.id.availableMatchMessage);
 
         if(positionSettings == null){
-            //TODO launch activity set location?
-            Toast.makeText(getActivity(), R.string.preferred_pos_not_set, Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder b = new AlertDialog.Builder(getActivity()).setMessage(R.string.preferred_pos_not_set);
+            b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent i = new Intent(getActivity(), ActivitySetLocation.class);
+                    startActivity(i); //setting a location will trigger the update of the list form the db
+                }
+            });
+            b.setCancelable(false);
+            b.show();
         }
-        sync(); //onChildAdded is called once for each element at the start
+        else{
+            int km = (int) positionSettings.radius/1000;
+            message.setText(String.format(getString(R.string.frag_avail_matches_preference_msg), km));
+            sync();
+        }
         return view;
     }
 
     private boolean isLocationNearby(double latitude, double longitude){
 
-        /* this will show every match, regardless of its position in the world, if the user
-           didn't set any preferred position */ //TODO is this ok?
-        if(positionSettings == null) return true;
+        assert positionSettings != null;
 
         float[] result = new float[1];
         Location.distanceBetween(positionSettings.position.latitude, positionSettings.position.longitude,
@@ -112,12 +124,22 @@ public class FragmentAvailableMatches extends Fragment {
         return ps;
     }
 
-    public void updateListWithNewPositionSettings(){ //triggered when position settings are updated
+    public void onNewPositionSet(){
 
-        //the user has updated the position settings
-        positionSettings = getPositionSettings();
+        if(positionSettings == null){ //never set before
+            positionSettings = getPositionSettings();
+            sync();
+        }
+        else{
+            positionSettings = getPositionSettings();
+            readAllRelevantMatches();
+        }
 
-        assert positionSettings != null;
+        int km = (int) positionSettings.radius/1000;
+        message.setText(String.format(getString(R.string.frag_avail_matches_preference_msg), km));
+    }
+
+    private void readAllRelevantMatches(){
 
         DatabaseReference ref = db.getReference().child("matches");
         //this is expensive for huge data, but we
@@ -149,6 +171,7 @@ public class FragmentAvailableMatches extends Fragment {
     }
 
     private void sync(){
+
         DatabaseReference ref = db.getReference().child("matches");
         //this is expensive for huge data, but we have no means to select matches
         // distant x meters apart from the user position directly in the database
