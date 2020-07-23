@@ -75,16 +75,10 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_set_location);
 
-        Intent i = getIntent();
-        if (i.hasExtra("act")){
-            Toolbar toolbar = findViewById(R.id.location_maps_toolbar);
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
+        Toolbar toolbar = findViewById(R.id.location_maps_toolbar);
+        setSupportActionBar(toolbar);
 
         getLocationPermission(); //get location permission if I don'have it
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -203,7 +197,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
                     editor.commit();
                     Toast.makeText(ActivitySetLocation.this, "Preferences Saved!", Toast.LENGTH_SHORT).show();
-                    ListsManager.getFragmentAvailableMatches().updateListWithNewPositionSettings();
+                    ListsManager.getFragmentAvailableMatches().onNewPositionSet();
                     Intent i = new Intent(ActivitySetLocation.this, ActivityMain.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);
@@ -328,11 +322,15 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if(isTracking){
-            PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
-            isTracking = false;
+        if(myPosition == null || index <= 0){
+            Toast.makeText(ActivitySetLocation.this, R.string.complete_preferences, Toast.LENGTH_SHORT).show();
+        }
+        else{
+            if(isTracking){
+                PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
+                isTracking = false;
+            }
+            super.onBackPressed();
         }
     }
-
 }
