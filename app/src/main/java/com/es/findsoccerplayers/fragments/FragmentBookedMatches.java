@@ -59,6 +59,7 @@ public class FragmentBookedMatches extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(matchAdapter);
+        recyclerView.setMotionEventSplittingEnabled(false);
         //recyclerView.setItemAnimator(null);
 
         sync();
