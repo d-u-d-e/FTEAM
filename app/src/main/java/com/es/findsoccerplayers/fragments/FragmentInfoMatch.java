@@ -28,6 +28,7 @@ import com.es.findsoccerplayers.pickers.NumberPickerFragment;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -95,7 +96,10 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         editBtn = view.findViewById(R.id.info_match_editBtn);
         desc = view.findViewById(R.id.info_match_descriptionText);
 
+
+
         CustomMapView mapView = view.findViewById(R.id.info_match_mapPreview);
+
 
         final FragmentManager manager = getChildFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.info_match_mapFragment);
@@ -121,7 +125,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         });
 
         if (type.equals("your")) {
-            actionBtn.setText("DELETE"); //TODO add to strings
+            actionBtn.setText(R.string.delete); //TODO add to strings
             editBtn.setVisibility(Button.VISIBLE);
             editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -133,7 +137,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 }
             });
         } else if (type.equals("available")) {
-            actionBtn.setText("JOIN");
+            actionBtn.setText(R.string.join);
             editDay.setVisibility(View.INVISIBLE);
             editDesc.setVisibility(View.INVISIBLE);
             editMoney.setVisibility(View.INVISIBLE);
@@ -144,7 +148,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             actionBtn.setText("DROP OUT");
         }
 
-        place.setText(originalMatch.getPlaceName());
+        place.setText(Utils.getPreviewDescription(originalMatch.getPlaceName()));
         date.setText(Utils.getDate(originalMatch.getTimestamp()));
         time.setText(Utils.getTime(originalMatch.getTimestamp()));
         money.setText("---"); //TODO add money field to matches

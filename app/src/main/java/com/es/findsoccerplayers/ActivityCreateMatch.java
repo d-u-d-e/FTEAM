@@ -41,6 +41,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
     private EditText description;
     private double longitude;
     private double latitude;
+    private String nameOfThePlace;
 
     private static final String TAG = "ActivityCreateMatch";
     private static final int MAPS_REQUEST_CODE = 42;
@@ -143,7 +144,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                         throw new IllegalStateException("Parsing of date has failed");
                     }
 
-                    match.setPlaceName(placeText.getText().toString());
+                    match.setPlaceName(nameOfThePlace);
                     match.setLongitude(longitude);
                     match.setLatitude(latitude);
                     match.setPlayersNumber(Integer.parseInt(players.getText().toString()));
@@ -160,8 +161,8 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         if(requestCode == MAPS_REQUEST_CODE && resultCode == RESULT_OK){
             longitude = data.getDoubleExtra(ActivityMaps.LONGITUDE, longitude);
             latitude = data.getDoubleExtra(ActivityMaps.LATITUDE, latitude);
-            String nameOfThePlace = data.getStringExtra(ActivityMaps.PLACE_NAME);
-            placeText.setText(nameOfThePlace);
+            nameOfThePlace = data.getStringExtra(ActivityMaps.PLACE_NAME).replaceAll("\n", " ");
+            placeText.setText(Utils.getPreviewDescription(nameOfThePlace));
         }
     }
 

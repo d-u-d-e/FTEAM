@@ -1,5 +1,6 @@
 package com.es.findsoccerplayers;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -7,15 +8,18 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -166,13 +170,13 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                //Do nothing
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if(myPosition == null){
-                    Toast.makeText(ActivitySetLocation.this, "Enable GPS to set your position", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivitySetLocation.this, R.string.no_initial_position, Toast.LENGTH_SHORT).show();
                     radiusBar.setProgress(0);
                 }
             }
@@ -196,7 +200,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
 
                     editor.commit();
-                    Toast.makeText(ActivitySetLocation.this, "Preferences Saved!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivitySetLocation.this, R.string.preference_saved, Toast.LENGTH_SHORT).show();
                     ListsManager.getFragmentAvailableMatches().onNewPositionSet();
                     Intent i = new Intent(ActivitySetLocation.this, ActivityMain.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -285,6 +289,45 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                     PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
                     MapElements.showMyLocation(map);
                 }
+            } else{
+                //TODO: inserire caso in cui rifiuta.
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // now, user has denied permission (but not permanently!)
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                    alertDialog.setMessage(R.string.alert_location_request)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getLocationPermission();
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(ActivitySetLocation.this, R.string.location_access_denied, Toast.LENGTH_SHORT).show();
+                                }
+                            }).create().show();
+
+                } else {
+                    // now, user has denied permission permanently!
+                    AlertDialog.Builder alertDialogPermanently = new AlertDialog.Builder(this);
+                    alertDialogPermanently.setMessage(R.string.alert_location_denied_permanently)
+                            .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(ActivitySetLocation.this, R.string.access_denied_permanently, Toast.LENGTH_SHORT).show();
+                                }
+                            }).create().show();
+
+                }
+                //end of TODO
             }
         }
     }

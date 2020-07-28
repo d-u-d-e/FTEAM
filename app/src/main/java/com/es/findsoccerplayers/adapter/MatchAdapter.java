@@ -69,7 +69,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         holder.day.setText(Utils.getDay(timestamp));
         holder.month.setText(Utils.getMonth(timestamp));
 
-        holder.field.setText(" " + m.getPlaceName());
+        holder.field.setText(" " + Utils.getPreviewDescription(m.getPlaceName()));
         holder.time.setText(" " + Utils.getTime(timestamp));
         holder.desc.setText(" " + Utils.getPreviewDescription(m.getDescription()));
     }

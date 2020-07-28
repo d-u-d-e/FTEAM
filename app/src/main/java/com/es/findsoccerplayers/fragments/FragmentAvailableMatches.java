@@ -81,7 +81,7 @@ public class FragmentAvailableMatches extends Fragment {
 
         if(positionSettings == null){
             AlertDialog.Builder b = new AlertDialog.Builder(getActivity()).setMessage(R.string.preferred_pos_not_set);
-            b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            b.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent i = new Intent(getActivity(), ActivitySetLocation.class);
