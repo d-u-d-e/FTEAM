@@ -81,14 +81,14 @@ public class FragmentBookedMatches extends Fragment {
                     final String matchKey = dataSnapshot.getKey();
                     assert matchKey != null;
                     DatabaseReference ref = db.getReference().child("matches").child(matchKey);
-                    ref.addValueEventListener(new ValueEventListener() {
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {   // .addListenerForSingleValueEvent is triggered only one time. After that, will be called only if the onChildAdded it's called
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             Match m = snapshot.getValue(Match.class);
-                            if(snapshot.exists()) //TODO not sure if it works
+                            // Works fine now
+                            if(snapshot.exists()){
                                 addUI(m);
-                            else
-                                removeUI(m);
+                            }
                         }
 
                         @Override
@@ -100,6 +100,7 @@ public class FragmentBookedMatches extends Fragment {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
                 }
 
                 @Override

@@ -45,7 +45,6 @@ public class LocationAccessActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //TODO: We have the permission. Go the MainActivity
                 finish();
             } else{
                 android.app.AlertDialog.Builder b = new AlertDialog.Builder(this).setMessage(R.string.alert_dialog_loc_perm);

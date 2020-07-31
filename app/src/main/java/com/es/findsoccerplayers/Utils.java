@@ -1,15 +1,27 @@
 package com.es.findsoccerplayers;
 
+import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 public class Utils {
+
+    public static String  CHANNEL_ID = "findSoccerPlayer_channel";
 
     static void showErrorToast(Context c, Exception ex){
         String error = c.getString(R.string.unknown_error);
@@ -90,5 +102,35 @@ public class Utils {
         assert connectivityManager != null;
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+
+
+    public static void displayNotification(Context context, String text){
+        createNotificationChannel(context);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
+        builder.setSmallIcon(R.drawable.ic_account);
+        builder.setContentTitle("New Game");
+        builder.setContentText(text);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        int notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        notificationManagerCompat.notify(notificationId, builder.build());
+    }
+
+    private static void createNotificationChannel(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Hostelmate notification";
+            String description = "Hi";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+
+            notificationChannel.setDescription(description);
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
     }
 }

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,9 +23,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.ActivitySetLocation;
 import com.es.findsoccerplayers.R;
+import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -142,6 +146,8 @@ public class FragmentAvailableMatches extends Fragment {
     private void readAllRelevantMatches(){
 
         DatabaseReference ref = db.getReference().child("matches");
+        final String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         //this is expensive for huge data, but we
         //have no means to select matches distant x meters apart from the user position directly
         //in the database
@@ -156,8 +162,15 @@ public class FragmentAvailableMatches extends Fragment {
                     for(DataSnapshot data: dataSnapshot.getChildren()){
                         Match m = data.getValue(Match.class);
                         assert m != null;
-                        if(isLocationNearby(m.getLatitude(), m.getLongitude()))
-                            matches.add(m);
+
+                            if(m.getPlayersNumber()>0){
+                                if(isLocationNearby(m.getLatitude(), m.getLongitude())) //check the position
+                                    if(!userID.equals(m.getCreatorID())){ //check if the creator its the user
+                                        matches.add(m);
+                                    }
+                            }
+
+
                     }
                     matchAdapter.notifyDataSetChanged();
                 } //release the object only when we have read everything
@@ -173,6 +186,8 @@ public class FragmentAvailableMatches extends Fragment {
     private void sync(){
 
         DatabaseReference ref = db.getReference().child("matches");
+        final String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         //this is expensive for huge data, but we have no means to select matches
         // distant x meters apart from the user position directly in the database
 
@@ -180,9 +195,14 @@ public class FragmentAvailableMatches extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) { //match created by some user
                 Match m = dataSnapshot.getValue(Match.class);
+                boolean a = dataSnapshot.child("members/" + userID).exists();
                 assert m != null;
-                if(isLocationNearby(m.getLatitude(), m.getLongitude()))
-                    FragmentAvailableMatches.this.addUI(m);
+                    if(!userID.equals(m.getCreatorID()) && !a && m.getPlayersNumber() > 0){
+                        if(isLocationNearby(m.getLatitude(), m.getLongitude())){//check if the creator its the user
+                            FragmentAvailableMatches.this.addUI(m);
+                        }
+                    }
+
             }
 
             @Override
@@ -190,10 +210,10 @@ public class FragmentAvailableMatches extends Fragment {
                 //any user modifies a match
                 Match m = dataSnapshot.getValue(Match.class);
                 assert m != null;
-                int i;
-                if (isLocationNearby(m.getLatitude(), m.getLongitude()))
-                    FragmentAvailableMatches.this.addUI(m); //update entry or add a new entry
-                else
+                boolean a = dataSnapshot.child("members/" + userID).exists();
+                if(m.getPlayersNumber()>0 && !a && isLocationNearby(m.getLatitude(), m.getLongitude())){ // if is complete, don't add it
+                            FragmentAvailableMatches.this.addUI(m); //update entry or add a new entry
+                } else
                     FragmentAvailableMatches.this.removeUI(m); //delete entry if exists
             }
 

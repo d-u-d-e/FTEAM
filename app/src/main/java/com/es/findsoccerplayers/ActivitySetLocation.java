@@ -290,7 +290,6 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                     MapElements.showMyLocation(map);
                 }
             } else{
-                //TODO: inserire caso in cui rifiuta.
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_FINE_LOCATION)) {
                     // now, user has denied permission (but not permanently!)
@@ -327,7 +326,6 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                             }).create().show();
 
                 }
-                //end of TODO
             }
         }
     }
