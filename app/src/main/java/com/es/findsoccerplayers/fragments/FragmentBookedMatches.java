@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FragmentBookedMatches extends FragmentMatches {
 
-    ConcurrentHashMap<String, ValueEventListener> listenerHashMap;
+    private ConcurrentHashMap<String, ValueEventListener> listenerHashMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
