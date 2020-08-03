@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -67,8 +65,6 @@ public class FragmentBookedMatches extends Fragment {
     }
 
     private void sync(){
-            //called every time the "user" joins a new match, or drops out
-            //since both operations affect the users/"user"/matches list
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             DatabaseReference ref =
@@ -80,19 +76,22 @@ public class FragmentBookedMatches extends Fragment {
                     //user joins a match
                     final String matchKey = dataSnapshot.getKey();
                     assert matchKey != null;
-                    DatabaseReference ref = db.getReference().child("matches").child(matchKey);
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {   // .addListenerForSingleValueEvent is triggered only one time. After that, will be called only if the onChildAdded it's called
+                    final DatabaseReference ref = db.getReference().child("matches").child(matchKey);
+                    ref.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            Match m = snapshot.getValue(Match.class);
-                            // Works fine now
-                            if(snapshot.exists()){
+                            if(!snapshot.exists()){
+                                removeUI(matchKey);
+                                ref.removeEventListener(this);
+                            }
+                            else{
+                                Match m = snapshot.getValue(Match.class);
                                 addUI(m);
                             }
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                        public void onCancelled(DatabaseError error) {
 
                         }
                     });
@@ -105,17 +104,8 @@ public class FragmentBookedMatches extends Fragment {
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) { //drop out
-                    //TODO drop out is not implemented yet, but the list can handle it
-                    synchronized (FragmentBookedMatches.this){
-                        String matchKey = dataSnapshot.getKey();
-                        int i = 0;
-                        for(i = 0; i < matches.size(); i++){
-                            if(matches.get(i).getMatchID().equals(matchKey))
-                                break;
-                        }
-                        matches.remove(i);
-                        matchAdapter.notifyItemRemoved(i);
-                    }
+                    String matchKey = dataSnapshot.getKey();
+                    removeUI(matchKey);
                 }
 
                 @Override
@@ -150,11 +140,11 @@ public class FragmentBookedMatches extends Fragment {
         }
     }
 
-    private synchronized void removeUI(Match m){
+    private synchronized void removeUI(String matchID){
         //check if we have this match in the list
         int i;
         for(i = 0; i < matches.size(); i++){
-            if(matches.get(i).getMatchID().equals(m.getMatchID())){
+            if(matches.get(i).getMatchID().equals(matchID)){
                 break;
             }
         }

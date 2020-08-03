@@ -31,7 +31,6 @@ import java.util.List;
 
 public class FragmentYourMatches extends Fragment {
 
-    private static final String TAG = "YourMatches";
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private List<Match> matches;
     private MatchAdapter matchAdapter;
@@ -76,25 +75,28 @@ public class FragmentYourMatches extends Fragment {
         return view;
     }
 
-    public void onMatchCreated(Match m){
-        synchronized (this){
-            matches.add(m);
-            matchAdapter.notifyItemInserted(matches.size()-1);
-        }
-    }
+    public void registerForMatchEvents(final String matchID){
 
-    public void onMatchDeleted(int position){
-        synchronized (this){
-            matches.remove(position);
-            matchAdapter.notifyItemRemoved(position);
-        }
-    }
+        final DatabaseReference r = db.getReference("matches/" + matchID);
 
-    void onMatchEdited(int position, Match newMatch){
-        synchronized (this){
-            matches.set(position, newMatch);
-            matchAdapter.notifyItemChanged(position);
-        }
+        r.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if(!snapshot.exists()){
+                    removeUI(matchID);
+                    r.removeEventListener(this);
+                }
+                else{
+                    Match m = snapshot.getValue(Match.class);
+                    addUI(m);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
     }
 
     private void readMatches() { //done only at beginning
@@ -108,22 +110,7 @@ public class FragmentYourMatches extends Fragment {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     String key = ds.getKey();
-                    DatabaseReference r = db.getReference("matches/" + key);
-                    r.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            Match m = snapshot.getValue(Match.class);
-                            assert  m!= null;
-                            synchronized (FragmentYourMatches.this){
-                                matches.add(m);
-                                matchAdapter.notifyItemInserted(matches.size()-1);
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError error) {}
-                    });
+                    registerForMatchEvents(key);
                 }
             }
 
@@ -133,5 +120,42 @@ public class FragmentYourMatches extends Fragment {
             }
         });
     }
+
+
+    private synchronized void removeUI(String matchID){
+        //check if we have this match in the list
+        int i;
+        for(i = 0; i < matches.size(); i++){
+            if(matches.get(i).getMatchID().equals(matchID)){
+                break;
+            }
+        }
+
+        if(i != matches.size()) { //we have it, so we must delete it
+            matches.remove(i);
+            matchAdapter.notifyItemRemoved(i);
+        }
+    }
+
+    private synchronized void addUI(Match m){
+        //check if we have this match in the list
+        int i;
+        for(i = 0; i < matches.size(); i++){
+            if(matches.get(i).getMatchID().equals(m.getMatchID())){
+                break;
+            }
+        }
+
+        if(i == matches.size()) { //we don't have it
+            matches.add(m);
+            matchAdapter.notifyItemInserted(matches.size()-1);
+        }
+        else{
+            //just update in this case, the creator might have changed the description for example
+            matches.set(i, m);
+            matchAdapter.notifyItemChanged(i);
+        }
+    }
+
 }
 

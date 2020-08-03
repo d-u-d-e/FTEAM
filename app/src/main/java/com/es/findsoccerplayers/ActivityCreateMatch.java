@@ -207,7 +207,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         String path = "users/" + user.getUid() + "/createdMatches";
 
         DatabaseReference ref = db.getReference(path).push();
-        String key = ref.getKey();
+        final String key = ref.getKey();
 
         Map<String, Object> map = new HashMap<>();
         map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
@@ -221,7 +221,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                     Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
                 else{ //match successfully created
                     Toast.makeText(ActivityCreateMatch.this, "Match successfully created", Toast.LENGTH_SHORT).show();
-                    ListsManager.getFragmentYourMatches().onMatchCreated(m);
+                    ListsManager.getFragmentYourMatches().registerForMatchEvents(key);
                 }
             }
         });

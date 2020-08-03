@@ -11,8 +11,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import androidx.fragment.app.Fragment;
@@ -30,7 +28,6 @@ import com.es.findsoccerplayers.pickers.NumberPickerFragment;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -58,14 +55,12 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         TimePickerFragment.OnCompleteListener, NumberPickerFragment.OnCompleteListener,
         EditDescriptionDialogue.onDescriptionListener {
 
-    private static final String TAG = "ActivityInfoMatch";
-
     private Match editedMatch, originalMatch;
     private String type;
     private GoogleMap map;
     private static final int MAPS_REQUEST_CODE = 42;
 
-    private TextView place, date, time, money, missingPlayers, desc;
+    private TextView place, date, time, money, missingPlayers, desc; //TODO money
     private Marker marker;
 
     private Button editBtn;
@@ -101,10 +96,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         editBtn = view.findViewById(R.id.info_match_editBtn);
         desc = view.findViewById(R.id.info_match_descriptionText);
 
-
-
         CustomMapView mapView = view.findViewById(R.id.info_match_mapPreview);
-
 
         final FragmentManager manager = getChildFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.info_match_mapFragment);
@@ -116,10 +108,10 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             @Override
             public void onClick(View v) {
                 if (type.equals("your")) { //delete match case
-                    ListsManager.getFragmentYourMatches().onMatchDeleted(position);
+                    deleteMatch(originalMatch.getMatchID());
                 }else if (type.equals("available")){
                     joinMatch();
-                }else{
+                }else{ //booked
                     dropOut();
                 }
                 getActivity().finish(); //terminate selectMatch (TODO do we really need to go back to main?)
@@ -156,7 +148,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         place.setText(Utils.getPreviewDescription(originalMatch.getPlaceName()));
         date.setText(Utils.getDate(originalMatch.getTimestamp()));
         time.setText(Utils.getTime(originalMatch.getTimestamp()));
-        money.setText("---"); //TODO add money field to matches
+        money.setText("---"); //TODO money
         missingPlayers.setText(Integer.toString(originalMatch.getPlayersNumber()));
         desc.setText(originalMatch.getDescription());
 
@@ -318,10 +310,13 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                     Toast.makeText(getActivity(), "Match successfully updated", Toast.LENGTH_SHORT).show();
                     if(!Utils.isOnline(getContext()))
                         Utils.showOfflineToast(getContext());
-                    ListsManager.getFragmentYourMatches().onMatchEdited(position, m);
                 }
             }
         });
+    }
+
+    private void deleteMatch(String MatchID){
+
     }
 
     @Override
@@ -342,49 +337,28 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         DatabaseReference number = db.getReference("matches/" + key + "/playersNumber");
 
         number.runTransaction(new Transaction.Handler() {
-            @NonNull
             @Override
-            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+            public Transaction.Result doTransaction( MutableData currentData) {
                 Integer i = currentData.getValue(Integer.class);
+                assert i != null;
                 if (i > 0){
                     i--;
                     //If there are more spaces, then join
-                    //db.getReference("matches/" + key + "/playersNumber").setValue(i);
                     currentData.setValue(i);
                     db.getReference("users/" + user.getUid() + "/bookedMatches/" + key).
-                            setValue(Calendar.getInstance().getTimeInMillis(), new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError error, DatabaseReference ref) {
-                                    if(error != null){
-                                        Utils.showErrorToast(getContext(), error.getMessage());
-                                    }
-                                    else{ //match successfully joined
-                                        //Toast.makeText(getContext(), "You joined in the match", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                            setValue(Calendar.getInstance().getTimeInMillis());
 
                     //add a member child and add the id of the user
                     db.getReference("matches/" + key + "/members/" + user.getUid()).
-                            setValue(Calendar.getInstance().getTimeInMillis(), new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError error, DatabaseReference ref) {
-                                    if(error != null)
-                                        Utils.showErrorToast(getContext(), error.getMessage());
-                                    else{ //match successfully created
-                                        //Toast.makeText(getContext(), "You joined in the match", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                            setValue(true);
                     return Transaction.success(currentData);
                 }else{
                     return Transaction.abort();
                 }
-
             }
 
             @Override
-            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+            public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
                 if(committed){
                     Toast.makeText(getContext(), "You joined in the match", Toast.LENGTH_SHORT).show();
                 } else {
@@ -404,12 +378,11 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         DatabaseReference number = db.getReference("matches/" + originalMatch.getMatchID() + "/playersNumber");
 
         number.runTransaction(new Transaction.Handler() {
-            @NonNull
             @Override
-            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+            public Transaction.Result doTransaction(MutableData currentData) {
                 Integer i = currentData.getValue(Integer.class);
+                assert i != null;
                 i++;
-
                 currentData.setValue(i);
                 ref.removeValue(new DatabaseReference.CompletionListener() {
                     @Override
@@ -424,26 +397,14 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
                 //remove from match members the current user
                 DatabaseReference members = FirebaseDatabase.getInstance().getReference("matches/" + originalMatch.getMatchID() + "/members/" + user.getUid());
-                members.removeValue(new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError error, DatabaseReference ref) {
-                        if(error != null)
-                            Utils.showErrorToast(getActivity(), error.getMessage());
-                        else{ //match successfully updated
-                            //Toast.makeText(getActivity(), "You retired from the match", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                members.removeValue();
                 return Transaction.success(currentData);
-
             }
 
             @Override
-            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+            public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
             }
         });
-
-
     }
-    
+
 }
