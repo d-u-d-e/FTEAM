@@ -24,18 +24,17 @@ public class ActivitySelectMatch extends AppCompatActivity {
         Intent i = getIntent();
         Bundle extras = i.getExtras();
         assert extras != null;
-        Match m = (Match) extras.getParcelable("match");
+        Match m = extras.getParcelable("match");
         assert m != null;
         String type = i.getStringExtra("type");
         assert type != null;
-        int position = i.getIntExtra("position", -1);
 
         if(type.equals("available")){
             setContentView(R.layout.act_select_match_notabs);
 
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type, position), "");
+            transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type), "");
             transaction.commit();
         }
         else{
@@ -43,7 +42,7 @@ public class ActivitySelectMatch extends AppCompatActivity {
             TabLayout tabs = findViewById(R.id.info_match_booked_tabs);
             ViewPager vp = findViewById(R.id.info_match_booked_vp);
             ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-            adapter.addFragment(new FragmentInfoMatch(m, type, position), "INFO");
+            adapter.addFragment(new FragmentInfoMatch(m, type), "INFO");
             adapter.addFragment(new FragmentChat(m.getMatchID()), "CHAT");
             vp.setAdapter(adapter);
             tabs.setupWithViewPager(vp);

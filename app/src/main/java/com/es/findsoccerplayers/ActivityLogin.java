@@ -209,7 +209,7 @@ public class ActivityLogin extends AppCompatActivity{
                                         }
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
-                                            Utils.showErrorToast(ActivityLogin.this, getString(R.string.unexpected_error));
+                                                    Utils.showErrorToast(ActivityLogin.this, getString(R.string.unexpected_error));
                                         }
                                     });
                                 } else

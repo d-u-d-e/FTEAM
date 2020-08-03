@@ -123,7 +123,7 @@
 
     <!--LocationPermissionActivity strings-->
     <string name="reason">For a better usage experience, we need the access to your Location.</string>
-    <string name="alert_dialog_loc_perm">Without Location Permission, the interaction with maps is only manual. You can give this permissions later.</string>
+    <string name="alert_dialog_loc_perm">Without Location Permission, the interaction with maps is only manual. You can give this permission later.</string>
 
 
 

@@ -29,7 +29,6 @@ public class ActivityMain extends AppCompatActivity {
     private static final String TAG = "ActivityMain";
     private long backPressedTime = 0;
     private Toast backToast;
-    FragmentAvailableMatches availableMatches;
     ViewPagerTabs adapter;
 
     @Override
@@ -76,16 +75,6 @@ public class ActivityMain extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.layout_menu, menu);
         return true;
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        String action = intent.getAction();
-        if(action != null && action.equals(ActivitySetLocation.LOCATION_SET_ACTION)){
-            Log.d(TAG, "settings updated, triggering updateListWithNewPositionSettings() in fragment available matches");
-            //availableMatches.updateListWithNewPositionSettings();
-        }
     }
 
     @Override

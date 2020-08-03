@@ -11,16 +11,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.es.findsoccerplayers.ActivityMain;
 import com.es.findsoccerplayers.ActivityMaps;
-import com.es.findsoccerplayers.ListsManager;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.CustomMapView;
@@ -28,6 +24,8 @@ import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.pickers.DatePickerFragment;
 import com.es.findsoccerplayers.pickers.NumberPickerFragment;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
+import com.es.findsoccerplayers.dialogue.EditDescriptionDialogue;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -35,15 +33,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.es.findsoccerplayers.dialogue.EditDescriptionDialogue;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 
@@ -51,6 +46,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
@@ -69,13 +65,11 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
     private Button editBtn;
     private boolean[] edits = new boolean[6];
-    private int position;
 
-    public FragmentInfoMatch(Match m, String type, int position) {
+    public FragmentInfoMatch(Match m, String type) {
         originalMatch = m;
         editedMatch = new Match(m);
         this.type = type; //TODO change type string to enum (is it better?)
-        this.position = position;
     }
 
     @Override
@@ -320,19 +314,25 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
     }
 
     private void deleteMatch(String matchID){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
-        ref.removeValue(new DatabaseReference.CompletionListener() {
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("matches/" + matchID, null);
+        map.put("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/createdMatches/" + matchID, null);
+        map.put("chats/" + matchID, null);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+        ref.updateChildren(map, new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+            public void onComplete(DatabaseError error, DatabaseReference ref) {
                 if(error != null)
                     Utils.showErrorToast(getActivity(), error.getMessage());
                 else{ //match successfully deleted
                     Toast.makeText(getActivity(), "Match successfully deleted", Toast.LENGTH_SHORT).show();
                     if(!Utils.isOnline(getContext()))
                         Utils.showOfflineToast(getContext());
-                }
             }
-        });
+        }});
     }
 
     @Override
@@ -350,27 +350,25 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         final FirebaseDatabase db = FirebaseDatabase.getInstance();
         final String key = originalMatch.getMatchID();
 
-        DatabaseReference number = db.getReference("matches/" + key + "/playersNumber");
-
-        number.runTransaction(new Transaction.Handler() {
+        db.getReference().runTransaction(new Transaction.Handler() {
             @Override
-            public Transaction.Result doTransaction( MutableData currentData) {
-                Integer i = currentData.getValue(Integer.class);
-                assert i != null;
-                if (i > 0){
-                    i--;
-                    //If there are more spaces, then join
-                    currentData.setValue(i);
-                    db.getReference("users/" + user.getUid() + "/bookedMatches/" + key).
-                            setValue(Calendar.getInstance().getTimeInMillis());
+            public Transaction.Result doTransaction(MutableData currentData) {
 
-                    //add a member child and add the id of the user
-                    db.getReference("matches/" + key + "/members/" + user.getUid()).
-                            setValue(true);
+                String path = "matches/" + key + "/playersNumber";
+                Integer players = currentData.child(path).getValue(Integer.class);
+                assert players != null;
+                if(players > 0){
+                    currentData.child(path).setValue(players-1);
+
+                    path = "users/" + user.getUid() + "/bookedMatches/" + key;
+                    currentData.child(path).setValue(Calendar.getInstance().getTimeInMillis());
+
+                    path = "matches/" + key + "/members/" + user.getUid();
+                    currentData.child(path).setValue(true);
                     return Transaction.success(currentData);
-                }else{
-                    return Transaction.abort();
                 }
+                else
+                    return Transaction.abort();
             }
 
             @Override
@@ -380,45 +378,43 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 } else {
                     Toast.makeText(getContext(), "Too late. Sorry", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
-
     }
 
     private void dropOut(){
         //Remove from the current user the matchID which he dropped out
+
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase db = FirebaseDatabase.getInstance();
-        final DatabaseReference ref = db.getReference("users/" + user.getUid() + "/bookedMatches/" + originalMatch.getMatchID());
-        DatabaseReference number = db.getReference("matches/" + originalMatch.getMatchID() + "/playersNumber");
+        final DatabaseReference ref = db.getReference();
+        final String key = originalMatch.getMatchID();
 
-        number.runTransaction(new Transaction.Handler() {
+
+        db.getReference().runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
-                Integer i = currentData.getValue(Integer.class);
-                assert i != null;
-                i++;
-                currentData.setValue(i);
-                ref.removeValue(new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError error, DatabaseReference ref) {
-                        if(error != null)
-                            Utils.showErrorToast(getActivity(), error.getMessage());
-                        else{ //match successfully updated
-                            Toast.makeText(getActivity(), "You retired from the match", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
 
-                //remove from match members the current user
-                DatabaseReference members = FirebaseDatabase.getInstance().getReference("matches/" + originalMatch.getMatchID() + "/members/" + user.getUid());
-                members.removeValue();
+                String path = "matches/" + key + "/playersNumber";
+                Integer players = currentData.child(path).getValue(Integer.class);
+                assert players != null;
+                currentData.child(path).setValue(players + 1);
+
+                path = "users/" + user.getUid() + "/bookedMatches/" + key;
+                currentData.child(path).setValue(null); //remove
+
+                path = "matches/" + key + "/members/" + user.getUid();
+                currentData.child(path).setValue(null);
                 return Transaction.success(currentData);
             }
 
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+                if(committed){
+                    Toast.makeText(getContext(), "You successfully retired from the match", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
