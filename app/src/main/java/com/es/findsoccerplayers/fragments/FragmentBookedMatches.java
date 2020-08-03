@@ -23,8 +23,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FragmentBookedMatches extends FragmentMatches {
+
+    ConcurrentHashMap<String, ValueEventListener> listenerHashMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +45,8 @@ public class FragmentBookedMatches extends FragmentMatches {
                 startActivity(i);
             }
         });
+
+        listenerHashMap = new ConcurrentHashMap<>();
 
         View view = inflater.inflate(R.layout.frag_booked_matches, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.frag_booked_list);
@@ -69,13 +74,15 @@ public class FragmentBookedMatches extends FragmentMatches {
                     //user joins a match
                     final String matchKey = dataSnapshot.getKey();
                     assert matchKey != null;
-                    final DatabaseReference ref = db.getReference().child("matches").child(matchKey);
-                    ref.addValueEventListener(new ValueEventListener() {
+                    final DatabaseReference ref = db.getReference().child("matches/" + matchKey);
+
+                    ValueEventListener listener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if(!snapshot.exists()){
                                 //TODO any user is browsing this match, what happens? Crash?
                                 removeUI(matchKey);
+                                listenerHashMap.remove(matchKey);
                                 ref.removeEventListener(this);
                             }
                             else{
@@ -88,7 +95,10 @@ public class FragmentBookedMatches extends FragmentMatches {
                         public void onCancelled(DatabaseError error) {
 
                         }
-                    });
+                    };
+
+                    listenerHashMap.put(matchKey, listener);
+                    ref.addValueEventListener(listener);
                 }
 
                 @Override
@@ -99,6 +109,11 @@ public class FragmentBookedMatches extends FragmentMatches {
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) { //drop out
                     String matchKey = dataSnapshot.getKey();
+                    DatabaseReference ref = db.getReference().child("matches/" + matchKey);
+                    assert matchKey != null;
+                    ValueEventListener listener = listenerHashMap.remove(matchKey);
+                    assert listener != null;
+                    ref.removeEventListener(listener); //not more interested in changes from the db
                     removeUI(matchKey);
                 }
 
