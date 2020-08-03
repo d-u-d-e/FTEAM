@@ -11,6 +11,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import androidx.fragment.app.Fragment;
@@ -33,6 +35,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -315,8 +319,20 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         });
     }
 
-    private void deleteMatch(String MatchID){
-
+    private void deleteMatch(String matchID){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
+        ref.removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if(error != null)
+                    Utils.showErrorToast(getActivity(), error.getMessage());
+                else{ //match successfully deleted
+                    Toast.makeText(getActivity(), "Match successfully deleted", Toast.LENGTH_SHORT).show();
+                    if(!Utils.isOnline(getContext()))
+                        Utils.showOfflineToast(getContext());
+                }
+            }
+        });
     }
 
     @Override

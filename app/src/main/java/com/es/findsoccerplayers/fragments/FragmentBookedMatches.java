@@ -81,6 +81,7 @@ public class FragmentBookedMatches extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if(!snapshot.exists()){
+                                //TODO any user is browsing this match, what happens? Crash?
                                 removeUI(matchKey);
                                 ref.removeEventListener(this);
                             }
