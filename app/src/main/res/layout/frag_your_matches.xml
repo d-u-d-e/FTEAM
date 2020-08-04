@@ -13,6 +13,17 @@
         android:scrollbars="vertical">
     </androidx.recyclerview.widget.RecyclerView>
 
+    <ProgressBar
+        android:id="@+id/frag_yours_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:visibility="invisible"
+        android:elevation="10dp"
+        />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_create_match"
         android:layout_width="wrap_content"

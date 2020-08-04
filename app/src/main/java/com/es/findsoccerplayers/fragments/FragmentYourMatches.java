@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +30,9 @@ import java.util.ArrayList;
 public class FragmentYourMatches extends FragmentMatches {
 
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private int count = 0;
+    private Integer readCount = 0;
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +59,8 @@ public class FragmentYourMatches extends FragmentMatches {
         recyclerView.setMotionEventSplittingEnabled(false);
         //recyclerView.setItemAnimator(null);
 
+        progressBar = view.findViewById(R.id.frag_yours_progressBar);
+
         readMatches();
 
         FloatingActionButton fabCreateMatch = view.findViewById(R.id.fab_create_match);
@@ -68,6 +74,7 @@ public class FragmentYourMatches extends FragmentMatches {
         return view;
     }
 
+
     public void registerForMatchEvents(final String matchID){
 
         final DatabaseReference r = db.getReference("matches/" + matchID);
@@ -80,6 +87,14 @@ public class FragmentYourMatches extends FragmentMatches {
                 }
                 else{
                     Match m = snapshot.getValue(Match.class);
+                    synchronized (readCount){ //TODO ugly because it's done only at the start
+                        if(readCount < count){
+                            readCount++;
+                            if(readCount == count){
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    }
                     addUI(m);
                 }
             }
@@ -100,10 +115,15 @@ public class FragmentYourMatches extends FragmentMatches {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                ArrayList<String> keys = new ArrayList<>();
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    String key = ds.getKey();
-                    registerForMatchEvents(key);
+                    keys.add(ds.getKey());
+                    count++;
                 }
+                if(count > 0)
+                    progressBar.setVisibility(View.VISIBLE);
+                for(String key: keys)
+                    registerForMatchEvents(key);
             }
 
             @Override
