@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
         android:layout_marginTop="15dp"
-        android:text="@string/match_element_field_label"
+        android:text="@string/match_element_place_label"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

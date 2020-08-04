@@ -111,7 +111,7 @@
 
 
     <!--Match element strings-->
-    <string name="match_element_field_label">FIELD:</string>
+    <string name="match_element_place_label">PLACE:</string>
     <string name="match_element_time_label">HOUR:</string>
     <string name="match_element_desc_label">DESCRIPTION:</string>
     <string name="info_match_delete">DELETE MATCH</string>

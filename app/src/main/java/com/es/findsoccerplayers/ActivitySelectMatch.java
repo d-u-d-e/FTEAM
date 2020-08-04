@@ -17,6 +17,8 @@ import com.google.android.material.tabs.TabLayout;
 
 public class ActivitySelectMatch extends AppCompatActivity {
 
+    public static String matchID = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +28,7 @@ public class ActivitySelectMatch extends AppCompatActivity {
         assert extras != null;
         Match m = extras.getParcelable("match");
         assert m != null;
+        matchID = m.getMatchID();
         String type = i.getStringExtra("type");
         assert type != null;
 
@@ -34,7 +37,7 @@ public class ActivitySelectMatch extends AppCompatActivity {
 
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type), "");
+            transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type), null);
             transaction.commit();
         }
         else{
@@ -50,5 +53,20 @@ public class ActivitySelectMatch extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        matchID = null;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String action = intent.getAction();
+        if(action != null && action.equals("finishOnMatchDeleted")){
+            finish();
+        }
     }
 }

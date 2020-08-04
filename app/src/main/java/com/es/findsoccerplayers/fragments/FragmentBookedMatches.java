@@ -81,7 +81,13 @@ public class FragmentBookedMatches extends FragmentMatches {
                         public void onDataChange(DataSnapshot snapshot) {
                             if(!snapshot.exists()){
                                 //TODO any user is browsing this match, what happens? Crash?
-                                removeUI(matchKey);
+                                String currentMatch = ActivitySelectMatch.matchID; //null if this activity is not running
+                                if(currentMatch.equals(matchKey)){
+                                    Intent i = new Intent(FragmentBookedMatches.this.getContext(), ActivitySelectMatch.class);
+                                    i.setAction("finishOnMatchDeleted");
+                                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    startActivity(i);
+                                }
                                 listenerHashMap.remove(matchKey);
                                 ref.removeEventListener(this);
                             }
