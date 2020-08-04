@@ -14,39 +14,45 @@
         android:id="@+id/acc_signedInLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/acc_userId"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/act_account_title"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:text="@string/act_account_title"/>
+        android:layout_marginTop="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/acc_toolbar" />
 
     <TextView
         android:id="@+id/acc_userId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/acc_username"
+        android:text="userID"
+        android:textSize="15sp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/acc_signedInLabel" />
 
     <TextView
         android:id="@+id/acc_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/acc_userId"
-        app:layout_constraintBottom_toTopOf="@id/acc_email"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:text="username"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/acc_userId" />
 
     <TextView
         android:id="@+id/acc_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/acc_username"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:textSize="15sp"
+        android:text="email"
+        app:layout_constraintTop_toBottomOf="@id/acc_username" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

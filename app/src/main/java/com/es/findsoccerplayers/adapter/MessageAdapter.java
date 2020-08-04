@@ -46,7 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         String dateStr = DateUtils.formatDateTime(context, m.getTimestamp(), DateUtils.FORMAT_ABBREV_MONTH |
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME);
         holder.timestamp.setText(dateStr);
-        holder.sender.setText(m.getSenderNick());
+        holder.sender.setText(m.getSenderUsername());
     }
 
     @Override

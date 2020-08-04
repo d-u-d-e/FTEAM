@@ -182,8 +182,8 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             //TODO
             @Override
             public void onClick(View v) {
-                EditDescriptionDialogue dialogue = new EditDescriptionDialogue(FragmentInfoMatch.this, editedMatch.getDescription());
-                dialogue.show(getChildFragmentManager(), "");
+                EditDescriptionDialogue dialogue = new EditDescriptionDialogue("Insert a description", FragmentInfoMatch.this, editedMatch.getDescription());
+                dialogue.show(getChildFragmentManager(), null);
             }
         });
 
@@ -297,7 +297,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 else{ //match successfully updated
                     Toast.makeText(getActivity(), "Match successfully updated", Toast.LENGTH_SHORT).show();
                     if(!Utils.isOnline(getContext()))
-                        Utils.showOfflineToast(getContext());
+                        Utils.showOfflineWriteToast(getContext());
                 }
             }
         });
@@ -320,7 +320,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 else{ //match successfully deleted
                     Toast.makeText(getActivity(), "Match successfully deleted", Toast.LENGTH_SHORT).show();
                     if(!Utils.isOnline(getContext()))
-                        Utils.showOfflineToast(getContext());
+                        Utils.showOfflineWriteToast(getContext());
             }
         }});
     }
@@ -340,21 +340,20 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         final FirebaseDatabase db = FirebaseDatabase.getInstance();
         final String key = originalMatch.getMatchID();
 
-        db.getReference().runTransaction(new Transaction.Handler() {
+        db.getReference("matches/" + key + "/playersNumber").runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
 
-                String path = "matches/" + key + "/playersNumber";
-                Integer players = currentData.child(path).getValue(Integer.class);
+                Integer players = currentData.getValue(Integer.class);
                 assert players != null;
                 if(players > 0){
-                    currentData.child(path).setValue(players-1);
+                    currentData.setValue(players-1);
 
-                    path = "users/" + user.getUid() + "/bookedMatches/" + key;
-                    currentData.child(path).setValue(Calendar.getInstance().getTimeInMillis());
-
-                    path = "matches/" + key + "/members/" + user.getUid();
-                    currentData.child(path).setValue(true);
+                    HashMap<String, Object> map = new HashMap<>();
+                    String uid = user.getUid();
+                    map.put("users/" + uid + "/bookedMatches/" + key, Calendar.getInstance().getTimeInMillis());
+                    map.put("matches/" + key + "/members/" + uid, true);
+                    db.getReference().updateChildren(map);
                     return Transaction.success(currentData);
                 }
                 else
@@ -364,7 +363,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
                 if(committed){
-                    Toast.makeText(getContext(), "You joined in the match", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "You joined the match", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Too late. Sorry", Toast.LENGTH_SHORT).show();
                 }
@@ -376,25 +375,25 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         //Remove from the current user the matchID which he dropped out
 
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        final FirebaseDatabase db = FirebaseDatabase.getInstance();
         final DatabaseReference ref = db.getReference();
         final String key = originalMatch.getMatchID();
 
 
-        db.getReference().runTransaction(new Transaction.Handler() {
+        db.getReference("matches/" + key + "/playersNumber").runTransaction(new Transaction.Handler(){
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
 
-                String path = "matches/" + key + "/playersNumber";
-                Integer players = currentData.child(path).getValue(Integer.class);
+                Integer players = currentData.getValue(Integer.class);
                 assert players != null;
-                currentData.child(path).setValue(players + 1);
+                currentData.setValue(players + 1);
 
-                path = "users/" + user.getUid() + "/bookedMatches/" + key;
-                currentData.child(path).setValue(null); //remove
+                HashMap<String, Object> map = new HashMap<>();
+                String uid = user.getUid();
+                map.put("users/" + uid + "/bookedMatches/" + key, null);
+                map.put("matches/" + key + "/members/" + uid, null); //remove
+                db.getReference().updateChildren(map);
 
-                path = "matches/" + key + "/members/" + user.getUid();
-                currentData.child(path).setValue(null);
                 return Transaction.success(currentData);
             }
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,6 +66,7 @@ public class FragmentChat extends Fragment {
             }
         });
 
+
         recyclerView = view.findViewById(R.id.chat_recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -78,7 +80,8 @@ public class FragmentChat extends Fragment {
 
     private void sendMessage(String message){
         DatabaseReference ref = db.getReference("chats").child(matchID);
-        Message m = new Message(currentUser.getUid(), currentUser.getDisplayName(), message, System.currentTimeMillis());
+        String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        Message m = new Message(currentUser.getUid(), username, message, System.currentTimeMillis());
         ref.push().setValue(m);
     }
 

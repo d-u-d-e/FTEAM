@@ -21,10 +21,12 @@ public class EditDescriptionDialogue extends DialogFragment {
     private EditText editText;
     private onDescriptionListener mListener;
     private String prevDesc;
+    private String title;
 
-    public EditDescriptionDialogue(onDescriptionListener listener, String prevDesc){
+    public EditDescriptionDialogue(String title, onDescriptionListener listener, String prevDesc){
         mListener = listener;
         this.prevDesc = prevDesc;
+        this.title = title;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class EditDescriptionDialogue extends DialogFragment {
         editText = view.findViewById(R.id.ET_description);
         editText.setText(prevDesc);
 
-        builder.setView(view).setTitle("Insert a description")
+        builder.setView(view).setTitle(title)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

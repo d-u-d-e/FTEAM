@@ -191,9 +191,9 @@ public class FragmentAvailableMatches extends FragmentMatches {
 
                 if(!userID.equals(m.getCreatorID())){ //if I am the creator, then m is not even listed
                     boolean booked = dataSnapshot.child("members/" + userID).exists();
-                    if(m.getPlayersNumber() == 0 || !isLocationNearby(m.getLatitude(), m.getLongitude()))
+                    if(booked || m.getPlayersNumber() == 0 || !isLocationNearby(m.getLatitude(), m.getLongitude()))
                         FragmentAvailableMatches.this.removeUI(m.getMatchID());
-                    else if(!booked)
+                    else
                         FragmentAvailableMatches.this.addUI(m);
                 }
             }

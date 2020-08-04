@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -16,8 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Utils {
 
@@ -46,8 +43,12 @@ public class Utils {
         Toast.makeText(c, R.string.unimplemented, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showOfflineToast(Context c){
-        Toast.makeText(c, R.string.offline, Toast.LENGTH_SHORT).show();
+    public static void showOfflineWriteToast(Context c){
+        Toast.makeText(c, R.string.offlineWrite, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showOfflineReadToast(Context c){
+        Toast.makeText(c, R.string.offlineRead, Toast.LENGTH_SHORT).show();
     }
 
     static void showSuccessResetPswToast(Context c){

@@ -8,10 +8,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
-public abstract class FragmentMatches extends Fragment {
+abstract class FragmentMatches extends Fragment {
 
     FirebaseDatabase db = FirebaseDatabase.getInstance();
-    protected List<Match> matches;
+    List<Match> matches;
     MatchAdapter matchAdapter;
 
     synchronized void removeUI(String matchID){

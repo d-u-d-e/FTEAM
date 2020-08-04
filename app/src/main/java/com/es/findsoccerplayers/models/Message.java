@@ -3,7 +3,7 @@ package com.es.findsoccerplayers.models;
 public class Message {
     private String senderID;
 
-    private String senderNick;
+    private String senderUsername;
     private String text;
     private long timestamp;
 
@@ -11,9 +11,9 @@ public class Message {
 
     }
 
-    public Message(String sender, String senderNick, String text, long timestamp) {
+    public Message(String sender, String senderUsername, String text, long timestamp) {
         this.senderID = sender;
-        this.senderNick = senderNick;
+        this.senderUsername = senderUsername;
         this.text = text;
         this.timestamp = timestamp;
     }
@@ -42,12 +42,12 @@ public class Message {
         this.timestamp = timestamp;
     }
 
-    public String getSenderNick() {
-        return senderNick;
+    public String getSenderUsername() {
+        return senderUsername;
     }
 
-    public void setSenderNick(String senderNick) {
-        this.senderNick = senderNick;
+    public void setSenderUsername(String senderUsername) {
+        this.senderUsername = senderUsername;
     }
 
 }

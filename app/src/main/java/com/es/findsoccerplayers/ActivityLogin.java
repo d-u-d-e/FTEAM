@@ -237,24 +237,14 @@ public class ActivityLogin extends AppCompatActivity{
      */
 
     private void createGoogleUser(){
-        String fullName = fAuth.getCurrentUser().getDisplayName();
-        String name, surname = "";
-        if(fullName == null || fullName.isEmpty()){
+        String username = fAuth.getCurrentUser().getDisplayName();
+        if(username == null || username.isEmpty()){
             Utils.showErrorToast(ActivityLogin.this, getString(R.string.missing_google_username));
-            name = "user";
+            username = "user";
         }
-        else{
-            String[] names = fullName.split(" ");
-            //try to obtain both first and second names
-            if(names.length == 2){
-                name = names[0];
-                surname = names[1];
-            }
-            else
-                name = names[0];
-        }
+
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), name, surname, "");
+        User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), username, "");
 
         db.child("users").child(user.getId()).setValue(user, new DatabaseReference.CompletionListener() {
             @Override

@@ -30,7 +30,7 @@
         android:text="@string/date_and_hour"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/cr_match_imageViewTime"
+        app:layout_constraintStart_toEndOf="@id/cr_match_imageViewTime"
         app:layout_constraintTop_toBottomOf="@id/cr_match_toolbar"
         />
 
@@ -53,7 +53,7 @@
         android:layout_marginStart="30dp"
         android:text="TextView"
         android:textSize="15sp"
-        app:layout_constraintStart_toEndOf="@+id/cr_match_dateText"
+        app:layout_constraintStart_toEndOf="@id/cr_match_dateText"
         app:layout_constraintTop_toBottomOf="@id/cr_match_dateHour" />
 
     <ImageView
@@ -75,7 +75,7 @@
         android:text="@string/players_number"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/cr_match_imageManRunning"
+        app:layout_constraintStart_toEndOf="@id/cr_match_imageManRunning"
         app:layout_constraintTop_toBottomOf="@id/cr_match_timeText"/>
 
 
@@ -87,8 +87,8 @@
          android:layout_marginTop="32dp"
         android:text="@string/players"
         android:textSize="15sp"
-        app:layout_constraintStart_toEndOf="@+id/cr_match_playersText"
-        app:layout_constraintTop_toBottomOf="@+id/cr_match_timeText" />
+        app:layout_constraintStart_toEndOf="@id/cr_match_playersText"
+        app:layout_constraintTop_toBottomOf="@id/cr_match_timeText" />
 
     <ImageView
         android:id="@+id/cr_match_imageViewLocation"
@@ -109,7 +109,7 @@
         android:layout_marginTop="32dp"
         android:text="@string/add_position"
         android:textSize="15sp"
-        app:layout_constraintStart_toEndOf="@+id/cr_match_imageViewLocation"
+        app:layout_constraintStart_toEndOf="@id/cr_match_imageViewLocation"
         app:layout_constraintTop_toBottomOf="@id/cr_match_playersNumber"/>
 
     <EditText
@@ -124,7 +124,7 @@
         android:textSize="15sp"
         android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cr_match_imageViewLocation" />
+        app:layout_constraintTop_toBottomOf="@id/cr_match_imageViewLocation" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/cr_match_fab"

@@ -228,7 +228,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
 
 
         if(!Utils.isOnline(this))
-            Utils.showOfflineToast(this);
+            Utils.showOfflineWriteToast(this);
 
         Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
