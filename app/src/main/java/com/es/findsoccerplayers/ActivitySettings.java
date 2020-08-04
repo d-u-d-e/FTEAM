@@ -11,6 +11,10 @@ import android.os.Bundle;
 
 import com.es.findsoccerplayers.adapter.SettingsAdapter;
 import com.es.findsoccerplayers.models.SettingsElement;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,11 +53,28 @@ public class ActivitySettings extends AppCompatActivity {
                     Intent i = new Intent(getApplicationContext(), ActivitySetLocation.class);
                     startActivity(i);
                 }else if(position == 2){
-                    Utils.showUnimplementedToast(getApplicationContext());
-                    //TODO
+                    logOut();
                 }
             }
         });
 
+    }
+
+
+    private void logOut(){
+        //options required to log in with Google
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        auth.signOut();
+        googleSignInClient.signOut();
+        finishAffinity();
+        Intent i = new Intent(this, ActivityLogin.class);
+        startActivity(i);
     }
 }

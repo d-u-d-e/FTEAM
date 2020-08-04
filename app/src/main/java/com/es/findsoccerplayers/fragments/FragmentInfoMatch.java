@@ -24,7 +24,7 @@ import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.pickers.DatePickerFragment;
 import com.es.findsoccerplayers.pickers.NumberPickerFragment;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
-import com.es.findsoccerplayers.dialogue.EditDescriptionDialogue;
+import com.es.findsoccerplayers.dialogues.EditDescriptionDialogue;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,7 +60,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
     private GoogleMap map;
     private static final int MAPS_REQUEST_CODE = 42;
 
-    private TextView place, date, time, money, missingPlayers, desc; //TODO money
+    private TextView place, date, time, missingPlayers, desc;
     private Marker marker;
 
     private Button editBtn;
@@ -81,14 +81,12 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         place = view.findViewById(R.id.info_match_placeText);
         date = view.findViewById(R.id.info_match_dayText);
         time = view.findViewById(R.id.info_match_timeText);
-        money = view.findViewById(R.id.info_match_moneyText);
         missingPlayers = view.findViewById(R.id.info_match_playersText);
 
         ImageView editPlace = view.findViewById(R.id.info_match_imageEditPosition);
         ImageView editDay = view.findViewById(R.id.info_match_imageEditDay);
         ImageView editTime = view.findViewById(R.id.info_match_imageEditTime);
         ImageView editPlayers = view.findViewById(R.id.info_match_imageEditPlayers);
-        ImageView editMoney = view.findViewById(R.id.info_match_imageEditMoney);
         final ImageView editDesc = view.findViewById(R.id.info_match_imageEditDescription);
         Button actionBtn = view.findViewById(R.id.info_match_actionBtn);
         editBtn = view.findViewById(R.id.info_match_editBtn);
@@ -135,7 +133,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             actionBtn.setText(R.string.join);
             editDay.setVisibility(View.INVISIBLE);
             editDesc.setVisibility(View.INVISIBLE);
-            editMoney.setVisibility(View.INVISIBLE);
             editPlace.setVisibility(View.INVISIBLE);
             editTime.setVisibility(View.INVISIBLE);
             editPlayers.setVisibility(View.INVISIBLE);
@@ -146,7 +143,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         place.setText(Utils.getPreviewDescription(originalMatch.getPlaceName()));
         date.setText(Utils.getDate(originalMatch.getTimestamp()));
         time.setText(Utils.getTime(originalMatch.getTimestamp()));
-        money.setText("---"); //TODO money
         missingPlayers.setText(Integer.toString(originalMatch.getPlayersNumber()));
         desc.setText(originalMatch.getDescription());
 
@@ -182,19 +178,12 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             }
         });
 
-        editMoney.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO
-                Utils.showUnimplementedToast(getContext());
-            }
-        });
-
         editDesc.setOnClickListener(new View.OnClickListener() {
             //TODO
             @Override
             public void onClick(View v) {
-                Utils.showUnimplementedToast(getContext());
+                EditDescriptionDialogue dialogue = new EditDescriptionDialogue(FragmentInfoMatch.this, editedMatch.getDescription());
+                dialogue.show(getChildFragmentManager(), "");
             }
         });
 
@@ -218,6 +207,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             double lat = data.getDoubleExtra(ActivityMaps.LATITUDE, originalMatch.getLatitude());
 
             String nameOfThePlace = data.getStringExtra(ActivityMaps.PLACE_NAME);
+            assert nameOfThePlace != null;
             LatLng location = new LatLng(lat, lng);
 
             if(editedMatch.getLongitude() != lng || editedMatch.getLatitude() != lat){
@@ -228,7 +218,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 marker.remove();
                 marker = map.addMarker(new MarkerOptions().position(location).title(nameOfThePlace));
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
-                place.setText(nameOfThePlace);
+                place.setText(Utils.getPreviewDescription(nameOfThePlace));
 
                 updateEdits(lng != originalMatch.getLongitude() || lat != originalMatch.getLatitude(), 0);
             }

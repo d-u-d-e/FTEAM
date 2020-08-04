@@ -35,38 +35,12 @@ public class ActivityAccount extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Button btnLogOut = findViewById(R.id.acc_btnLogOut);
         name = (TextView) findViewById(R.id.acc_username);
         final FirebaseAuth auth = FirebaseAuth.getInstance();
 
         id = (TextView) findViewById(R.id.acc_userId);
         email = (TextView) findViewById(R.id.acc_email);
         acct = FirebaseAuth.getInstance().getCurrentUser();
-
-        //options required to log in with Google
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        //if log out button is clicked go back to the login activity
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //log out the current user
-                auth.signOut();
-
-                //google log out: this does nothing if the user did not log in with google
-                //however in the other case, it clears the previous selected account, so next time the
-                //user is asked to select a new account
-                googleSignInClient.signOut();
-                //back to login activity
-                finishAffinity();
-                Intent i = new Intent(ActivityAccount.this, ActivityLogin.class);
-                startActivity(i);
-            }
-        });
     }
 
     @Override

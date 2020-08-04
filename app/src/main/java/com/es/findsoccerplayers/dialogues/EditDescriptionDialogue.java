@@ -1,16 +1,13 @@
-package com.es.findsoccerplayers.dialogue;
+package com.es.findsoccerplayers.dialogues;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.es.findsoccerplayers.R;
@@ -21,15 +18,12 @@ public class EditDescriptionDialogue extends DialogFragment {
         void onDescriptionSet(String desc);
     }
 
-    private EditText ETdesc;
+    private EditText editText;
     private onDescriptionListener mListener;
-    private Context context;
-    private String title, prevDesc;
+    private String prevDesc;
 
-    public EditDescriptionDialogue(Context c, EditDescriptionDialogue.onDescriptionListener listener, String title, String prevDesc){
+    public EditDescriptionDialogue(onDescriptionListener listener, String prevDesc){
         mListener = listener;
-        context = c;
-        this.title = title;
         this.prevDesc = prevDesc;
     }
 
@@ -38,9 +32,8 @@ public class EditDescriptionDialogue extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.edit_description_dialogue, null);
-        ETdesc = view.findViewById(R.id.ET_description);
-        ETdesc.setText(prevDesc);
-        Log.w("DIALOGUE DESC", prevDesc);
+        editText = view.findViewById(R.id.ET_description);
+        editText.setText(prevDesc);
 
         builder.setView(view).setTitle("Insert a description")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -52,11 +45,10 @@ public class EditDescriptionDialogue extends DialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onDescriptionSet(ETdesc.getText().toString());
+                        mListener.onDescriptionSet(editText.getText().toString());
                     }
                 });
 
         return builder.create();
     }
-
 }
