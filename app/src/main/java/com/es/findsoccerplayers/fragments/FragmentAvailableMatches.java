@@ -146,7 +146,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
                     matches.clear();
                     for(DataSnapshot data: dataSnapshot.getChildren()){
                         Match m = data.getValue(Match.class);
-                        boolean booked = dataSnapshot.child("members/" + userID).exists();
+                        boolean booked = data.child("members/" + userID).exists();
                         assert m != null;
                         if(m.getPlayersNumber() > 0 && !booked && isLocationNearby(m.getLatitude(), m.getLongitude())
                                 && !userID.equals(m.getCreatorID()))
