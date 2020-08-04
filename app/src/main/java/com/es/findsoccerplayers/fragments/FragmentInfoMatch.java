@@ -120,6 +120,11 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         if (type.equals("your")) {
             actionBtn.setText(R.string.delete); //TODO add to strings
             editBtn.setVisibility(Button.VISIBLE);
+            editDay.setVisibility(View.VISIBLE);
+            editDesc.setVisibility(View.VISIBLE);
+            editPlace.setVisibility(View.VISIBLE);
+            editTime.setVisibility(View.VISIBLE);
+            editPlayers.setVisibility(View.VISIBLE);
             editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -131,11 +136,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             });
         } else if (type.equals("available")) {
             actionBtn.setText(R.string.join);
-            editDay.setVisibility(View.INVISIBLE);
-            editDesc.setVisibility(View.INVISIBLE);
-            editPlace.setVisibility(View.INVISIBLE);
-            editTime.setVisibility(View.INVISIBLE);
-            editPlayers.setVisibility(View.INVISIBLE);
+
         } else { //booked
             actionBtn.setText("DROP OUT");
         }
