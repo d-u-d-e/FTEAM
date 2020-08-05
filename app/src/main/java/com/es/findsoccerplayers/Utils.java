@@ -6,30 +6,31 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.lifecycle.ProcessLifecycleOwner;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 public class Utils {
 
     private static String  CHANNEL_ID = "findSoccerPlayerChannel";
 
-    private static HashMap<String, WeakReference<Toast>> toastMap = new HashMap<>();
+    //private static HashMap<String, WeakReference<Toast>> toastMap = new HashMap<>();
 
-    static void cancelToast(String activityName){
+    private static WeakReference<Toast> toast = null;
+
+    static void cancelToast( /*String activityName*/ ){
+        /*
         WeakReference<Toast> toast = toastMap.remove(activityName);
         if(toast != null && toast.get() != null)
-            toast.get().cancel();
+            toast.get().cancel();*/
+        if(toast != null && toast.get() != null) toast.get().cancel();
     }
 
     static void showErrorToast(Context c, Exception ex){
@@ -43,23 +44,39 @@ public class Utils {
     }
 
     private static void showToast(Context c, String text, int duration){
-        String className = c.getClass().getName();
+
+        /*String className = c.getClass().getName();
         WeakReference<Toast> toast = toastMap.remove(className);
         if(toast != null && toast.get() != null)
             toast.get().cancel();
         toast = new WeakReference<>(Toast.makeText(c, text, duration));
         toast.get().show();
-        toastMap.put(className, toast);
+        toastMap.put(className, toast);*/
+
+        if(toast != null && toast.get() != null)
+            toast.get().cancel();
+
+        Toast t = Toast.makeText(c, text, duration);
+        toast = new WeakReference<>(t);
+        t.show();
     }
 
     private static void showToast(Context c, int resource, int duration){
-        String className = c.getClass().getName();
+
+        /*String className = c.getClass().getName();
         WeakReference<Toast> toast = toastMap.remove(className);
         if(toast != null && toast.get() != null)
             toast.get().cancel();
         toast = new WeakReference<>(Toast.makeText(c, resource, duration));
         toast.get().show();
-        toastMap.put(className, toast);
+        toastMap.put(className, toast);*/
+
+        if(toast != null && toast.get() != null)
+            toast.get().cancel();
+
+        Toast t = Toast.makeText(c, resource, duration);
+        toast = new WeakReference<>(t);
+        t.show();
     }
 
     static void showToast(Context c, String text){

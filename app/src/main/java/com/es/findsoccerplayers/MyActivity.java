@@ -8,7 +8,7 @@ public class MyActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Utils.cancelToast(getClass().getName());
+        Utils.cancelToast( /*getClass().getName()*/ );
         super.onPause();
     }
 }
