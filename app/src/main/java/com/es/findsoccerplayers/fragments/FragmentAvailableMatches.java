@@ -205,6 +205,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
                 assert m != null;
                 FragmentAvailableMatches.this.removeUI(m.getMatchID()); //delete entry if exists
                 //TODO what happens if the user is checking this match and it gets suddenly deleted?
+                //update: nothing; if the user then clicks on join match, he will get the toast: too late
             }
 
             @Override

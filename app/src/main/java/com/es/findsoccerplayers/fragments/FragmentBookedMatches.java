@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.R;
+import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,9 +89,11 @@ public class FragmentBookedMatches extends FragmentMatches {
                                     i.setAction("finishOnMatchDeleted");
                                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivity(i);
+                                    Utils.showErrorToast(getActivity(), "The match has been deleted by the creator");
                                 }
                                 listenerHashMap.remove(matchKey);
                                 ref.removeEventListener(this);
+                                removeUI(matchKey);
                             }
                             else{
                                 Match m = snapshot.getValue(Match.class);

@@ -364,9 +364,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
                 if(committed){
-                    Toast.makeText(getContext(), "You joined the match", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "You joined the match!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), "Too late. Sorry", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Either the match has been deleted or the maximum number of players have been reached", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -401,7 +401,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
                 if(committed){
-                    Toast.makeText(getContext(), "You successfully retired from the match", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "You successfully retired from the match!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show();
                 }
