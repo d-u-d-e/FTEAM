@@ -82,7 +82,7 @@ public class FragmentBookedMatches extends FragmentMatches {
                             if(!snapshot.exists()){
                                 //TODO any user is browsing this match, what happens? Crash?
                                 String currentMatch = ActivitySelectMatch.matchID; //null if this activity is not running
-                                if(currentMatch.equals(matchKey)){
+                                if(currentMatch != null && currentMatch.equals(matchKey)){
                                     Intent i = new Intent(FragmentBookedMatches.this.getContext(), ActivitySelectMatch.class);
                                     i.setAction("finishOnMatchDeleted");
                                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
