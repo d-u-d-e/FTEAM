@@ -1,5 +1,6 @@
 package com.es.findsoccerplayers.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.es.findsoccerplayers.ActivityMain;
 import com.es.findsoccerplayers.ActivityMaps;
+import com.es.findsoccerplayers.ListsManager;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.CustomMapView;
@@ -363,10 +365,14 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+                Context context = ListsManager.getFragmentBookedMatches().getActivity(); //we can't use getContext(), because the activity
+                //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
+                //and the application will crash as soon as tries to make the toast
+                //context is the main activity now
                 if(committed){
-                    Toast.makeText(getContext(), "You joined the match!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "You joined the match!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), "Either the match has been deleted or the maximum number of players have been reached", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Either the match has been deleted or the maximum number of players have been reached", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -377,7 +383,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseDatabase db = FirebaseDatabase.getInstance();
-        final DatabaseReference ref = db.getReference();
         final String key = originalMatch.getMatchID();
 
 
@@ -400,10 +405,14 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+                Context context = ListsManager.getFragmentBookedMatches().getActivity(); //we can't use getContext(), because the activity
+                //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
+                //and the application will crash as soon as tries to make the toast
+                //context is the main activity now
                 if(committed){
-                    Toast.makeText(getContext(), "You successfully retired from the match!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "You successfully retired from the match!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });
