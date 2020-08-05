@@ -191,6 +191,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
 
                 if(!userID.equals(m.getCreatorID())){ //if I am the creator, then m is not even listed
                     boolean booked = dataSnapshot.child("members/" + userID).exists();
+                    //TODO notify select match to update
                     if(booked || m.getPlayersNumber() == 0 || !isLocationNearby(m.getLatitude(), m.getLongitude()))
                         FragmentAvailableMatches.this.removeUI(m.getMatchID());
                     else
@@ -206,6 +207,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
                 FragmentAvailableMatches.this.removeUI(m.getMatchID()); //delete entry if exists
                 //TODO what happens if the user is checking this match and it gets suddenly deleted?
                 //update: nothing; if the user then clicks on join match, he will get the toast: too late
+                //so notify select match to finish
             }
 
             @Override

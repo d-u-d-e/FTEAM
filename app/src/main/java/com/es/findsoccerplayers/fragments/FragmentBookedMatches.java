@@ -97,6 +97,8 @@ public class FragmentBookedMatches extends FragmentMatches {
                             }
                             else{
                                 Match m = snapshot.getValue(Match.class);
+                                //TODO here use a similar method as above to notify any current ActivitySelectMatch to
+                                //update if the creator modifies the match
                                 addUI(m);
                             }
                         }
