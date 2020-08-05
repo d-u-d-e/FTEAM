@@ -53,6 +53,8 @@ public class Utils {
         toast.get().show();
         toastMap.put(className, toast);*/
 
+        if(c == null) return;
+
         if(toast != null && toast.get() != null)
             toast.get().cancel();
 
@@ -71,6 +73,8 @@ public class Utils {
         toast.get().show();
         toastMap.put(className, toast);*/
 
+        if(c == null) return;
+
         if(toast != null && toast.get() != null)
             toast.get().cancel();
 
@@ -79,7 +83,7 @@ public class Utils {
         t.show();
     }
 
-    static void showToast(Context c, String text){
+    public static void showToast(Context c, String text){
         showToast(c, text, Toast.LENGTH_SHORT);
     }
 
@@ -130,6 +134,7 @@ public class Utils {
 
     public static boolean isOffline(Context context)
     {
+        if(context == null) return true;
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         assert connectivityManager != null;
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();

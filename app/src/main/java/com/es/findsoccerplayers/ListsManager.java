@@ -34,7 +34,7 @@ public class ListsManager {
         return getInstance().bookedMatches;
     }
 
-    static FragmentYourMatches getFragmentYourMatches(){
+    public static FragmentYourMatches getFragmentYourMatches(){
         return getInstance().yourMatches;
     }
 

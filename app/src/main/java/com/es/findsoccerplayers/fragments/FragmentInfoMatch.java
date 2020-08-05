@@ -295,15 +295,18 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         ref.setValue(m, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError error, DatabaseReference ref) {
+                Context context = ListsManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
+                //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
+                //and the application will crash as soon as tries to make the toast
+                //context is the main activity now
                 if(error != null)
-                    Utils.showErrorToast(getActivity(), error.getMessage());
-                else{ //match successfully updated
-                    Toast.makeText(getActivity(), "Match successfully updated", Toast.LENGTH_SHORT).show();
-                    if(Utils.isOffline(getContext()))
-                        Utils.showOfflineWriteToast(getContext());
-                }
+                    Utils.showErrorToast(context, error.getMessage());
+                else //match successfully updated
+                    Utils.showToast(context, "Match successfully updated");
             }
         });
+        if(Utils.isOffline(getActivity()))
+            Utils.showOfflineWriteToast(getActivity());
     }
 
     private void deleteMatch(String matchID){
@@ -318,14 +321,18 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         ref.updateChildren(map, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError error, DatabaseReference ref) {
+                Context context = ListsManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
+                //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
+                //and the application will crash as soon as tries to make the toast
+                //context is the main activity now
                 if(error != null)
-                    Utils.showErrorToast(getActivity(), error.getMessage());
-                else{ //match successfully deleted
-                    Toast.makeText(getActivity(), "Match successfully deleted", Toast.LENGTH_SHORT).show();
-                    if(Utils.isOffline(getContext()))
-                        Utils.showOfflineWriteToast(getContext());
+                    Utils.showErrorToast(context, error.getMessage());
+                else//match successfully deleted
+                    Utils.showToast(context, "Match successfully deleted");
             }
-        }});
+        });
+        if(Utils.isOffline(getActivity()))
+            Utils.showOfflineWriteToast(getActivity());
     }
 
     @Override
@@ -370,9 +377,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 //and the application will crash as soon as tries to make the toast
                 //context is the main activity now
                 if(committed){
-                    Toast.makeText(context, "You joined the match!", Toast.LENGTH_SHORT).show();
+                    Utils.showToast(context, "You joined the match!");
                 } else {
-                    Toast.makeText(context, "Either the match has been deleted or the maximum number of players have been reached", Toast.LENGTH_SHORT).show();
+                    Utils.showToast(context, "Either the match has been deleted or the maximum number of players have been reached");
                 }
             }
         });
@@ -410,9 +417,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 //and the application will crash as soon as tries to make the toast
                 //context is the main activity now
                 if(committed){
-                    Toast.makeText(context, "You successfully retired from the match!", Toast.LENGTH_SHORT).show();
+                    Utils.showToast(context, "You successfully retired from the match!");
                 } else {
-                    Toast.makeText(context, getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show();
+                    Utils.showToast(context, getString(R.string.unexpected_error));
                 }
             }
         });
