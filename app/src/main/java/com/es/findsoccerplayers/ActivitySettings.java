@@ -31,14 +31,14 @@ public class ActivitySettings extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        settElemList.add(new SettingsElement(R.drawable.ic_account, "Account", "View and modify account options"));
+        settElemList.add(new SettingsElement(R.drawable.ic_account_24, "Account", "View and modify account options"));
         settElemList.add(new SettingsElement(R.drawable.ic_edit_location_24, "Edit search range", "Modify the searching distance for the available matches"));
         settElemList.add(new SettingsElement(R.drawable.ic_log_out_24, "Log out", "Disconnect from your account"));
 
         RecyclerView recyclerView = findViewById(R.id.settings_recyclerview);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        SettingsAdapter adapter = new SettingsAdapter(settElemList);
+        SettingsAdapter adapter = new SettingsAdapter(this, settElemList);
 
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));

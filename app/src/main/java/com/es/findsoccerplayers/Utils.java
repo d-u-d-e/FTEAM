@@ -110,7 +110,7 @@ public class Utils {
         createNotificationChannel(context);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.ic_account);
+        builder.setSmallIcon(R.drawable.ic_account_24);
         builder.setContentTitle("New Game");
         builder.setContentText(text);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
