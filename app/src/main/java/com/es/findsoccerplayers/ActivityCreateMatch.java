@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
@@ -31,7 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public class ActivityCreateMatch extends AppCompatActivity implements DatePickerFragment.OnCompleteListener,
+public class ActivityCreateMatch extends MyActivity implements DatePickerFragment.OnCompleteListener,
         TimePickerFragment.OnCompleteListener, NumberPickerFragment.OnCompleteListener{
 
     private TextView matchDate;
@@ -52,6 +51,8 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
 
     private Match match;
 
+    private Toast toast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +69,6 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         placeText = findViewById(R.id.cr_match_addPosition);
         description = findViewById(R.id.cr_match_descriptionField);
         FloatingActionButton matchFab = findViewById(R.id.cr_match_fab);
-
 
         if (savedInstanceState != null) {
             matchDate.setText(savedInstanceState.getString(MATCH_DATE));
@@ -126,8 +126,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
             public void onClick(View v) {
                 if(placeText.getText().toString().equals(getString(R.string.add_position)) ||
                     players.getText().toString().equals(getString(R.string.players))){
-                    Toast.makeText(ActivityCreateMatch.this, R.string.all_fields_required,
-                            Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivityCreateMatch.this, getString(R.string.all_fields_required));
                 }else{
                     match = new Match();
                     match.setDescription(description.getText().toString());
@@ -220,14 +219,14 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                 if(databaseError != null)
                     Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
                 else{ //match successfully created
-                    Toast.makeText(ActivityCreateMatch.this, "Match successfully created", Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivityCreateMatch.this, "Match successfully created");
                     ListsManager.getFragmentYourMatches().registerForMatchEvents(key);
                 }
             }
         });
 
 
-        if(!Utils.isOnline(this))
+        if(Utils.isOffline(this))
             Utils.showOfflineWriteToast(this);
 
         Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);

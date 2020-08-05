@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
@@ -13,7 +12,7 @@ import com.google.firebase.auth.FirebaseUser;
  * Shows the account information for the current user
  * */
 
-public class ActivityAccount extends AppCompatActivity{
+public class ActivityAccount extends MyActivity{
 
     FirebaseUser acct = FirebaseAuth.getInstance().getCurrentUser();
 

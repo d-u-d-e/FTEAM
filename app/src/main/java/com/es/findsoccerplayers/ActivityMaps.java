@@ -1,7 +1,6 @@
 package com.es.findsoccerplayers;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -45,7 +44,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 import java.util.Locale;
 
-public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback {
+public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
     public String placeName;
@@ -124,9 +123,9 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         confirm_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(placeName == null){
-                    Toast.makeText(ActivityMaps.this, R.string.select_a_place, Toast.LENGTH_SHORT).show();
-                } else {
+                if(placeName == null)
+                    Utils.showToast(ActivityMaps.this, R.string.select_a_place);
+                else {
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra(LATITUDE, latitude);
                     resultIntent.putExtra(LONGITUDE, longitude);
@@ -136,7 +135,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                         PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
                     finish();
                 }
-
             }
         });
 
@@ -144,9 +142,9 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         position_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!locationAccess){
+                if(!locationAccess)
                     getLocationPermission();
-                }else {
+                else {
                     if(PositionClient.isGpsOFF(getApplicationContext())){
                         PositionClient.turnGPSon(ActivityMaps.this);
                     } else{
@@ -162,8 +160,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
-
-
 
     //Insert the menu
     @Override
@@ -203,7 +199,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         map.getUiSettings().setMapToolbarEnabled(false);
         mapReady = true;
 
-        Toast.makeText(this, "Connecting to GPS...", Toast.LENGTH_SHORT).show();
+        Utils.showToast(this, "Connecting to GPS...");
 
         if(locationAccess){
             if(PositionClient.isGpsOFF(ActivityMaps.this)){
@@ -275,7 +271,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 } catch (Exception e){
                     e.printStackTrace();
-                    Toast.makeText(ActivityMaps.this, R.string.gecodo_failed, Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivityMaps.this, R.string.gecodo_failed);
                     placeName = getString(R.string.default_position_name);
                 }
                 Marker myMarker = ActivityMaps.this.map.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(snippet)
@@ -361,7 +357,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(ActivityMaps.this, "LOCATION ACCESS DENIED", Toast.LENGTH_SHORT).show();
+                                    Utils.showToast(ActivityMaps.this, "LOCATION ACCESS DENIED");
                                 }
                             }).create().show();
 
@@ -378,7 +374,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(ActivityMaps.this, "ACCESS DENIED PERMANENTLY", Toast.LENGTH_SHORT).show();
+                                    Utils.showToast(ActivityMaps.this, "ACCESS DENIED PERMANENTLY");
                                 }
                             }).create().show();
 
@@ -386,7 +382,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

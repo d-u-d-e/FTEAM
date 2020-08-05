@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -21,15 +20,9 @@ import com.es.findsoccerplayers.fragments.FragmentBookedMatches;
 import com.es.findsoccerplayers.fragments.FragmentYourMatches;
 import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-public class ActivityMain extends AppCompatActivity {
+public class ActivityMain extends MyActivity {
 
-    private static final String TAG = "ActivityMain";
     private long backPressedTime = 0;
     private Toast backToast;
     ViewPagerTabs adapter;
@@ -38,7 +31,6 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
-        Log.w(TAG, "ActivityMain created");
 
         //Start check location
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
@@ -72,7 +64,7 @@ public class ActivityMain extends AppCompatActivity {
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
 
-        if(!Utils.isOnline(this))
+        if(Utils.isOffline(this))
             Utils.showOfflineReadToast(this);
     }
 
@@ -97,8 +89,8 @@ public class ActivityMain extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
+        backToast.cancel();
         if(backPressedTime + 2000 > System.currentTimeMillis()){
-            backToast.cancel();
             super.onBackPressed(); //the default finishes the current activity
         }else{
             backToast = Toast.makeText(getApplicationContext(), R.string.double_back, Toast.LENGTH_SHORT);

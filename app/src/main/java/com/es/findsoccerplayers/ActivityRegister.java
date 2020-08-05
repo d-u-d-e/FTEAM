@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.DatePickerDialog;
@@ -28,10 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
-public class ActivityRegister extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+public class ActivityRegister extends MyActivity implements DatePickerDialog.OnDateSetListener{
 
     private TextView selectedDate;
-    private static final String TAG = "ActivityRegister";
 
     String name, surname, email, emailConf,pass, passConf;
 
@@ -119,7 +117,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
 
                 //birth date is not mandatory; user is prompted once to insert it if it's missing
                 if(!userSkipsDate && selectedDate.getText().toString().equals(getString(R.string.act_register_select_date))){
-                    Toast.makeText(ActivityRegister.this, R.string.select_birth_date, Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivityRegister.this, R.string.select_birth_date);
                     userSkipsDate = true;
                     return;
                 }
@@ -182,7 +180,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
                     Utils.showErrorToast(ActivityRegister.this, databaseError.getMessage());
                 }
                 else{
-                    Utils.showSuccessRegisterToast(ActivityRegister.this);
+                    Utils.showToast(ActivityRegister.this, R.string.register_success);
                     Intent i = new Intent(ActivityRegister.this, ActivityLogin.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);

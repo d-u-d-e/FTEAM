@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
@@ -13,9 +12,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ActivityResetPassword extends AppCompatActivity {
-
-    private static final String TAG = "ActivityResetPassword";
+public class ActivityResetPassword extends MyActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +45,7 @@ public class ActivityResetPassword extends AppCompatActivity {
                             @Override
                             public void onComplete(Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Utils.showSuccessResetPswToast(ActivityResetPassword.this);
+                                    Utils.showToast(ActivityResetPassword.this, R.string.reset_psw_success);
                                     Intent i = new Intent(ActivityResetPassword.this, ActivityLogin.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                                     startActivity(i);

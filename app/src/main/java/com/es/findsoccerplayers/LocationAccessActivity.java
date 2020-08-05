@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-public class LocationAccessActivity extends AppCompatActivity {
+public class LocationAccessActivity extends MyActivity {
 
     TextView next;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -29,8 +29,6 @@ public class LocationAccessActivity extends AppCompatActivity {
                 getLocationPermission();
             }
         });
-
-
     }
 
     @Override
@@ -53,11 +51,7 @@ public class LocationAccessActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void getLocationPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
     }
-
-
 }

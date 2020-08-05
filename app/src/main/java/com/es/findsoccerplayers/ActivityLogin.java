@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
@@ -38,10 +37,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class ActivityLogin extends AppCompatActivity{
+public class ActivityLogin extends MyActivity{
 
     private static final int RC_GOOGLE_SIGN_IN = 100;
-    private static final String TAG = "ActivityLogin";
     private FirebaseAuth fAuth;
     private long backPressedTime;
     private Toast backToast;
@@ -51,7 +49,6 @@ public class ActivityLogin extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.w(TAG, "LoginActivity created");
         setContentView(R.layout.act_login);
         Toolbar toolbar = findViewById(R.id.log_toolbar);
         setSupportActionBar(toolbar);
@@ -110,7 +107,7 @@ public class ActivityLogin extends AppCompatActivity{
                     public void onComplete(Task<AuthResult> task) {
                         progressBar.setVisibility(View.INVISIBLE);
                         if (task.isSuccessful()){
-                            Utils.showSuccessLoginToast(ActivityLogin.this);
+                            Utils.showToast(ActivityLogin.this, R.string.login_success);
                             startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
                             finish();
                         }else{
@@ -164,8 +161,8 @@ public class ActivityLogin extends AppCompatActivity{
      */
     @Override
     public void onBackPressed() {
+        backToast.cancel();
         if(backPressedTime + 2000 > System.currentTimeMillis()){
-            backToast.cancel();
             super.onBackPressed(); //the default finishes the current activity
         }else{
             backToast = Toast.makeText(this, R.string.double_back, Toast.LENGTH_SHORT);
@@ -173,7 +170,6 @@ public class ActivityLogin extends AppCompatActivity{
         }
         backPressedTime = System.currentTimeMillis();
     }
-
 
     void performGoogleLogin(Intent data){
         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -202,7 +198,7 @@ public class ActivityLogin extends AppCompatActivity{
                                             if(!dataSnapshot.exists())
                                                 createGoogleUser();
                                             else{
-                                                Utils.showSuccessLoginToast(ActivityLogin.this);
+                                                Utils.showToast(ActivityLogin.this, R.string.login_success);
                                                 startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
                                                 finish();
                                             }
@@ -220,13 +216,10 @@ public class ActivityLogin extends AppCompatActivity{
         } catch (ApiException e) {
             //The exception with code 12501 is a feedback from google that the sign in was cancelled by the user,
             //so it isn't an exception that requires to be handled or shown
-            if(e.getStatusCode() == 12501){
-                Log.w(TAG, "Exception: " + e.toString());
-            }else {
-                Log.w(TAG, "Exception: " + e.toString());
+            if(e.getStatusCode() != 12501){
                 Utils.showErrorToast(this, CommonStatusCodes.getStatusCodeString(e.getStatusCode()));
                 //TODO maybe show an even better description
-                // (for network errors is just a simple and ugly string "NETWORK_ERROR")
+                // for network errors is just a simple and ugly string "NETWORK_ERROR"
             }
             progressBar.setVisibility(View.INVISIBLE);
         }
@@ -253,7 +246,7 @@ public class ActivityLogin extends AppCompatActivity{
                     Utils.showErrorToast(ActivityLogin.this, databaseError.getMessage());
                 }
                 else{
-                    Utils.showSuccessLoginToast(ActivityLogin.this);
+                    Utils.showToast(ActivityLogin.this, R.string.login_success);
                     startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
                     finish();
                 }

@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,7 +14,7 @@ import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.material.tabs.TabLayout;
 
-public class ActivitySelectMatch extends AppCompatActivity {
+public class ActivitySelectMatch extends MyActivity {
 
     public static String matchID = null;
 

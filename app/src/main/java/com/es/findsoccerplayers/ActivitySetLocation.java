@@ -1,7 +1,6 @@
 package com.es.findsoccerplayers;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,7 +25,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.es.findsoccerplayers.fragments.FragmentAvailableMatches;
 import com.es.findsoccerplayers.position.MapElements;
 import com.es.findsoccerplayers.position.PositionClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -45,12 +43,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
-public class ActivitySetLocation extends AppCompatActivity implements OnMapReadyCallback {
+public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallback {
 
     public static final String LONGITUDE = "longitude";
     public static final String LATITUDE = "latitude";
     public static final String RADIUS = "radius";
-    public static final String LOCATION_SET_ACTION = "locationSet";
 
     private static final int GPS_REQUEST = 1001;
 
@@ -95,7 +92,6 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         distanceView = findViewById(R.id.radius);
         radiusBar = findViewById(R.id.seek_bar);
         Button save = findViewById(R.id.save_button);
-
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         //create a callback when receive a location result
@@ -176,7 +172,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if(myPosition == null){
-                    Toast.makeText(ActivitySetLocation.this, R.string.no_initial_position, Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivitySetLocation.this, R.string.no_initial_position);
                     radiusBar.setProgress(0);
                 }
             }
@@ -186,7 +182,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
             @Override
             public void onClick(View v) {
                 if(myPosition == null || index <= 0){
-                    Toast.makeText(ActivitySetLocation.this, R.string.complete_preferences, Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivitySetLocation.this, R.string.complete_preferences);
                 } else {
                     latitude = String.valueOf(myPosition.latitude);
                     longitude = String.valueOf(myPosition.longitude);
@@ -200,7 +196,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
 
                     editor.commit();
-                    Toast.makeText(ActivitySetLocation.this, R.string.preference_saved, Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivitySetLocation.this, R.string.preference_saved);
                     ListsManager.getFragmentAvailableMatches().onNewPositionSet();
                     Intent i = new Intent(ActivitySetLocation.this, ActivityMain.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -304,7 +300,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(ActivitySetLocation.this, R.string.location_access_denied, Toast.LENGTH_SHORT).show();
+                                    Utils.showToast(ActivitySetLocation.this, R.string.location_access_denied);
                                 }
                             }).create().show();
 
@@ -321,7 +317,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(ActivitySetLocation.this, R.string.access_denied_permanently, Toast.LENGTH_SHORT).show();
+                                    Utils.showToast(ActivitySetLocation.this, R.string.access_denied_permanently);
                                 }
                             }).create().show();
 
@@ -364,7 +360,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
     @Override
     public void onBackPressed() {
         if(myPosition == null || index <= 0){
-            Toast.makeText(ActivitySetLocation.this, R.string.complete_preferences, Toast.LENGTH_SHORT).show();
+            Utils.showToast(ActivitySetLocation.this, R.string.complete_preferences);
         }
         else{
             if(isTracking){

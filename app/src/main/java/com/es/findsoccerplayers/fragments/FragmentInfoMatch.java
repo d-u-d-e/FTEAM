@@ -299,7 +299,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                     Utils.showErrorToast(getActivity(), error.getMessage());
                 else{ //match successfully updated
                     Toast.makeText(getActivity(), "Match successfully updated", Toast.LENGTH_SHORT).show();
-                    if(!Utils.isOnline(getContext()))
+                    if(Utils.isOffline(getContext()))
                         Utils.showOfflineWriteToast(getContext());
                 }
             }
@@ -322,7 +322,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                     Utils.showErrorToast(getActivity(), error.getMessage());
                 else{ //match successfully deleted
                     Toast.makeText(getActivity(), "Match successfully deleted", Toast.LENGTH_SHORT).show();
-                    if(!Utils.isOnline(getContext()))
+                    if(Utils.isOffline(getContext()))
                         Utils.showOfflineWriteToast(getContext());
             }
         }});

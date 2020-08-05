@@ -2,7 +2,6 @@ package com.es.findsoccerplayers;
 
 import com.es.findsoccerplayers.fragments.FragmentAvailableMatches;
 import com.es.findsoccerplayers.fragments.FragmentBookedMatches;
-import com.es.findsoccerplayers.fragments.FragmentInfoMatch;
 import com.es.findsoccerplayers.fragments.FragmentYourMatches;
 
 public class ListsManager {
