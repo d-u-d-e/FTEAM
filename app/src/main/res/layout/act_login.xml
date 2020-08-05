@@ -84,37 +84,34 @@
         android:id="@+id/log_progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:visibility="invisible"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/log_forgottenPsw"
-        app:layout_constraintBottom_toTopOf="@id/log_registerQuestion"/>
+        app:layout_constraintTop_toBottomOf="@id/log_forgottenPsw" />
 
     <TextView
         android:id="@+id/log_registerQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:text="@string/act_login_label1"
         android:textAlignment="center"
+        android:layout_marginBottom="10dp"
         android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/log_registerBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/log_progressBar"
-        app:layout_constraintBottom_toTopOf="@id/log_registerBtn"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/log_registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/act_login_reg_button"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/log_otherLoginTypeLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/log_registerQuestion"
-        app:layout_constraintBottom_toTopOf="@id/log_otherLoginTypeLabel"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/log_otherLoginTypeLabel"
@@ -123,21 +120,19 @@
         android:text="@string/act_login_label2"
         android:textAlignment="center"
         android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/log_googleSignInBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/log_registerBtn"
-        app:layout_constraintBottom_toTopOf="@id/log_googleSignInBtn"/>
+        android:layout_marginBottom="10dp"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/log_googleSignInBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:foregroundGravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/log_otherLoginTypeLabel"
-        app:layout_constraintVertical_bias="0.266"
-        android:layout_marginBottom="30dp"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
