@@ -99,14 +99,21 @@ public class FragmentChat extends Fragment {
         ref.push().setValue(m);
 
         JSONObject notification = new JSONObject();
-        JSONObject notifcationBody = new JSONObject();
+        JSONObject notificationBody = new JSONObject();
+        JSONObject notificationNoti = new JSONObject();
         try {
-            notifcationBody.put("title", Utils.getPreviewDescription(username));
-            notifcationBody.put("body", Utils.getPreviewDescription(message));
-            notifcationBody.put("sender", currentUser.getUid());
+            notificationBody.put("title", Utils.getPreviewDescription(username));
+            notificationBody.put("body", Utils.getPreviewDescription(message));
+            notificationBody.put("sender", currentUser.getUid());
+            notificationNoti.put("tag", matchID);
+            notificationNoti.put("title", Utils.getPreviewDescription(username));
+            notificationNoti.put("body", Utils.getPreviewDescription(message));
+            notificationNoti.put("icon", "ic_message");
 
             notification.put("to", "/topics/" + matchID);
-            notification.put("data", notifcationBody);
+            notification.put("notification", notificationNoti );
+            notification.put("data", notificationBody);
+
 
         } catch (JSONException e) {
 
