@@ -38,8 +38,7 @@ public class ListsManager {
         return getInstance().yourMatches;
     }
 
-    public static FragmentAvailableMatches getFragmentAvailableMatches(){
+    static FragmentAvailableMatches getFragmentAvailableMatches(){
         return getInstance().availableMatches;
     }
-
 }

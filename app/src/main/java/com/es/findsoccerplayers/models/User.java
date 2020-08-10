@@ -1,23 +1,16 @@
 package com.es.findsoccerplayers.models;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 public class User {
+
     private String id;
-    private String name;
-    private String surname;
+    private String username;
     private String dateOfBirth;
-    private Set<String> matches = new HashSet<>();
 
     public User(){}
 
-    public User(String id, String name, String surname, String dateOfBirth){
+    public User(String id, String username, String dateOfBirth){
         this.id = id;
-        this.name = name;
-        this.surname = surname;
+        this.username = username;
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -29,31 +22,13 @@ public class User {
         this.id = id;
     }
 
-    public void addMatch(String match){
-        matches.add(match);
-    }
+    public String getUsername(){return username;}
 
-    public void addMatches(ArrayList<String> matches){
-        this.matches.addAll(matches);
-    }
-
-    public void deleteMatch(String match){
-        matches.remove(match);
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public String getSurname(){
-        return surname;
-    }
+    public void setUsername(String username){this.username = username;}
 
     public String getDateOfBirth(){
         return dateOfBirth;
     }
 
-    public ArrayList<String> getMatches(){
-        return new ArrayList<>(matches);
-    }
+    public void setDateOfBirth(String dateOfBirth){this.dateOfBirth = dateOfBirth;}
 }

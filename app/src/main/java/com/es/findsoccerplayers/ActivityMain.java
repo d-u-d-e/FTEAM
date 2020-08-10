@@ -1,11 +1,13 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,19 +21,26 @@ import com.es.findsoccerplayers.fragments.FragmentYourMatches;
 import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.google.android.material.tabs.TabLayout;
 
-public class ActivityMain extends AppCompatActivity {
+public class ActivityMain extends MyActivity {
 
-    private static final String TAG = "ActivityMain";
     private long backPressedTime = 0;
     private Toast backToast;
-    FragmentAvailableMatches availableMatches;
     ViewPagerTabs adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
-        Log.w(TAG, "ActivityMain created");
+
+        //Start check location
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            //Show only if the  user denied it, but not permanently
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)){
+                startActivity(new Intent(ActivityMain.this, LocationAccessActivity.class));
+            }
+        }
+
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
@@ -54,6 +63,9 @@ public class ActivityMain extends AppCompatActivity {
         vp.setOffscreenPageLimit(adapter.getCount()-1); //2
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
+
+        if(Utils.isOffline(this))
+            Utils.showOfflineReadToast(this);
     }
 
     @Override
@@ -61,16 +73,6 @@ public class ActivityMain extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.layout_menu, menu);
         return true;
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        String action = intent.getAction();
-        if(action != null && action.equals(ActivitySetLocation.LOCATION_SET_ACTION)){
-            Log.d(TAG, "settings updated, triggering updateListWithNewPositionSettings() in fragment available matches");
-            //availableMatches.updateListWithNewPositionSettings();
-        }
     }
 
     @Override
@@ -87,8 +89,8 @@ public class ActivityMain extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
+        backToast.cancel();
         if(backPressedTime + 2000 > System.currentTimeMillis()){
-            backToast.cancel();
             super.onBackPressed(); //the default finishes the current activity
         }else{
             backToast = Toast.makeText(getApplicationContext(), R.string.double_back, Toast.LENGTH_SHORT);

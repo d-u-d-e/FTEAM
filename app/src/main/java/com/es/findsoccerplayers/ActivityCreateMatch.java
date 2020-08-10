@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
@@ -31,7 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public class ActivityCreateMatch extends AppCompatActivity implements DatePickerFragment.OnCompleteListener,
+public class ActivityCreateMatch extends MyActivity implements DatePickerFragment.OnCompleteListener,
         TimePickerFragment.OnCompleteListener, NumberPickerFragment.OnCompleteListener{
 
     private TextView matchDate;
@@ -41,6 +40,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
     private EditText description;
     private double longitude;
     private double latitude;
+    private String nameOfThePlace;
 
     private static final String TAG = "ActivityCreateMatch";
     private static final int MAPS_REQUEST_CODE = 42;
@@ -50,6 +50,8 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
     private static final String DESCRIPTION = "description";
 
     private Match match;
+
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,6 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         placeText = findViewById(R.id.cr_match_addPosition);
         description = findViewById(R.id.cr_match_descriptionField);
         FloatingActionButton matchFab = findViewById(R.id.cr_match_fab);
-
 
         if (savedInstanceState != null) {
             matchDate.setText(savedInstanceState.getString(MATCH_DATE));
@@ -125,8 +126,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
             public void onClick(View v) {
                 if(placeText.getText().toString().equals(getString(R.string.add_position)) ||
                     players.getText().toString().equals(getString(R.string.players))){
-                    Toast.makeText(ActivityCreateMatch.this, R.string.all_fields_required,
-                            Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivityCreateMatch.this, getString(R.string.all_fields_required));
                 }else{
                     match = new Match();
                     match.setDescription(description.getText().toString());
@@ -143,7 +143,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                         throw new IllegalStateException("Parsing of date has failed");
                     }
 
-                    match.setPlaceName(placeText.getText().toString());
+                    match.setPlaceName(nameOfThePlace);
                     match.setLongitude(longitude);
                     match.setLatitude(latitude);
                     match.setPlayersNumber(Integer.parseInt(players.getText().toString()));
@@ -160,8 +160,8 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         if(requestCode == MAPS_REQUEST_CODE && resultCode == RESULT_OK){
             longitude = data.getDoubleExtra(ActivityMaps.LONGITUDE, longitude);
             latitude = data.getDoubleExtra(ActivityMaps.LATITUDE, latitude);
-            String nameOfThePlace = data.getStringExtra(ActivityMaps.PLACE_NAME);
-            placeText.setText(nameOfThePlace);
+            nameOfThePlace = data.getStringExtra(ActivityMaps.PLACE_NAME).replaceAll("\n", " ");
+            placeText.setText(Utils.getPreviewDescription(nameOfThePlace));
         }
     }
 
@@ -206,7 +206,7 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
         String path = "users/" + user.getUid() + "/createdMatches";
 
         DatabaseReference ref = db.getReference(path).push();
-        String key = ref.getKey();
+        final String key = ref.getKey();
 
         Map<String, Object> map = new HashMap<>();
         map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
@@ -219,15 +219,15 @@ public class ActivityCreateMatch extends AppCompatActivity implements DatePicker
                 if(databaseError != null)
                     Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
                 else{ //match successfully created
-                    Toast.makeText(ActivityCreateMatch.this, "Match successfully created", Toast.LENGTH_SHORT).show();
-                    ListsManager.getFragmentYourMatches().onMatchCreated(m);
+                    Utils.showToast(ActivityCreateMatch.this, "Match successfully created");
+                    ListsManager.getFragmentYourMatches().registerForMatchEvents(key);
                 }
             }
         });
 
 
-        if(!Utils.isOnline(this))
-            Utils.showOfflineToast(this);
+        if(Utils.isOffline(this))
+            Utils.showOfflineWriteToast(this);
 
         Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);

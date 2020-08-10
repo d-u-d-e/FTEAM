@@ -1,31 +1,20 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 
 /**
  * Shows the account information for the current user
  * */
 
-public class ActivityAccount extends AppCompatActivity {
+public class ActivityAccount extends MyActivity{
 
-    private FirebaseUser acct;
-    private TextView id;
-    private TextView email;
-    private TextView name;
+    FirebaseUser acct = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,46 +24,13 @@ public class ActivityAccount extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Button btnLogOut = findViewById(R.id.acc_btnLogOut);
-        name = (TextView) findViewById(R.id.acc_username);
-        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        TextView nameTextView = findViewById(R.id.acc_username);
+        nameTextView.setText(String.format(getString(R.string.act_account_username), acct.getDisplayName()));
 
-        id = (TextView) findViewById(R.id.acc_userId);
-        email = (TextView) findViewById(R.id.acc_email);
-        acct = FirebaseAuth.getInstance().getCurrentUser();
+        TextView id = findViewById(R.id.acc_userId);
+        TextView email = findViewById(R.id.acc_email);
 
-        //options required to log in with Google
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        //if log out button is clicked go back to the login activity
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //log out the current user
-                auth.signOut();
-
-                //google log out: this does nothing if the user did not log in with google
-                //however in the other case, it clears the previous selected account, so next time the
-                //user is asked to select a new account
-                googleSignInClient.signOut();
-                //back to login activity
-                finishAffinity();
-                Intent i = new Intent(ActivityAccount.this, ActivityLogin.class);
-                startActivity(i);
-            }
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //shows user info
         id.setText(String.format(getString(R.string.act_account_id), acct.getUid()));
         email.setText(String.format(getString(R.string.act_account_email), acct.getEmail()));
-        name.setText(String.format(getString(R.string.act_account_username), acct.getDisplayName()));
     }
 }

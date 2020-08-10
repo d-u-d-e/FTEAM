@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.DatePickerDialog;
@@ -20,16 +19,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
-public class ActivityRegister extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+public class ActivityRegister extends MyActivity implements DatePickerDialog.OnDateSetListener{
 
     private TextView selectedDate;
-    private static final String TAG = "ActivityRegister";
 
     String name, surname, email, emailConf,pass, passConf;
 
@@ -117,7 +117,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
 
                 //birth date is not mandatory; user is prompted once to insert it if it's missing
                 if(!userSkipsDate && selectedDate.getText().toString().equals(getString(R.string.act_register_select_date))){
-                    Toast.makeText(ActivityRegister.this, R.string.select_birth_date, Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivityRegister.this, R.string.select_birth_date);
                     userSkipsDate = true;
                     return;
                 }
@@ -130,7 +130,14 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
                     public void onComplete(Task<AuthResult> task) {
                         progressBar.setVisibility(View.INVISIBLE);
                         if(task.isSuccessful()){
-                            createFirebaseUser(name, surname, selectedDate.getText().toString());
+                            createFirebaseUser(name + " " + surname, selectedDate.getText().toString());
+                            UserProfileChangeRequest.Builder b = new UserProfileChangeRequest.Builder();
+                            b.setDisplayName(name + " " + surname);
+                            AuthResult result = task.getResult();
+                            assert result != null;
+                            FirebaseUser user = task.getResult().getUser();
+                            assert user != null;
+                            user.updateProfile(b.build());
                         }else
                             Utils.showErrorToast(ActivityRegister.this, task.getException());
                     }
@@ -161,10 +168,10 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
         selectedDate.setText(Utils.getDate(c.getTimeInMillis()));
     }
 
-    private void createFirebaseUser(String name, String surname, String date){
+    private void createFirebaseUser(String username, String date){
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), name, surname, date);
+        User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), username, date);
 
         db.child("users").child(user.getId()).setValue(user, new DatabaseReference.CompletionListener() {
             @Override
@@ -173,7 +180,7 @@ public class ActivityRegister extends AppCompatActivity implements DatePickerDia
                     Utils.showErrorToast(ActivityRegister.this, databaseError.getMessage());
                 }
                 else{
-                    Utils.showSuccessRegisterToast(ActivityRegister.this);
+                    Utils.showToast(ActivityRegister.this, R.string.register_success);
                     Intent i = new Intent(ActivityRegister.this, ActivityLogin.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);

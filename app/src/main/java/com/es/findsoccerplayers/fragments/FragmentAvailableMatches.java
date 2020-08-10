@@ -7,14 +7,11 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,22 +22,16 @@ import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class FragmentAvailableMatches extends Fragment {
-
-    private static final String TAG = "AvailableMatches";
-    private FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private List<Match> matches;
-    private MatchAdapter matchAdapter;
+public class FragmentAvailableMatches extends FragmentMatches {
 
     private static class PositionSettings{
         LatLng position;
@@ -48,8 +39,6 @@ public class FragmentAvailableMatches extends Fragment {
     }
     private PositionSettings positionSettings;
     private TextView message;
-
-    //TODO show only matches for which missing players is not zero
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,7 +70,7 @@ public class FragmentAvailableMatches extends Fragment {
 
         if(positionSettings == null){
             AlertDialog.Builder b = new AlertDialog.Builder(getActivity()).setMessage(R.string.preferred_pos_not_set);
-            b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            b.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent i = new Intent(getActivity(), ActivitySetLocation.class);
@@ -142,6 +131,8 @@ public class FragmentAvailableMatches extends Fragment {
     private void readAllRelevantMatches(){
 
         DatabaseReference ref = db.getReference().child("matches");
+        final String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         //this is expensive for huge data, but we
         //have no means to select matches distant x meters apart from the user position directly
         //in the database
@@ -155,9 +146,11 @@ public class FragmentAvailableMatches extends Fragment {
                     matches.clear();
                     for(DataSnapshot data: dataSnapshot.getChildren()){
                         Match m = data.getValue(Match.class);
+                        boolean booked = data.child("members/" + userID).exists();
                         assert m != null;
-                        if(isLocationNearby(m.getLatitude(), m.getLongitude()))
-                            matches.add(m);
+                        if(m.getPlayersNumber() > 0 && !booked && isLocationNearby(m.getLatitude(), m.getLongitude())
+                                && !userID.equals(m.getCreatorID()))
+                        matches.add(m);
                     }
                     matchAdapter.notifyDataSetChanged();
                 } //release the object only when we have read everything
@@ -173,6 +166,9 @@ public class FragmentAvailableMatches extends Fragment {
     private void sync(){
 
         DatabaseReference ref = db.getReference().child("matches");
+        final String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //TODO
         //this is expensive for huge data, but we have no means to select matches
         // distant x meters apart from the user position directly in the database
 
@@ -181,7 +177,9 @@ public class FragmentAvailableMatches extends Fragment {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) { //match created by some user
                 Match m = dataSnapshot.getValue(Match.class);
                 assert m != null;
-                if(isLocationNearby(m.getLatitude(), m.getLongitude()))
+                boolean booked = dataSnapshot.child("members/" + userID).exists();
+                if(m.getPlayersNumber() > 0 && !booked && isLocationNearby(m.getLatitude(), m.getLongitude())
+                        && !userID.equals(m.getCreatorID()))
                     FragmentAvailableMatches.this.addUI(m);
             }
 
@@ -190,11 +188,15 @@ public class FragmentAvailableMatches extends Fragment {
                 //any user modifies a match
                 Match m = dataSnapshot.getValue(Match.class);
                 assert m != null;
-                int i;
-                if (isLocationNearby(m.getLatitude(), m.getLongitude()))
-                    FragmentAvailableMatches.this.addUI(m); //update entry or add a new entry
-                else
-                    FragmentAvailableMatches.this.removeUI(m); //delete entry if exists
+
+                if(!userID.equals(m.getCreatorID())){ //if I am the creator, then m is not even listed
+                    boolean booked = dataSnapshot.child("members/" + userID).exists();
+                    //TODO notify select match to update
+                    if(booked || m.getPlayersNumber() == 0 || !isLocationNearby(m.getLatitude(), m.getLongitude()))
+                        FragmentAvailableMatches.this.removeUI(m.getMatchID());
+                    else
+                        FragmentAvailableMatches.this.addUI(m);
+                }
             }
 
             @Override
@@ -202,7 +204,10 @@ public class FragmentAvailableMatches extends Fragment {
                 //some user deleted this match from the database
                 Match m = dataSnapshot.getValue(Match.class);
                 assert m != null;
-                FragmentAvailableMatches.this.removeUI(m); //delete entry if exists
+                FragmentAvailableMatches.this.removeUI(m.getMatchID()); //delete entry if exists
+                //TODO what happens if the user is checking this match and it gets suddenly deleted?
+                //update: nothing; if the user then clicks on join match, he will get the toast: too late
+                //so notify select match to finish
             }
 
             @Override
@@ -217,40 +222,5 @@ public class FragmentAvailableMatches extends Fragment {
         };
 
         ref.addChildEventListener(syncListener);
-    }
-
-    private synchronized void addUI(Match m){
-        //check if we have this match in the list
-        int i;
-        for(i = 0; i < matches.size(); i++){
-            if(matches.get(i).getMatchID().equals(m.getMatchID())){
-                break;
-            }
-        }
-
-        if(i == matches.size()) { //we don't have it
-                matches.add(m);
-                matchAdapter.notifyItemInserted(matches.size()-1);
-        }
-        else{
-            //just update in this case, he might have changed the description for example
-            matches.set(i, m);
-            matchAdapter.notifyItemChanged(i);
-        }
-    }
-
-    private synchronized void removeUI(Match m){
-        //check if we have this match in the list
-        int i;
-        for(i = 0; i < matches.size(); i++){
-            if(matches.get(i).getMatchID().equals(m.getMatchID())){
-                break;
-            }
-        }
-
-        if(i != matches.size()) { //we have it, so we must delete it
-            matches.remove(i);
-            matchAdapter.notifyItemRemoved(i);
-        }
     }
 }

@@ -6,15 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.R;
+import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,17 +21,14 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class FragmentBookedMatches extends Fragment {
+public class FragmentBookedMatches extends FragmentMatches {
 
-    private FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private List<Match> matches;
-    private MatchAdapter matchAdapter;
+    private ConcurrentHashMap<String, ValueEventListener> listenerHashMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +47,8 @@ public class FragmentBookedMatches extends Fragment {
             }
         });
 
+        listenerHashMap = new ConcurrentHashMap<>();
+
         View view = inflater.inflate(R.layout.frag_booked_matches, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.frag_booked_list);
         recyclerView.setHasFixedSize(true);
@@ -67,8 +64,6 @@ public class FragmentBookedMatches extends Fragment {
     }
 
     private void sync(){
-            //called every time the "user" joins a new match, or drops out
-            //since both operations affect the users/"user"/matches list
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             DatabaseReference ref =
@@ -80,41 +75,57 @@ public class FragmentBookedMatches extends Fragment {
                     //user joins a match
                     final String matchKey = dataSnapshot.getKey();
                     assert matchKey != null;
-                    DatabaseReference ref = db.getReference().child("matches").child(matchKey);
-                    ref.addValueEventListener(new ValueEventListener() {
+                    final DatabaseReference ref = db.getReference().child("matches/" + matchKey);
+
+                    ValueEventListener listener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            Match m = snapshot.getValue(Match.class);
-                            if(snapshot.exists()) //TODO not sure if it works
+                            if(!snapshot.exists()){
+                                //TODO any user is browsing this match, what happens? Crash?
+                                String currentMatch = ActivitySelectMatch.matchID; //null if this activity is not running
+                                if(currentMatch != null && currentMatch.equals(matchKey)){
+                                    Intent i = new Intent(FragmentBookedMatches.this.getContext(), ActivitySelectMatch.class);
+                                    i.setAction("finishOnMatchDeleted");
+                                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    startActivity(i);
+                                    Utils.showErrorToast(getActivity(), "The match has been deleted by the creator");
+                                }
+                                listenerHashMap.remove(matchKey);
+                                ref.removeEventListener(this);
+                                removeUI(matchKey);
+                            }
+                            else{
+                                Match m = snapshot.getValue(Match.class);
+                                //TODO here use a similar method as above to notify any current ActivitySelectMatch to
+                                //update if the creator modifies the match
                                 addUI(m);
-                            else
-                                removeUI(m);
+                            }
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                        public void onCancelled(DatabaseError error) {
 
                         }
-                    });
+                    };
+
+                    listenerHashMap.put(matchKey, listener);
+                    ref.addValueEventListener(listener);
                 }
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) { //drop out
-                    //TODO drop out is not implemented yet, but the list can handle it
-                    synchronized (FragmentBookedMatches.this){
-                        String matchKey = dataSnapshot.getKey();
-                        int i = 0;
-                        for(i = 0; i < matches.size(); i++){
-                            if(matches.get(i).getMatchID().equals(matchKey))
-                                break;
-                        }
-                        matches.remove(i);
-                        matchAdapter.notifyItemRemoved(i);
-                    }
+                    String matchKey = dataSnapshot.getKey();
+                    DatabaseReference ref = db.getReference().child("matches/" + matchKey);
+                    assert matchKey != null;
+                    ValueEventListener listener = listenerHashMap.remove(matchKey);
+                    assert listener != null;
+                    ref.removeEventListener(listener); //not more interested in changes from the db
+                    removeUI(matchKey);
                 }
 
                 @Override
@@ -128,39 +139,4 @@ public class FragmentBookedMatches extends Fragment {
                 }
             });
         }
-
-    private synchronized void addUI(Match m){
-        //check if we have this match in the list
-        int i;
-        for(i = 0; i < matches.size(); i++){
-            if(matches.get(i).getMatchID().equals(m.getMatchID())){
-                break;
-            }
-        }
-
-        if(i == matches.size()) { //we don't have it
-            matches.add(m);
-            matchAdapter.notifyItemInserted(matches.size()-1);
-        }
-        else{
-            //just update in this case, he might have changed the description for example
-            matches.set(i, m);
-            matchAdapter.notifyItemChanged(i);
-        }
-    }
-
-    private synchronized void removeUI(Match m){
-        //check if we have this match in the list
-        int i;
-        for(i = 0; i < matches.size(); i++){
-            if(matches.get(i).getMatchID().equals(m.getMatchID())){
-                break;
-            }
-        }
-
-        if(i != matches.size()) { //we have it, so we must delete it
-            matches.remove(i);
-            matchAdapter.notifyItemRemoved(i);
-        }
-    }
 }

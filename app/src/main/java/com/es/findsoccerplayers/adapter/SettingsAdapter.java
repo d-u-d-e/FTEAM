@@ -1,11 +1,16 @@
 package com.es.findsoccerplayers.adapter;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.es.findsoccerplayers.R;
@@ -16,6 +21,7 @@ import java.util.List;
 public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.SettingsViewHolder> {
     private List<SettingsElement> settingsElementList;
     private OnItemClickListener listener;
+    private Context context;
 
     public interface OnItemClickListener{
         void onItemClick(int position);
@@ -26,7 +32,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
     }
 
     static class SettingsViewHolder extends RecyclerView.ViewHolder {
-        ImageView im;
+        AppCompatImageView im;
         TextView tx1, tx2;
 
         SettingsViewHolder(View itemView, final OnItemClickListener listener) {
@@ -49,8 +55,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         }
     }
 
-    public SettingsAdapter(List<SettingsElement> settingsElementList){
+    public SettingsAdapter(Context context, List<SettingsElement> settingsElementList){
         this.settingsElementList = settingsElementList;
+        this.context = context;
     }
 
     @Override
@@ -62,7 +69,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
     @Override
     public void onBindViewHolder(SettingsViewHolder holder, int position) {
         SettingsElement item = settingsElementList.get(position);
-        holder.im.setImageResource(item.getImage());
+        Drawable drawable = AppCompatResources.getDrawable(context, item.getImage());
+        holder.im.setImageDrawable(drawable);
         holder.tx1.setText(item.getText1());
         holder.tx2.setText(item.getText2());
     }

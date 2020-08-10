@@ -1,28 +1,30 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.es.findsoccerplayers.fragments.FragmentAvailableMatches;
 import com.es.findsoccerplayers.position.MapElements;
 import com.es.findsoccerplayers.position.PositionClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -41,12 +43,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
-public class ActivitySetLocation extends AppCompatActivity implements OnMapReadyCallback {
+public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallback {
 
     public static final String LONGITUDE = "longitude";
     public static final String LATITUDE = "latitude";
     public static final String RADIUS = "radius";
-    public static final String LOCATION_SET_ACTION = "locationSet";
 
     private static final int GPS_REQUEST = 1001;
 
@@ -91,7 +92,6 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
         distanceView = findViewById(R.id.radius);
         radiusBar = findViewById(R.id.seek_bar);
         Button save = findViewById(R.id.save_button);
-
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         //create a callback when receive a location result
@@ -166,13 +166,13 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                //Do nothing
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if(myPosition == null){
-                    Toast.makeText(ActivitySetLocation.this, "Enable GPS to set your position", Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivitySetLocation.this, R.string.no_initial_position);
                     radiusBar.setProgress(0);
                 }
             }
@@ -182,7 +182,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
             @Override
             public void onClick(View v) {
                 if(myPosition == null || index <= 0){
-                    Toast.makeText(ActivitySetLocation.this, R.string.complete_preferences, Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivitySetLocation.this, R.string.complete_preferences);
                 } else {
                     latitude = String.valueOf(myPosition.latitude);
                     longitude = String.valueOf(myPosition.longitude);
@@ -196,7 +196,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
 
 
                     editor.commit();
-                    Toast.makeText(ActivitySetLocation.this, "Preferences Saved!", Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivitySetLocation.this, R.string.preference_saved);
                     ListsManager.getFragmentAvailableMatches().onNewPositionSet();
                     Intent i = new Intent(ActivitySetLocation.this, ActivityMain.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -285,6 +285,43 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
                     PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
                     MapElements.showMyLocation(map);
                 }
+            } else{
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // now, user has denied permission (but not permanently!)
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                    alertDialog.setMessage(R.string.alert_location_request)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getLocationPermission();
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Utils.showToast(ActivitySetLocation.this, R.string.location_access_denied);
+                                }
+                            }).create().show();
+
+                } else {
+                    // now, user has denied permission permanently!
+                    AlertDialog.Builder alertDialogPermanently = new AlertDialog.Builder(this);
+                    alertDialogPermanently.setMessage(R.string.alert_location_denied_permanently)
+                            .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Utils.showToast(ActivitySetLocation.this, R.string.access_denied_permanently);
+                                }
+                            }).create().show();
+
+                }
             }
         }
     }
@@ -323,7 +360,7 @@ public class ActivitySetLocation extends AppCompatActivity implements OnMapReady
     @Override
     public void onBackPressed() {
         if(myPosition == null || index <= 0){
-            Toast.makeText(ActivitySetLocation.this, R.string.complete_preferences, Toast.LENGTH_SHORT).show();
+            Utils.showToast(ActivitySetLocation.this, R.string.complete_preferences);
         }
         else{
             if(isTracking){

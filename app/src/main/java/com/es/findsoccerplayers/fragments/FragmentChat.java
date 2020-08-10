@@ -60,10 +60,11 @@ public class FragmentChat extends Fragment {
                 if(!message.equals(""))
                     sendMessage(message);
                 else
-                    Utils.showCannotSendMessage(getActivity());
+                    Utils.showToast(getActivity(), R.string.send_empty_message);
                 messageText.setText("");
             }
         });
+
 
         recyclerView = view.findViewById(R.id.chat_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -78,7 +79,8 @@ public class FragmentChat extends Fragment {
 
     private void sendMessage(String message){
         DatabaseReference ref = db.getReference("chats").child(matchID);
-        Message m = new Message(currentUser.getUid(), currentUser.getDisplayName(), message, System.currentTimeMillis());
+        String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        Message m = new Message(currentUser.getUid(), username, message, System.currentTimeMillis());
         ref.push().setValue(m);
     }
 

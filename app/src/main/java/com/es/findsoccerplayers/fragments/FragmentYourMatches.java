@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,16 +25,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
 import java.util.ArrayList;
-import java.util.List;
 
-public class FragmentYourMatches extends Fragment {
+public class FragmentYourMatches extends FragmentMatches {
 
-    private static final String TAG = "YourMatches";
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private List<Match> matches;
-    private MatchAdapter matchAdapter;
+    private int count = 0;
+    private Integer readCount = 0;
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,7 +45,6 @@ public class FragmentYourMatches extends Fragment {
                 Intent i = new Intent(getContext(), ActivitySelectMatch.class);
                 i.putExtra("match", matches.get(position));
                 i.putExtra("type", "your");
-                i.putExtra("position", position);
                 startActivity(i);
             }
         });
@@ -60,10 +57,11 @@ public class FragmentYourMatches extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(matchAdapter);
         recyclerView.setMotionEventSplittingEnabled(false);
+        //recyclerView.setItemAnimator(null);
+
+        progressBar = view.findViewById(R.id.frag_yours_progressBar);
 
         readMatches();
-
-        //recyclerView.setItemAnimator(null);
 
         FloatingActionButton fabCreateMatch = view.findViewById(R.id.fab_create_match);
         fabCreateMatch.setOnClickListener(new View.OnClickListener() {
@@ -76,25 +74,36 @@ public class FragmentYourMatches extends Fragment {
         return view;
     }
 
-    public void onMatchCreated(Match m){
-        synchronized (this){
-            matches.add(m);
-            matchAdapter.notifyItemInserted(matches.size()-1);
-        }
-    }
 
-    public void onMatchDeleted(int position){
-        synchronized (this){
-            matches.remove(position);
-            matchAdapter.notifyItemRemoved(position);
-        }
-    }
+    public void registerForMatchEvents(final String matchID){
 
-    void onMatchEdited(int position, Match newMatch){
-        synchronized (this){
-            matches.set(position, newMatch);
-            matchAdapter.notifyItemChanged(position);
-        }
+        final DatabaseReference r = db.getReference("matches/" + matchID);
+        r.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if(!snapshot.exists()){
+                    removeUI(matchID);
+                    r.removeEventListener(this);
+                }
+                else{
+                    Match m = snapshot.getValue(Match.class);
+                    synchronized (readCount){ //TODO ugly because it's done only at the start
+                        if(readCount < count){
+                            readCount++;
+                            if(readCount == count){
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    }
+                    addUI(m);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
     }
 
     private void readMatches() { //done only at beginning
@@ -106,25 +115,15 @@ public class FragmentYourMatches extends Fragment {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                ArrayList<String> keys = new ArrayList<>();
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    String key = ds.getKey();
-                    DatabaseReference r = db.getReference("matches/" + key);
-                    r.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            Match m = snapshot.getValue(Match.class);
-                            assert  m!= null;
-                            synchronized (FragmentYourMatches.this){
-                                matches.add(m);
-                                matchAdapter.notifyItemInserted(matches.size()-1);
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError error) {}
-                    });
+                    keys.add(ds.getKey());
+                    count++;
                 }
+                if(count > 0)
+                    progressBar.setVisibility(View.VISIBLE);
+                for(String key: keys)
+                    registerForMatchEvents(key);
             }
 
             @Override

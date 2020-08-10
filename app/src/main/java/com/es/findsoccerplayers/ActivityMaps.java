@@ -1,6 +1,6 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -10,12 +10,14 @@ import com.es.findsoccerplayers.position.PositionClient;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -42,7 +44,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 import java.util.Locale;
 
-public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallback {
+public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
     public String placeName;
@@ -121,19 +123,18 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         confirm_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(placeName == null){
-                    Toast.makeText(ActivityMaps.this, R.string.select_a_place, Toast.LENGTH_SHORT).show();
-                } else {
+                if(placeName == null)
+                    Utils.showToast(ActivityMaps.this, R.string.select_a_place);
+                else {
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra(LATITUDE, latitude);
                     resultIntent.putExtra(LONGITUDE, longitude);
-                    resultIntent.putExtra(PLACE_NAME, placeName);
+                    resultIntent.putExtra(PLACE_NAME, placeName.replaceAll("\n", " "));
                     setResult(RESULT_OK, resultIntent);
                     if(isTracking)
                         PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
                     finish();
                 }
-
             }
         });
 
@@ -141,9 +142,9 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
         position_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!locationAccess){
+                if(!locationAccess)
                     getLocationPermission();
-                }else {
+                else {
                     if(PositionClient.isGpsOFF(getApplicationContext())){
                         PositionClient.turnGPSon(ActivityMaps.this);
                     } else{
@@ -159,8 +160,6 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
-
-
 
     //Insert the menu
     @Override
@@ -197,9 +196,10 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        map.getUiSettings().setMapToolbarEnabled(false);
         mapReady = true;
 
-        Toast.makeText(this, "Connecting to GPS...", Toast.LENGTH_SHORT).show();
+        Utils.showToast(this, "Connecting to GPS...");
 
         if(locationAccess){
             if(PositionClient.isGpsOFF(ActivityMaps.this)){
@@ -257,16 +257,21 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 try {
                     Geocoder geo = new Geocoder(ActivityMaps.this.getApplicationContext(), Locale.getDefault());
                     List<Address> addresses = geo.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                    if (addresses.isEmpty()) {
-                        placeName = getString(R.string.default_position_name);
-                    } else {
-                        placeName = addresses.get(0).getLocality();  // if the place is not a POI then use only the city name
+                    placeName = getString(R.string.default_position_name); // My Position
+                    if (!addresses.isEmpty()) {
+                        if(addresses.get(0).getLocality() != null){
+                            placeName = addresses.get(0).getLocality();  // if the place is not a POI then use only the city name
+                        } else if(addresses.get(0).getAdminArea() != null){
+                            placeName = addresses.get(0).getAdminArea(); // if the place is not a POI then use only the admin area name
+                        } else if( addresses.get(0).getCountryName() != null){
+                            placeName = addresses.get(0).getCountryName(); // or the Country name
+                        }
                         latitude = latLng.latitude;  //get the selected place latitude
                         longitude = latLng.longitude; // //get the selected place longitude
                     }
                 } catch (Exception e){
                     e.printStackTrace();
-                    Toast.makeText(ActivityMaps.this, R.string.gecodo_failed, Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivityMaps.this, R.string.gecodo_failed);
                     placeName = getString(R.string.default_position_name);
                 }
                 Marker myMarker = ActivityMaps.this.map.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(snippet)
@@ -304,7 +309,7 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(LATITUDE, latitude);
                 resultIntent.putExtra(LONGITUDE, longitude);
-                resultIntent.putExtra(PLACE_NAME, placeName);
+                resultIntent.putExtra(PLACE_NAME, placeName.replaceAll("\n", " "));
                 setResult(RESULT_OK, resultIntent);
                 if(isTracking){
                     PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
@@ -336,10 +341,47 @@ public class ActivityMaps extends AppCompatActivity implements OnMapReadyCallbac
                     PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
                     MapElements.showMyLocation(map);
                 }
+            }  else{
+                //In case the user denied the permission
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // now, user has denied permission (but not permanently!)
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                    alertDialog.setMessage("For better experience, we need the Location access. Do you want to enable the location access?")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getLocationPermission();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Utils.showToast(ActivityMaps.this, "LOCATION ACCESS DENIED");
+                                }
+                            }).create().show();
+
+                } else {
+                    // now, user has denied permission permanently!
+                    AlertDialog.Builder alertDialogPermanently = new AlertDialog.Builder(this);
+                    alertDialogPermanently.setMessage("Location Permission Denied. Please enable the location Permission in Authorization. ")
+                            .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Utils.showToast(ActivityMaps.this, "ACCESS DENIED PERMANENTLY");
+                                }
+                            }).create().show();
+
+                }
             }
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
