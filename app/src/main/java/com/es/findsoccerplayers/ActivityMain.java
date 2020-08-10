@@ -89,7 +89,7 @@ public class ActivityMain extends MyActivity {
      */
     @Override
     public void onBackPressed() {
-        backToast.cancel();
+        if(backToast != null) backToast.cancel();
         if(backPressedTime + 2000 > System.currentTimeMillis()){
             super.onBackPressed(); //the default finishes the current activity
         }else{
