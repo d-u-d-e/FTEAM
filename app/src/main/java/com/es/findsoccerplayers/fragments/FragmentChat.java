@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +17,7 @@ import com.es.findsoccerplayers.models.Message;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MessageAdapter;
+import com.google.android.gms.common.api.Response;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,9 +25,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.android.volley.AuthFailureError;
+
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import com.es.findsoccerplayers.MySingleton;
 
 public class FragmentChat extends Fragment {
 
@@ -37,6 +49,9 @@ public class FragmentChat extends Fragment {
     private MessageAdapter messageAdapter;
     private List<Message> chats;
     private RecyclerView recyclerView;
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key=" + "AAAA-4ONOMg:APA91bHdgJGWL2WfWG0Ql5FsRmXVzq_O4mC5i5q5x7BMImnCRkDlMbhIg6VL72Z5LOA861KF5_ZR7CJdzLV4mPOHw8t3DQ9rh8k-4ADyIeBsmzATx9mL_YLVHaBRNcVPv9xcS_2EmhL3";
+    final private String contentType = "application/json";
 
 
     public FragmentChat(String matchID){
@@ -82,6 +97,21 @@ public class FragmentChat extends Fragment {
         String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         Message m = new Message(currentUser.getUid(), username, message, System.currentTimeMillis());
         ref.push().setValue(m);
+
+        JSONObject notification = new JSONObject();
+        JSONObject notifcationBody = new JSONObject();
+        try {
+            notifcationBody.put("title", Utils.getPreviewDescription(username));
+            notifcationBody.put("body", Utils.getPreviewDescription(message));
+            notifcationBody.put("sender", currentUser.getUid());
+
+            notification.put("to", "/topics/" + matchID);
+            notification.put("data", notifcationBody);
+
+        } catch (JSONException e) {
+
+        }
+        sendNotification(notification);
     }
 
     private void readMessages(){
@@ -105,5 +135,30 @@ public class FragmentChat extends Fragment {
             }
         });
 
+    }
+
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(getContext(), "on Response", Toast.LENGTH_LONG).show();
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(), "Request error", Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        MySingleton.getInstance(FragmentChat.this.getActivity()).addToRequestQueue(jsonObjectRequest);
     }
 }

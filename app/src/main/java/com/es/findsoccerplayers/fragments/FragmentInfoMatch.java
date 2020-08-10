@@ -43,6 +43,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -364,6 +365,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                     map.put("users/" + uid + "/bookedMatches/" + key, Calendar.getInstance().getTimeInMillis());
                     map.put("matches/" + key + "/members/" + uid, true);
                     db.getReference().updateChildren(map);
+                    FirebaseMessaging.getInstance().subscribeToTopic(key);
                     return Transaction.success(currentData);
                 }
                 else
