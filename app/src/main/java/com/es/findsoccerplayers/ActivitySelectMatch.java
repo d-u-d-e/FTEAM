@@ -46,6 +46,7 @@ public class ActivitySelectMatch extends MyActivity {
             ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
             adapter.addFragment(new FragmentInfoMatch(m, type), "INFO");
             adapter.addFragment(new FragmentChat(matchID, this), "CHAT");
+            vp.setOffscreenPageLimit(0);
             vp.setAdapter(adapter);
             tabs.setupWithViewPager(vp);
         }

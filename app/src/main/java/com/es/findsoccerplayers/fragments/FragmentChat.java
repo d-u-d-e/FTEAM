@@ -47,13 +47,14 @@ public class FragmentChat extends Fragment {
     private SharedPreferences preferences;
     private String lastViewedMessage;
 
+    private Context context;
+
     private ChildEventListener listener;
 
     public FragmentChat(String matchID, Context context){
         super();
         this.matchID = matchID;
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        lastViewedMessage = preferences.getString(matchID + "-lastViewedMessage", null);
+        this.context = context;
     }
 
     @Override
@@ -84,6 +85,9 @@ public class FragmentChat extends Fragment {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        lastViewedMessage = preferences.getString(matchID + "-lastViewedMessage", null);
+
         readMessages();
         return view;
     }
@@ -97,7 +101,7 @@ public class FragmentChat extends Fragment {
         Message m = new Message(r.getKey(), currentUser.getUid(), username, message, System.currentTimeMillis());
         r.setValue(m);
         editor.putString(matchID + "-lastViewedMessage", m.getMessageID()); //this information is cleared when any match is deleted from every user
-        editor.commit();
+        editor.apply();
     }
 
     private void readMessages(){
@@ -126,7 +130,7 @@ public class FragmentChat extends Fragment {
                     SharedPreferences.Editor editor = preferences.edit();
                     lastViewedMessage = chats.get(chats.size()-1).getMessageID();
                     editor.putString(matchID, lastViewedMessage);
-                    editor.commit();
+                    editor.apply();
                 }
 
                 messageAdapter = new MessageAdapter(getActivity(), chats, count);
@@ -155,12 +159,15 @@ public class FragmentChat extends Fragment {
             public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
                 Message m = snapshot.getValue(Message.class);
                 assert m != null;
+                SharedPreferences.Editor editor = preferences.edit();
                 //this is because startAt is unfortunately inclusive
                 if(!m.getMessageID().equals(lastViewedMessage)){
                     synchronized (FragmentChat.this){
                         chats.add(m);
                         messageAdapter.notifyItemInserted(chats.size()-1);
                         recyclerView.scrollToPosition(chats.size()-1);
+                        editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
+                        editor.apply();
                     }
                 }
             }
