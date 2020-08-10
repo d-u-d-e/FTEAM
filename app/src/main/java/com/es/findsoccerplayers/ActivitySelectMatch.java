@@ -45,7 +45,7 @@ public class ActivitySelectMatch extends MyActivity {
             ViewPager vp = findViewById(R.id.info_match_booked_vp);
             ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
             adapter.addFragment(new FragmentInfoMatch(m, type), "INFO");
-            adapter.addFragment(new FragmentChat(m.getMatchID()), "CHAT");
+            adapter.addFragment(new FragmentChat(matchID, this), "CHAT");
             vp.setAdapter(adapter);
             tabs.setupWithViewPager(vp);
         }

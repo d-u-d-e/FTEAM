@@ -22,10 +22,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<Message> chats;
     private static int MSG_TYPE_LEFT = 0;
     private static int MSG_TYPE_RIGHT = 1;
+    private int readSize;
 
-    public MessageAdapter(Context c, List<Message> chats){
+    public MessageAdapter(Context c, List<Message> chats, int readSize){
         context = c;
         this.chats = chats;
+        this.readSize = readSize;
     }
 
     @Override
@@ -47,6 +49,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME);
         holder.timestamp.setText(dateStr);
         holder.sender.setText(m.getSenderUsername());
+
+        if(getItemViewType(position) == MSG_TYPE_LEFT && position == readSize){
+            holder.newMessages.setVisibility(View.VISIBLE);
+            holder.newMessages.setText(String.format(context.getString(R.string.new_unread_messages), getItemCount()-position));
+        }
     }
 
     @Override
@@ -67,12 +74,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         TextView message;
         TextView timestamp;
         TextView sender;
+        TextView newMessages;
 
         ViewHolder(View itemView) {
             super(itemView);
             message = itemView.findViewById(R.id.chat_message);
             timestamp = itemView.findViewById(R.id.chat_timestamp);
             sender = itemView.findViewById(R.id.chat_user);
+            newMessages = itemView.findViewById(R.id.chat_newMessages);
         }
     }
 }
