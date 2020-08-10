@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.es.findsoccerplayers.fragments.FragmentChat;
 import com.es.findsoccerplayers.models.Message;
 import com.es.findsoccerplayers.R;
 import com.google.firebase.auth.FirebaseAuth;

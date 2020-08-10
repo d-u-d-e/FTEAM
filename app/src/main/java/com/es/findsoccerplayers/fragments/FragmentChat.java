@@ -51,6 +51,9 @@ public class FragmentChat extends Fragment {
 
     private ChildEventListener listener;
 
+    public static boolean isDisplayed = false;
+    public static int lastVisibleMsgPosition = 0;
+
     public FragmentChat(String matchID, Context context){
         super();
         this.matchID = matchID;
@@ -165,9 +168,11 @@ public class FragmentChat extends Fragment {
                     synchronized (FragmentChat.this){
                         chats.add(m);
                         messageAdapter.notifyItemInserted(chats.size()-1);
-                        recyclerView.scrollToPosition(chats.size()-1);
-                        editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
-                        editor.apply();
+                        if(isDisplayed){
+                            recyclerView.scrollToPosition(chats.size()-1);
+                            editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
+                            editor.apply();
+                        }
                     }
                 }
             }
