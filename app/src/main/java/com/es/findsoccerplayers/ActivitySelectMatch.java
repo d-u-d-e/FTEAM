@@ -56,7 +56,7 @@ public class ActivitySelectMatch extends MyActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Match theMatch = snapshot.getValue(Match.class);
                     adapter.addFragment(new FragmentInfoMatch(theMatch, "booked"), "INFO");
-                    adapter.addFragment(new FragmentChat(theMatch.getMatchID()), "CHAT");
+                    adapter.addFragment(new FragmentChat(theMatch.getMatchID(), getApplicationContext()), "CHAT");
                     vp.setAdapter(adapter);
                     tabs.setupWithViewPager(vp);
                     vp.setCurrentItem(1);

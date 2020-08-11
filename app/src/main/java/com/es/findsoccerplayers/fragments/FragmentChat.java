@@ -183,10 +183,6 @@ public class FragmentChat extends Fragment {
         }finally {
             mutex.unlock();
         }
-        Message m = new Message(currentUser.getUid(), username, message, System.currentTimeMillis());
-        ref.push().setValue(m);
-
-
     }
 
     @Override
@@ -195,6 +191,7 @@ public class FragmentChat extends Fragment {
         DatabaseReference ref = db.getReference("chats").child(matchID);
         ref.removeEventListener(listener);
         isDisplayed = false;
+        openMatch = null;
         endReached = true;
     }
 

@@ -19,8 +19,6 @@ import androidx.fragment.app.FragmentManager;
 import com.es.findsoccerplayers.ActivityMain;
 import com.es.findsoccerplayers.ActivityMaps;
 import com.es.findsoccerplayers.MyFragmentManager;
-import com.es.findsoccerplayers.ActivitySelectMatch;
-import com.es.findsoccerplayers.ListsManager;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.CustomMapView;
