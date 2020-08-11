@@ -1,5 +1,6 @@
 package com.es.findsoccerplayers.fragments;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.es.findsoccerplayers.ActivityMain;
 import com.es.findsoccerplayers.ActivityMaps;
+import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.ListsManager;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
@@ -50,6 +52,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+
 
 import static android.app.Activity.RESULT_OK;
 
@@ -408,6 +411,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 map.put("matches/" + key + "/members/" + uid, null); //remove
                 db.getReference().updateChildren(map);
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
+                NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(key, 1);
+
 
                 return Transaction.success(currentData);
             }

@@ -140,34 +140,4 @@ public class Utils {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo == null || !networkInfo.isConnectedOrConnecting();
     }
-
-
-    public static void displayNotification(Context context, String text){
-        createNotificationChannel(context);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.ic_account_24);
-        builder.setContentTitle("New Game");
-        builder.setContentText(text);
-        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-        int notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-        notificationManagerCompat.notify(notificationId, builder.build());
-    }
-
-    private static void createNotificationChannel(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "HostelMate notification";
-            String description = "Hi";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-
-            notificationChannel.setDescription(description);
-
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-    }
 }

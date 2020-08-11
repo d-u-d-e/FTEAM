@@ -1,5 +1,7 @@
 package com.es.findsoccerplayers.fragments;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,6 +126,8 @@ public class FragmentChat extends Fragment {
 
     private void readMessages(){
         chats = new ArrayList<>();
+        NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(matchID, 1);
         DatabaseReference ref = db.getReference("chats").child(matchID);
         ref.addValueEventListener(new ValueEventListener() {
             @Override

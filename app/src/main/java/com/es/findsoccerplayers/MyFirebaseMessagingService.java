@@ -16,7 +16,9 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.FragmentActivity;
 
+import com.es.findsoccerplayers.fragments.FragmentChat;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -25,7 +27,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Random;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private final String ADMIN_CHANNEL_ID ="admin_channel";
+    private final String ADMIN_CHANNEL_ID ="fsp_channel";
 
     @Override
     public void onNewToken(String token) {
@@ -36,6 +38,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
 
         String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         if(uID.equals(remoteMessage.getData().get("sender"))){ //I send the message
             //do Nothing
         }else{
@@ -43,7 +46,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.putExtra("type", "msg");
             intent.putExtra("match", remoteMessage.getData().get("match"));
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            int notificationID = new Random().nextInt(3000);
+            int notificationID = 1;
+            String notificationTAG = remoteMessage.getData().get("match");
 
       /*
         Apps targeting SDK 26 or above (Android O) must implement notification channels and add its notifications
@@ -75,7 +79,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                 notificationBuilder.setColor(getResources().getColor(R.color.colorAccent));
             }
-            notificationManager.notify(notificationID, notificationBuilder.build());
+            notificationManager.notify(notificationTAG, notificationID, notificationBuilder.build());
         }
 
 
