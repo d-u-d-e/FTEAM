@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.es.findsoccerplayers.ActivityMain;
 import com.es.findsoccerplayers.ActivityMaps;
-import com.es.findsoccerplayers.ListsManager;
+import com.es.findsoccerplayers.MyFragmentManager;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.models.CustomMapView;
@@ -294,7 +294,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         ref.setValue(m, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError error, DatabaseReference ref) {
-                Context context = ListsManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
+                Context context = MyFragmentManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
                 //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
                 //and the application will crash as soon as tries to make the toast
                 //context is the main activity now
@@ -320,7 +320,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         ref.updateChildren(map, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError error, DatabaseReference ref) {
-                Context context = ListsManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
+                Context context = MyFragmentManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
                 //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
                 //and the application will crash as soon as tries to make the toast
                 //context is the main activity now
@@ -371,7 +371,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
-                Context context = ListsManager.getFragmentBookedMatches().getActivity(); //we can't use getContext(), because the activity
+                Context context = MyFragmentManager.getFragmentBookedMatches().getActivity(); //we can't use getContext(), because the activity
                 //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
                 //and the application will crash as soon as tries to make the toast
                 //context is the main activity now
@@ -411,7 +411,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
-                Context context = ListsManager.getFragmentBookedMatches().getActivity(); //we can't use getContext(), because the activity
+                Context context = MyFragmentManager.getFragmentBookedMatches().getActivity(); //we can't use getContext(), because the activity
                 //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
                 //and the application will crash as soon as tries to make the toast
                 //context is the main activity now

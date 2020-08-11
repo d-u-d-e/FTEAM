@@ -9,7 +9,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,9 +51,9 @@ public class ActivityMain extends MyActivity {
         FragmentYourMatches ym = new FragmentYourMatches();
         FragmentBookedMatches bm = new FragmentBookedMatches();
 
-        ListsManager.setFragment(am);
-        ListsManager.setFragment(ym);
-        ListsManager.setFragment(bm);
+        MyFragmentManager.setFragment(am);
+        MyFragmentManager.setFragment(ym);
+        MyFragmentManager.setFragment(bm);
 
         adapter.addFragment(ym, getString(R.string.act_main_frag_yours_title));
         adapter.addFragment(bm, getString(R.string.act_main_frag_booked_title));

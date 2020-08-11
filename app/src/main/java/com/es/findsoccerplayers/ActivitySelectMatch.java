@@ -47,6 +47,7 @@ public class ActivitySelectMatch extends MyActivity {
             ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
             adapter.addFragment(new FragmentInfoMatch(m, type), "INFO");
             final FragmentChat fragmentChat = new FragmentChat(matchID, this);
+            MyFragmentManager.setFragment(fragmentChat);
             adapter.addFragment(fragmentChat, "CHAT");
             vp.setAdapter(adapter);
 
@@ -54,6 +55,8 @@ public class ActivitySelectMatch extends MyActivity {
                 @Override
                 public void onPageSelected(int position) {
                     super.onPageSelected(position);
+                    if(FragmentChat.isDisplayed && position == 0)//switch from 1 to 0
+                        MyFragmentManager.getFragmentChat().onNewMessagesRead();
                     FragmentChat.isDisplayed = position == 1;
                 }
             });
@@ -73,7 +76,8 @@ public class ActivitySelectMatch extends MyActivity {
 
     @Override
     protected void onResume() {
-        FragmentChat.isDisplayed = vp.getCurrentItem() == 1;
+        if(vp != null)
+            FragmentChat.isDisplayed = vp.getCurrentItem() == 1;
         super.onResume();
     }
 

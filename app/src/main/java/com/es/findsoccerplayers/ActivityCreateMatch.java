@@ -220,7 +220,7 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
                     Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
                 else{ //match successfully created
                     Utils.showToast(ActivityCreateMatch.this, "Match successfully created");
-                    ListsManager.getFragmentYourMatches().registerForMatchEvents(key);
+                    MyFragmentManager.getFragmentYourMatches().registerForMatchEvents(key);
                 }
             }
         });

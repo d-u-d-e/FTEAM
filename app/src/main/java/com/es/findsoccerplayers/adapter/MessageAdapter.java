@@ -23,12 +23,26 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<Message> chats;
     private static int MSG_TYPE_LEFT = 0;
     private static int MSG_TYPE_RIGHT = 1;
-    private int readSize;
+    private TextView newMessages = null;
+    private int newMsgCount = 0;
 
     public MessageAdapter(Context c, List<Message> chats, int readSize){
         context = c;
         this.chats = chats;
-        this.readSize = readSize;
+        newMsgCount = chats.size() - readSize;
+    }
+
+    public void OnNewMessagesRead(){
+        if(newMessages != null){
+            newMessages.setVisibility(View.GONE);
+            newMsgCount = 0;
+            newMessages = null;
+        }
+    }
+
+    public void incrementNewMessagesCounter(){
+        newMsgCount++;
+        notifyItemChanged(chats.size() - newMsgCount);
     }
 
     @Override
@@ -51,9 +65,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         holder.timestamp.setText(dateStr);
         holder.sender.setText(m.getSenderUsername());
 
-        if(getItemViewType(position) == MSG_TYPE_LEFT && position == readSize){
+        if(getItemCount() - 1 == position)
+            FragmentChat.endReached = true;
+
+        if(FragmentChat.toRead && getItemViewType(position) == MSG_TYPE_LEFT && position == chats.size() - newMsgCount){
+            newMessages = holder.newMessages;
             holder.newMessages.setVisibility(View.VISIBLE);
-            holder.newMessages.setText(String.format(context.getString(R.string.new_unread_messages), getItemCount()-position));
+            newMsgCount = chats.size() - position;
+            holder.newMessages.setText(String.format(context.getString(R.string.new_unread_messages), newMsgCount));
         }
     }
 

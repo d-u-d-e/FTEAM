@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +30,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class FragmentChat extends Fragment {
 
@@ -52,7 +52,9 @@ public class FragmentChat extends Fragment {
     private ChildEventListener listener;
 
     public static boolean isDisplayed = false;
-    public static int lastVisibleMsgPosition = 0;
+    public static boolean endReached;
+    public static boolean toRead;
+    private Lock mutex = new ReentrantLock();
 
     public FragmentChat(String matchID, Context context){
         super();
@@ -87,9 +89,23 @@ public class FragmentChat extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                assert manager != null;
+                int position = manager.findLastVisibleItemPosition();
+                int total = manager.getItemCount();
+                if(position != RecyclerView.NO_POSITION)
+                    endReached = position >= total - 1;
+            }
+        });
 
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         lastViewedMessage = preferences.getString(matchID + "-lastViewedMessage", null);
+        endReached = true;
+        toRead = false;
 
         readMessages();
         return view;
@@ -129,15 +145,17 @@ public class FragmentChat extends Fragment {
                     chats.add(m);
                 }
 
+                messageAdapter = new MessageAdapter(getActivity(), chats, count);
+                recyclerView.setAdapter(messageAdapter);
+
                 if(count < chats.size()){
+                    toRead = true;
+                    recyclerView.scrollToPosition(count);
                     SharedPreferences.Editor editor = preferences.edit();
                     lastViewedMessage = chats.get(chats.size()-1).getMessageID();
                     editor.putString(matchID, lastViewedMessage);
                     editor.apply();
                 }
-
-                messageAdapter = new MessageAdapter(getActivity(), chats, count);
-                recyclerView.setAdapter(messageAdapter);
                 sync();
             }
             @Override
@@ -147,15 +165,26 @@ public class FragmentChat extends Fragment {
         });
     }
 
+    public void onNewMessagesRead(){
+        if(messageAdapter != null)
+            messageAdapter.OnNewMessagesRead();
+        toRead = false;
+        if(chats.size() > 0)
+            recyclerView.scrollToPosition(chats.size()-1);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         DatabaseReference ref = db.getReference("chats").child(matchID);
         ref.removeEventListener(listener);
+        isDisplayed = false;
+        endReached = true;
     }
 
     private void sync(){
         DatabaseReference ref = db.getReference("chats").child(matchID);
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         listener = new ChildEventListener() {
             @Override
@@ -165,14 +194,32 @@ public class FragmentChat extends Fragment {
                 SharedPreferences.Editor editor = preferences.edit();
                 //this is because startAt is unfortunately inclusive
                 if(!m.getMessageID().equals(lastViewedMessage)){
-                    synchronized (FragmentChat.this){
+                    mutex.lock();
+                    try{
                         chats.add(m);
                         messageAdapter.notifyItemInserted(chats.size()-1);
-                        if(isDisplayed){
-                            recyclerView.scrollToPosition(chats.size()-1);
+                        if(m.getSenderID().equals(user.getUid())){
+                            onNewMessagesRead();
                             editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
                             editor.apply();
                         }
+                        else{
+                            if(isDisplayed){
+                                if(endReached)
+                                    recyclerView.scrollToPosition(chats.size()-1);
+                                messageAdapter.incrementNewMessagesCounter();
+                                toRead = false;
+                                editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
+                                editor.apply();
+                            }
+                            else{
+                                toRead = true;
+                                messageAdapter.incrementNewMessagesCounter();
+                            }
+                        }
+                    }
+                    finally {
+                        mutex.unlock();
                     }
                 }
             }
