@@ -48,7 +48,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public void incrementNewMessagesCounter(){
         newMsgCount++;
-        notifyItemChanged(newMsgStartingPosition);
+
+        if(newMessages == null){
+            notifyItemChanged(newMsgStartingPosition);
+        }
+        else
+            newMessages.setText(String.format(context.getString(R.string.new_unread_messages), newMsgCount));
     }
 
     @Override
@@ -74,11 +79,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if(getItemCount() - 1 == position)
             FragmentChat.endReached = true;
 
-        if(getItemViewType(position) == MSG_TYPE_LEFT && position == newMsgStartingPosition){
-            newMessages = holder.newMessages;
-            holder.newMessages.setVisibility(View.VISIBLE);
-            newMsgCount = chats.size() - position;
-            holder.newMessages.setText(String.format(context.getString(R.string.new_unread_messages), newMsgCount));
+        if(getItemViewType(position) == MSG_TYPE_LEFT){
+            if(position == newMsgStartingPosition){
+                newMessages = holder.newMessages;
+                holder.newMessages.setVisibility(View.VISIBLE);
+                holder.newMessages.setText(String.format(context.getString(R.string.new_unread_messages), newMsgCount));
+            }
+            else{
+                holder.newMessages.setVisibility(View.GONE);
+                holder.newMessages.setText("");
+            }
         }
     }
 

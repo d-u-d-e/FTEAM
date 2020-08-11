@@ -176,16 +176,18 @@ public class FragmentChat extends Fragment {
                         }
                     }
                     else{
-                        messageAdapter.incrementNewMessagesCounter();
                         messageAdapter.notifyItemInserted(chats.size() - 1);
 
                         if(m.getSenderID().equals(user.getUid()))
                             onNewMessagesRead();
-                        else if(isDisplayed){
-                            if(endReached)
-                                recyclerView.scrollToPosition(chats.size()-1);
-                            editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
-                            editor.apply();
+                        else{
+                            messageAdapter.incrementNewMessagesCounter();
+                            if(isDisplayed){
+                                editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
+                                editor.apply();
+                                if(endReached)
+                                    recyclerView.scrollToPosition(chats.size()-1);
+                            }
                         }
                     }
                 }finally {
