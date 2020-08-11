@@ -25,24 +25,30 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private static int MSG_TYPE_RIGHT = 1;
     private TextView newMessages = null;
     private int newMsgCount = 0;
+    private int newMsgStartingPosition = 0;
 
-    public MessageAdapter(Context c, List<Message> chats, int readSize){
+    public MessageAdapter(Context c, List<Message> chats){
         context = c;
         this.chats = chats;
-        newMsgCount = chats.size() - readSize;
     }
 
-    public void OnNewMessagesRead(){
+    public void onNewMessagesRead(){
         if(newMessages != null){
             newMessages.setVisibility(View.GONE);
             newMsgCount = 0;
+            newMsgStartingPosition = chats.size();
             newMessages = null;
         }
     }
 
+    public void setNewMsgStartingPosition(int position){
+        newMsgCount = chats.size() - position;
+        newMsgStartingPosition = position;
+    }
+
     public void incrementNewMessagesCounter(){
         newMsgCount++;
-        notifyItemChanged(chats.size() - newMsgCount);
+        notifyItemChanged(newMsgStartingPosition);
     }
 
     @Override
@@ -68,7 +74,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if(getItemCount() - 1 == position)
             FragmentChat.endReached = true;
 
-        if(FragmentChat.toRead && getItemViewType(position) == MSG_TYPE_LEFT && position == chats.size() - newMsgCount){
+        if(getItemViewType(position) == MSG_TYPE_LEFT && position == newMsgStartingPosition){
             newMessages = holder.newMessages;
             holder.newMessages.setVisibility(View.VISIBLE);
             newMsgCount = chats.size() - position;
