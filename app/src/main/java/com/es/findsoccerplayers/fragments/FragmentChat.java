@@ -104,7 +104,7 @@ public class FragmentChat extends Fragment {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         lastViewedMessage = preferences.getString(matchID + "-lastViewedMessage", null);
-        endReached = true;
+        endReached = false;
         toRead = false;
 
         readMessages();
