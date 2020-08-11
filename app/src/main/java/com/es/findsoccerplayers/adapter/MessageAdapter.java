@@ -35,10 +35,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onNewMessagesRead(){
         if(newMessages != null){
             newMessages.setVisibility(View.GONE);
-            newMsgCount = 0;
-            newMsgStartingPosition = chats.size();
             newMessages = null;
         }
+        newMsgCount = 0;
+        newMsgStartingPosition = chats.size();
     }
 
     public void setNewMsgStartingPosition(int position){
