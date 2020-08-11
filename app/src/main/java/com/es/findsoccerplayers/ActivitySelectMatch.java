@@ -97,4 +97,11 @@ public class ActivitySelectMatch extends MyActivity {
             finish();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, ActivityMain.class));
+        finish();
+        return;
+    }
 }
