@@ -128,6 +128,7 @@ public class FragmentChat extends Fragment {
         Message m = new Message(r.getKey(), currentUser.getUid(), username, message, System.currentTimeMillis());
         r.setValue(m);
         editor.putString(matchID + "-lastViewedMessage", m.getMessageID()); //this information is cleared when any match is deleted from every user
+        lastViewedMessage = m.getMessageID();
         editor.apply();
     }
 
@@ -172,7 +173,7 @@ public class FragmentChat extends Fragment {
                             seenMsgRetrieved = true;
                             messageAdapter.setNewMsgStartingPosition(counter);
                             messageAdapter.notifyDataSetChanged();
-                            recyclerView.scrollToPosition(chats.size() - 1);
+                            recyclerView.scrollToPosition(counter);
                         }
                     }
                     else{
@@ -182,12 +183,11 @@ public class FragmentChat extends Fragment {
                             onNewMessagesRead();
                         else{
                             messageAdapter.incrementNewMessagesCounter();
-                            if(isDisplayed){
-                                editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
-                                editor.apply();
-                                if(endReached)
+                            editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
+                            lastViewedMessage = m.getMessageID();
+                            editor.apply();
+                            if(isDisplayed && endReached)
                                     recyclerView.scrollToPosition(chats.size()-1);
-                            }
                         }
                     }
                 }finally {
@@ -215,6 +215,6 @@ public class FragmentChat extends Fragment {
 
             }
         };
-        ref.addChildEventListener(listener);
+        ref.orderByKey().addChildEventListener(listener);
     }
 }
