@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -408,6 +407,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 map.put("users/" + uid + "/bookedMatches/" + key, null);
                 map.put("matches/" + key + "/members/" + uid, null); //remove
                 db.getReference().updateChildren(map);
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
 
                 return Transaction.success(currentData);
             }

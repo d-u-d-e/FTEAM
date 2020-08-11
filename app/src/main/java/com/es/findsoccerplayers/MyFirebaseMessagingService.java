@@ -1,6 +1,7 @@
 package com.es.findsoccerplayers;
 
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Locale;
 import java.util.Random;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -64,7 +66,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setContentText(remoteMessage.getData().get("body"))
                     .setAutoCancel(true)
                     .setSound(notificationSoundUri)
-                    .setContentIntent(pendingIntent);
+                    .setContentIntent(pendingIntent)
+                    .setCategory(Notification.CATEGORY_MESSAGE);
 
             //Set notification color to match your app color template
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){

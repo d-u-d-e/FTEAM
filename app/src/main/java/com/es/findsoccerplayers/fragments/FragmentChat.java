@@ -105,6 +105,7 @@ public class FragmentChat extends Fragment {
             notificationBody.put("title", Utils.getPreviewDescription(username));
             notificationBody.put("body", Utils.getPreviewDescription(message));
             notificationBody.put("sender", currentUser.getUid());
+            notificationBody.put("match", matchID);
             notificationNoti.put("tag", matchID);
             notificationNoti.put("title", Utils.getPreviewDescription(username));
             notificationNoti.put("body", Utils.getPreviewDescription(message));
