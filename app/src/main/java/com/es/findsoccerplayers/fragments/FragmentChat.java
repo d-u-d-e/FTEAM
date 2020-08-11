@@ -47,6 +47,7 @@ public class FragmentChat extends Fragment {
 
     private EditText messageText;
     private String matchID;
+    public static String openMatch;
 
     private MessageAdapter messageAdapter;
     private List<Message> chats;
@@ -59,6 +60,7 @@ public class FragmentChat extends Fragment {
     public FragmentChat(String matchID){
         super();
         this.matchID = matchID;
+        openMatch = matchID;
     }
 
     @Override

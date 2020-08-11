@@ -38,9 +38,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
 
         String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String openMatch = FragmentChat.openMatch;
 
         if(uID.equals(remoteMessage.getData().get("sender"))){ //I send the message
             //do Nothing
+        }else if(openMatch != null && openMatch.equals(remoteMessage.getData().get("match"))){
+            //do nothing
         }else{
             final Intent intent = new Intent(this, ActivitySelectMatch.class);
             intent.putExtra("type", "msg");
