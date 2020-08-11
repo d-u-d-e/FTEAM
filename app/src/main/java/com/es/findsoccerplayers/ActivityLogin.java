@@ -49,6 +49,17 @@ public class ActivityLogin extends MyActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent i = getIntent();
+        Bundle extras = i.getExtras();
+        if(extras != null){
+            Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
+            intent.putExtra("type", "msg");
+            intent.putExtra("match", i.getStringExtra("match"));
+            startActivity(intent);
+            finish();
+            return;
+        }
         setContentView(R.layout.act_login);
         Toolbar toolbar = findViewById(R.id.log_toolbar);
         setSupportActionBar(toolbar);
