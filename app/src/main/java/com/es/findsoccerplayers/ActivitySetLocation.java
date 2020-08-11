@@ -197,7 +197,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
 
                     editor.commit();
                     Utils.showToast(ActivitySetLocation.this, R.string.preference_saved);
-                    ListsManager.getFragmentAvailableMatches().onNewPositionSet();
+                    MyFragmentManager.getFragmentAvailableMatches().onNewPositionSet();
                     Intent i = new Intent(ActivitySetLocation.this, ActivityMain.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);

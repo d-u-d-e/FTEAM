@@ -2,20 +2,22 @@ package com.es.findsoccerplayers;
 
 import com.es.findsoccerplayers.fragments.FragmentAvailableMatches;
 import com.es.findsoccerplayers.fragments.FragmentBookedMatches;
+import com.es.findsoccerplayers.fragments.FragmentChat;
 import com.es.findsoccerplayers.fragments.FragmentYourMatches;
 
-public class ListsManager {
+public class MyFragmentManager {
 
-    private static ListsManager listsManager = null;
+    private static MyFragmentManager myFragmentManager = null;
     private FragmentAvailableMatches availableMatches;
     private FragmentYourMatches yourMatches;
     private FragmentBookedMatches bookedMatches;
+    private FragmentChat fragmentChat;
 
-    public static ListsManager getInstance(){
-            if(listsManager == null){
-                listsManager = new ListsManager();
+    public static MyFragmentManager getInstance(){
+            if(myFragmentManager == null){
+                myFragmentManager = new MyFragmentManager();
             }
-            return listsManager;
+            return myFragmentManager;
     }
 
     public static void setFragment(FragmentAvailableMatches frag){
@@ -32,6 +34,14 @@ public class ListsManager {
 
     public static FragmentBookedMatches getFragmentBookedMatches(){
         return getInstance().bookedMatches;
+    }
+
+    public static void setFragment(FragmentChat frag){
+        getInstance().fragmentChat = frag;
+    }
+
+    static FragmentChat getFragmentChat(){
+        return getInstance().fragmentChat;
     }
 
     public static FragmentYourMatches getFragmentYourMatches(){

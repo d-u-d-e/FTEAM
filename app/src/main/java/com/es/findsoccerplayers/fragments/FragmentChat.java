@@ -1,12 +1,17 @@
 package com.es.findsoccerplayers.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +22,7 @@ import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MessageAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class FragmentChat extends Fragment {
 
@@ -37,11 +45,24 @@ public class FragmentChat extends Fragment {
     private MessageAdapter messageAdapter;
     private List<Message> chats;
     private RecyclerView recyclerView;
+    private SharedPreferences preferences;
+    private String lastViewedMessage;
 
+    private Context context;
 
-    public FragmentChat(String matchID){
+    private ChildEventListener listener;
+
+    public static boolean isDisplayed = false;
+    public static boolean endReached;
+    private Lock mutex = new ReentrantLock();
+
+    private boolean seenMsgRetrieved = false;
+    private int counter = 0;
+
+    public FragmentChat(String matchID, Context context){
         super();
         this.matchID = matchID;
+        this.context = context;
     }
 
     @Override
@@ -71,39 +92,129 @@ public class FragmentChat extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                assert manager != null;
+                int position = manager.findLastVisibleItemPosition();
+                int total = manager.getItemCount();
+                if(position != RecyclerView.NO_POSITION)
+                    endReached = position >= total - 1;
+            }
+        });
 
-        readMessages();
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        lastViewedMessage = preferences.getString(matchID + "-lastViewedMessage", null);
 
+        endReached = false;
+        chats = new ArrayList<>();
+        messageAdapter = new MessageAdapter(context, chats);
+        recyclerView.setAdapter(messageAdapter);
+        if(lastViewedMessage == null)
+            seenMsgRetrieved = true;
+
+        sync2();
         return view;
     }
 
     private void sendMessage(String message){
         DatabaseReference ref = db.getReference("chats").child(matchID);
         String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        Message m = new Message(currentUser.getUid(), username, message, System.currentTimeMillis());
-        ref.push().setValue(m);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        DatabaseReference r = ref.push();
+        Message m = new Message(r.getKey(), currentUser.getUid(), username, message, System.currentTimeMillis());
+        r.setValue(m);
+        editor.putString(matchID + "-lastViewedMessage", m.getMessageID()); //this information is cleared when any match is deleted from every user
+        lastViewedMessage = m.getMessageID();
+        editor.apply();
     }
 
-    private void readMessages(){
-        chats = new ArrayList<>();
+    public void onNewMessagesRead(){
+        mutex.lock();
+        try {
+            messageAdapter.onNewMessagesRead();
+            if(chats.size() > 0)
+                recyclerView.scrollToPosition(chats.size() - 1);
+        }finally {
+            mutex.unlock();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
         DatabaseReference ref = db.getReference("chats").child(matchID);
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.removeEventListener(listener);
+        isDisplayed = false;
+        endReached = true;
+    }
+
+    private void sync2(){
+        DatabaseReference ref = db.getReference("chats").child(matchID);
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final SharedPreferences.Editor editor = preferences.edit();
+
+        listener = new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                chats.clear();
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    Message m = snapshot.getValue(Message.class);
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Message m = snapshot.getValue(Message.class);
+                assert m != null;
+                String messageID = m.getMessageID();
+                mutex.lock();
+                try {
                     chats.add(m);
+                    if(!seenMsgRetrieved){ //first pass
+                        counter++;
+                        //at the end of the first read counter indicates the point where new messages start
+                        if(messageID.equals(lastViewedMessage)){
+                            seenMsgRetrieved = true;
+                            messageAdapter.setNewMsgStartingPosition(counter);
+                            messageAdapter.notifyDataSetChanged();
+                            recyclerView.scrollToPosition(counter);
+                        }
+                    }
+                    else{
+                        messageAdapter.notifyItemInserted(chats.size() - 1);
+
+                        if(m.getSenderID().equals(user.getUid()))
+                            onNewMessagesRead();
+                        else{
+                            messageAdapter.incrementNewMessagesCounter();
+                            editor.putString(matchID + "-lastViewedMessage", m.getMessageID());
+                            lastViewedMessage = m.getMessageID();
+                            editor.apply();
+                            if(isDisplayed && endReached)
+                                    recyclerView.scrollToPosition(chats.size()-1);
+                        }
+                    }
+                }finally {
+                    mutex.unlock();
                 }
-
-                messageAdapter = new MessageAdapter(getActivity(), chats);
-                recyclerView.setAdapter(messageAdapter);
             }
+
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
             }
-        });
 
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        ref.orderByKey().addChildEventListener(listener);
     }
 }

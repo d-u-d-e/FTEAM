@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout;
 public class ActivitySelectMatch extends MyActivity {
 
     public static String matchID = null;
+    ViewPager vp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +43,42 @@ public class ActivitySelectMatch extends MyActivity {
         else{
             setContentView(R.layout.act_select_match_tabs);
             TabLayout tabs = findViewById(R.id.info_match_booked_tabs);
-            ViewPager vp = findViewById(R.id.info_match_booked_vp);
+            vp = findViewById(R.id.info_match_booked_vp);
             ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
             adapter.addFragment(new FragmentInfoMatch(m, type), "INFO");
-            adapter.addFragment(new FragmentChat(m.getMatchID()), "CHAT");
+            final FragmentChat fragmentChat = new FragmentChat(matchID, this);
+            MyFragmentManager.setFragment(fragmentChat);
+            adapter.addFragment(fragmentChat, "CHAT");
             vp.setAdapter(adapter);
+
+            vp.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    if(FragmentChat.isDisplayed && position == 0)//switch from 1 to 0
+                        MyFragmentManager.getFragmentChat().onNewMessagesRead();
+                    FragmentChat.isDisplayed = position == 1;
+                }
+            });
             tabs.setupWithViewPager(vp);
         }
+
         Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onPause() {
+        FragmentChat.isDisplayed = false;
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        if(vp != null)
+            FragmentChat.isDisplayed = vp.getCurrentItem() == 1;
+        super.onResume();
     }
 
     @Override
