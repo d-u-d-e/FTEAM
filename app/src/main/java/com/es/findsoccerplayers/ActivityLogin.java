@@ -1,5 +1,6 @@
 package com.es.findsoccerplayers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.es.findsoccerplayers.fragments.FragmentInfoMatch;
+import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -53,13 +56,14 @@ public class ActivityLogin extends MyActivity{
         Intent i = getIntent();
         Bundle extras = i.getExtras();
         if(extras != null){
-            Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
+            final Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
             intent.putExtra("type", "msg");
             intent.putExtra("match", i.getStringExtra("match"));
             startActivity(intent);
             finish();
             return;
         }
+
         setContentView(R.layout.act_login);
         Toolbar toolbar = findViewById(R.id.log_toolbar);
         setSupportActionBar(toolbar);

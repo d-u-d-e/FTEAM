@@ -38,27 +38,25 @@ public class ActivitySelectMatch extends MyActivity {
             Match m = extras.getParcelable("match");
             assert m != null;
             setContentView(R.layout.act_select_match_notabs);
-
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type), null);
             transaction.commit();
         } else if(type.equals("msg")){
-            matchID = i.getStringExtra("match");
-            final String anotherType = "booked";
             setContentView(R.layout.act_select_match_tabs);
             final TabLayout tabs = findViewById(R.id.info_match_booked_tabs);
             final ViewPager vp = findViewById(R.id.info_match_booked_vp);
             final ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-            adapter.addFragment(new FragmentChat(matchID), "CHAT");
-            DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
+            DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + i.getStringExtra("match"));
             r.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Match theMatch = snapshot.getValue(Match.class);
-                    adapter.addFragment(new FragmentInfoMatch(theMatch, anotherType), "INFO");
+                    adapter.addFragment(new FragmentInfoMatch(theMatch, "booked"), "INFO");
+                    adapter.addFragment(new FragmentChat(theMatch.getMatchID()), "CHAT");
                     vp.setAdapter(adapter);
                     tabs.setupWithViewPager(vp);
+                    vp.setCurrentItem(1);
                 }
 
                 @Override
@@ -66,8 +64,6 @@ public class ActivitySelectMatch extends MyActivity {
 
                 }
             });
-
-
         }else{
             Match m = extras.getParcelable("match");
             assert m != null;
@@ -84,6 +80,7 @@ public class ActivitySelectMatch extends MyActivity {
         Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override

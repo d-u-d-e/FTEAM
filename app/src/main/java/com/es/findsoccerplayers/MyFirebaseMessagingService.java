@@ -18,15 +18,15 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.util.Locale;
 import java.util.Random;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private final String ADMIN_CHANNEL_ID ="admin_channel";
+
     @Override
     public void onNewToken(String token) {
         //TODO: In case of new token, update your token.
@@ -39,7 +39,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(uID.equals(remoteMessage.getData().get("sender"))){ //I send the message
             //do Nothing
         }else{
-            final Intent intent = new Intent(this, ActivityMain.class);
+            final Intent intent = new Intent(this, ActivitySelectMatch.class);
+            intent.putExtra("type", "msg");
+            intent.putExtra("match", remoteMessage.getData().get("match"));
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             int notificationID = new Random().nextInt(3000);
 
