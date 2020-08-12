@@ -59,7 +59,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 setupChannels(notificationManager);
             }
-            
+
             PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
                     PendingIntent.FLAG_ONE_SHOT);
 
@@ -83,8 +83,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
             notificationManager.notify(notificationTAG, notificationID, notificationBuilder.build());
         }
-
-
 
     }
 
