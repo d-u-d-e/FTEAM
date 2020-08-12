@@ -90,7 +90,7 @@ public class ActivitySettings extends MyActivity {
             FirebaseDatabase db = FirebaseDatabase.getInstance();
             DatabaseReference ref =
                     db.getReference().child("users").child(user.getUid()).child("bookedMatches");
-            ref.addValueEventListener(new ValueEventListener() {
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -108,7 +108,7 @@ public class ActivitySettings extends MyActivity {
             });
             DatabaseReference ref2 =
                     db.getReference().child("users").child(user.getUid()).child("createdMatches");
-            ref2.addValueEventListener(new ValueEventListener() {
+            ref2.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
