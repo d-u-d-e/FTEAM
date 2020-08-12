@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,8 @@ import java.util.Map;
 import com.es.findsoccerplayers.MySingleton;
 
 public class FragmentChat extends Fragment {
+
+    final private String TAG = "FragmentChat";
 
     private FirebaseDatabase db;
     private FirebaseUser currentUser;
@@ -134,6 +137,9 @@ public class FragmentChat extends Fragment {
         if(lastViewedMessage == null)
             seenMsgRetrieved = true;
 
+        NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(matchID, 1);
+
         sync2();
         return view;
     }
@@ -154,15 +160,19 @@ public class FragmentChat extends Fragment {
         JSONObject notificationBody = new JSONObject();
         JSONObject notificationNoti = new JSONObject();
         try {
+            //Notification Data used by our Service
             notificationBody.put("title", Utils.getPreviewDescription(username));
             notificationBody.put("body", Utils.getPreviewDescription(message));
             notificationBody.put("sender", currentUser.getUid());
             notificationBody.put("match", matchID);
+
+            //Notification data used by the System
             notificationNoti.put("tag", matchID);
             notificationNoti.put("title", Utils.getPreviewDescription(username));
             notificationNoti.put("body", Utils.getPreviewDescription(message));
             notificationNoti.put("icon", "ic_message");
 
+            //Contruct of the JSONObject fields
             notification.put("to", "/topics/" + matchID);
             notification.put("notification", notificationNoti );
             notification.put("data", notificationBody);
@@ -199,6 +209,7 @@ public class FragmentChat extends Fragment {
         DatabaseReference ref = db.getReference("chats").child(matchID);
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final SharedPreferences.Editor editor = preferences.edit();
+        //Cancel the notification if we open the correlated chat
 
         listener = new ChildEventListener() {
             @Override
@@ -266,13 +277,13 @@ public class FragmentChat extends Fragment {
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(getContext(), "on Response", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "Notification send");
                     }
                 },
                 new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), "Request error", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "Error:" + error);
                     }
                 }){
             @Override
