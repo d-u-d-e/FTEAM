@@ -1,5 +1,6 @@
 package com.es.findsoccerplayers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.es.findsoccerplayers.fragments.FragmentInfoMatch;
+import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -49,6 +52,18 @@ public class ActivityLogin extends MyActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent i = getIntent();
+        Bundle extras = i.getExtras();
+        if(extras != null){
+            final Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
+            intent.putExtra("type", "msg");
+            intent.putExtra("match", i.getStringExtra("match"));
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.act_login);
         Toolbar toolbar = findViewById(R.id.log_toolbar);
         setSupportActionBar(toolbar);
@@ -108,7 +123,9 @@ public class ActivityLogin extends MyActivity{
                         progressBar.setVisibility(View.INVISIBLE);
                         if (task.isSuccessful()){
                             Utils.showToast(ActivityLogin.this, R.string.login_success);
-                            startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                            Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
+                            intent.putExtra("Login", true);
+                            startActivity(intent);
                             finish();
                         }else{
                             Utils.showErrorToast(ActivityLogin.this, task.getException());
@@ -199,7 +216,9 @@ public class ActivityLogin extends MyActivity{
                                                 createGoogleUser();
                                             else{
                                                 Utils.showToast(ActivityLogin.this, R.string.login_success);
-                                                startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                                                Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
+                                                intent.putExtra("Login", true);
+                                                startActivity(intent);
                                                 finish();
                                             }
                                         }
@@ -247,7 +266,9 @@ public class ActivityLogin extends MyActivity{
                 }
                 else{
                     Utils.showToast(ActivityLogin.this, R.string.login_success);
-                    startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                    Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
+                    intent.putExtra("Login", true);
+                    startActivity(intent);
                     finish();
                 }
             }
