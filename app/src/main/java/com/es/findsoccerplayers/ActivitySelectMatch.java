@@ -39,11 +39,8 @@ public class ActivitySelectMatch extends MyActivity {
         if(type.equals("available")){
             Match m = extras.getParcelable("match");
             assert m != null;
-            setContentView(R.layout.act_select_match_notabs);
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type), null);
-            transaction.commit();
+            setNoTabLayout(m, type);
+
         }else if(type.equals("booked") || type.equals("yours")){
             Match m = i.getParcelableExtra("match");
             assert m != null;
@@ -66,15 +63,23 @@ public class ActivitySelectMatch extends MyActivity {
                 }
             });
         }
-        Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     protected void onPause() {
         FragmentChat.isDisplayed = false;
         super.onPause();
+    }
+
+    private void setNoTabLayout(Match m, String type){
+        setContentView(R.layout.act_select_match_notabs);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type), null);
+        transaction.commit();
+        Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setTabLayout(Match m, String type){
@@ -98,6 +103,9 @@ public class ActivitySelectMatch extends MyActivity {
             }
         });
         tabs.setupWithViewPager(vp);
+        Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
