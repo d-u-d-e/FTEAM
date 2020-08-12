@@ -61,22 +61,10 @@ public class ActivityLogin extends MyActivity{
             if(Utils.isOffline(this))
                 Utils.showOfflineReadToast(this);
             else{
-                DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + i.getStringExtra("match"));
-                r.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Match m = snapshot.getValue(Match.class);
-                        Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
-                        intent.putExtra("type", "onNotificationClicked");
-                        intent.putExtra("match", m);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
+                intent.putExtra("type", "onNotificationClicked");
+                intent.putExtra("match", i.getStringExtra("match"));
+                startActivity(intent);
             }
             finish();
             return;
