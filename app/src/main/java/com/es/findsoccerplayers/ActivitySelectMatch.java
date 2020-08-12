@@ -62,6 +62,7 @@ public class ActivitySelectMatch extends MyActivity {
 
                 }
             });
+
         }
     }
 
@@ -104,7 +105,7 @@ public class ActivitySelectMatch extends MyActivity {
         });
 
         vp.setCurrentItem(position);
-        
+
         tabs.setupWithViewPager(vp);
         Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
         setSupportActionBar(toolbar);
@@ -130,6 +131,14 @@ public class ActivitySelectMatch extends MyActivity {
         String action = intent.getAction();
         if(action != null && action.equals("finishOnMatchDeleted")){
             finish();
+        }
+        else{
+            String matchID = intent.getStringExtra("match");
+            Intent i = new Intent(ActivitySelectMatch.this, ActivitySelectMatch.class);
+            i.putExtra("type", "onNotificationClicked");
+            i.putExtra("match", matchID);
+            finish();
+            startActivity(i);
         }
     }
 }
