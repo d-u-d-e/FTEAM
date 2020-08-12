@@ -123,7 +123,9 @@ public class ActivityLogin extends MyActivity{
                         progressBar.setVisibility(View.INVISIBLE);
                         if (task.isSuccessful()){
                             Utils.showToast(ActivityLogin.this, R.string.login_success);
-                            startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                            Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
+                            intent.putExtra("Login", true);
+                            startActivity(intent);
                             finish();
                         }else{
                             Utils.showErrorToast(ActivityLogin.this, task.getException());
