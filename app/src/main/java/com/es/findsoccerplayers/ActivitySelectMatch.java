@@ -45,7 +45,7 @@ public class ActivitySelectMatch extends MyActivity {
             Match m = i.getParcelableExtra("match");
             assert m != null;
             matchID = m.getMatchID();
-            setTabLayout(m, type);
+            setTabLayout(m, type, 0);
         }
         else { //activity started by messaging service when user taps on notification
             matchID = i.getStringExtra("match");
@@ -54,7 +54,7 @@ public class ActivitySelectMatch extends MyActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Match m = snapshot.getValue(Match.class);
-                    setTabLayout(m, "onNotificationClicked");
+                    setTabLayout(m, "onNotificationClicked", 1);
                 }
 
                 @Override
@@ -82,7 +82,7 @@ public class ActivitySelectMatch extends MyActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setTabLayout(Match m, String type){
+    private void setTabLayout(Match m, String type, int position){
         setContentView(R.layout.act_select_match_tabs);
         TabLayout tabs = findViewById(R.id.info_match_booked_tabs);
         vp = findViewById(R.id.info_match_booked_vp);
@@ -102,6 +102,9 @@ public class ActivitySelectMatch extends MyActivity {
                 FragmentChat.isDisplayed = position == 1;
             }
         });
+
+        vp.setCurrentItem(position);
+        
         tabs.setupWithViewPager(vp);
         Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
         setSupportActionBar(toolbar);
