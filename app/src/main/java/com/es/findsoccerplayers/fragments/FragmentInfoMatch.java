@@ -121,7 +121,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
             }
         });
 
-        if (type.equals("your")) {
+        if (type.equals("yours")) {
             actionBtn.setText(R.string.delete); //TODO add to strings
             editBtn.setVisibility(Button.VISIBLE);
             editDay.setVisibility(View.VISIBLE);
