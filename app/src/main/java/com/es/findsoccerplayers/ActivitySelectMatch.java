@@ -141,4 +141,12 @@ public class ActivitySelectMatch extends MyActivity {
             startActivity(i);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent(this, ActivityMain.class);
+        //does not create another main activity if already in the stack, because it is single instance
+        startActivity(i);
+    }
 }
