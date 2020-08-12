@@ -46,7 +46,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             //do nothing
         }else{
             final Intent intent = new Intent(this, ActivitySelectMatch.class);
-            intent.putExtra("type", "msg");
+            intent.putExtra("type", "onNotificationClicked");
             intent.putExtra("match", remoteMessage.getData().get("match"));
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             int notificationID = 1;
@@ -60,7 +60,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 setupChannels(notificationManager);
             }
 
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
                     PendingIntent.FLAG_ONE_SHOT);
 
@@ -84,8 +83,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
             notificationManager.notify(notificationTAG, notificationID, notificationBuilder.build());
         }
-
-
 
     }
 

@@ -14,7 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.es.findsoccerplayers.fragments.FragmentChat;
 import com.es.findsoccerplayers.fragments.FragmentInfoMatch;
+import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -56,17 +58,17 @@ public class ActivityLogin extends MyActivity{
         Intent i = getIntent();
         Bundle extras = i.getExtras();
         if(extras != null){
-            final Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
-            intent.putExtra("type", "msg");
-            intent.putExtra("match", i.getStringExtra("match"));
-            startActivity(intent);
+            if(Utils.isOffline(this))
+                Utils.showOfflineReadToast(this);
+            else{
+                Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
+                intent.putExtra("type", "onNotificationClicked");
+                intent.putExtra("match", i.getStringExtra("match"));
+                startActivity(intent);
+            }
             finish();
             return;
         }
-
-        setContentView(R.layout.act_login);
-        Toolbar toolbar = findViewById(R.id.log_toolbar);
-        setSupportActionBar(toolbar);
 
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser autUser = fAuth.getCurrentUser();
@@ -76,6 +78,10 @@ public class ActivityLogin extends MyActivity{
             finish();
             return;
         }
+
+        setContentView(R.layout.act_login);
+        Toolbar toolbar = findViewById(R.id.log_toolbar);
+        setSupportActionBar(toolbar);
 
         //set the text of sign in google button to common long
         SignInButton btnGoogle = findViewById(R.id.log_googleSignInBtn);

@@ -6,8 +6,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -21,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 
 public class ActivitySelectMatch extends MyActivity {
 
@@ -40,26 +39,22 @@ public class ActivitySelectMatch extends MyActivity {
         if(type.equals("available")){
             Match m = extras.getParcelable("match");
             assert m != null;
-            setContentView(R.layout.act_select_match_notabs);
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type), null);
-            transaction.commit();
-        } else if(type.equals("msg")){
-            setContentView(R.layout.act_select_match_tabs);
-            final TabLayout tabs = findViewById(R.id.info_match_booked_tabs);
-            final ViewPager vp = findViewById(R.id.info_match_booked_vp);
-            final ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-            DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + i.getStringExtra("match"));
-            r.addValueEventListener(new ValueEventListener() {
+            setNoTabLayout(m, type);
+
+        }else if(type.equals("booked") || type.equals("yours")){
+            Match m = i.getParcelableExtra("match");
+            assert m != null;
+            matchID = m.getMatchID();
+            setTabLayout(m, type, 0);
+        }
+        else { //activity started by messaging service when user taps on notification
+            matchID = i.getStringExtra("match");
+            DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
+            r.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Match theMatch = snapshot.getValue(Match.class);
-                    adapter.addFragment(new FragmentInfoMatch(theMatch, "booked"), "INFO");
-                    adapter.addFragment(new FragmentChat(theMatch.getMatchID(), getApplicationContext()), "CHAT");
-                    vp.setAdapter(adapter);
-                    tabs.setupWithViewPager(vp);
-                    vp.setCurrentItem(1);
+                    Match m = snapshot.getValue(Match.class);
+                    setTabLayout(m, "onNotificationClicked", 1);
                 }
 
                 @Override
@@ -67,42 +62,54 @@ public class ActivitySelectMatch extends MyActivity {
 
                 }
             });
-        }else{
-            Match m = extras.getParcelable("match");
-            assert m != null;
-            matchID = m.getMatchID();
-            setContentView(R.layout.act_select_match_tabs);
-            TabLayout tabs = findViewById(R.id.info_match_booked_tabs);
-            vp = findViewById(R.id.info_match_booked_vp);
-            ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-            adapter.addFragment(new FragmentInfoMatch(m, type), "INFO");
-            final FragmentChat fragmentChat = new FragmentChat(matchID, this);
-            MyFragmentManager.setFragment(fragmentChat);
-            adapter.addFragment(fragmentChat, "CHAT");
-            vp.setAdapter(adapter);
 
-            vp.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
-                @Override
-                public void onPageSelected(int position) {
-                    super.onPageSelected(position);
-                    if(FragmentChat.isDisplayed && position == 0)//switch from 1 to 0
-                        MyFragmentManager.getFragmentChat().onNewMessagesRead();
-                    FragmentChat.isDisplayed = position == 1;
-                }
-            });
-            tabs.setupWithViewPager(vp);
         }
-
-        Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     @Override
     protected void onPause() {
         FragmentChat.isDisplayed = false;
         super.onPause();
+    }
+
+    private void setNoTabLayout(Match m, String type){
+        setContentView(R.layout.act_select_match_notabs);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type), null);
+        transaction.commit();
+        Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setTabLayout(Match m, String type, int position){
+        setContentView(R.layout.act_select_match_tabs);
+        TabLayout tabs = findViewById(R.id.info_match_booked_tabs);
+        vp = findViewById(R.id.info_match_booked_vp);
+        ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
+        adapter.addFragment(new FragmentInfoMatch(m, type), "INFO");
+        final FragmentChat fragmentChat = new FragmentChat(matchID, this);
+        MyFragmentManager.setFragment(fragmentChat);
+        adapter.addFragment(fragmentChat, "CHAT");
+        vp.setAdapter(adapter);
+
+        vp.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if(FragmentChat.isDisplayed && position == 0)//switch from 1 to 0
+                    MyFragmentManager.getFragmentChat().onNewMessagesRead();
+                FragmentChat.isDisplayed = position == 1;
+            }
+        });
+
+        vp.setCurrentItem(position);
+
+        tabs.setupWithViewPager(vp);
+        Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -125,12 +132,21 @@ public class ActivitySelectMatch extends MyActivity {
         if(action != null && action.equals("finishOnMatchDeleted")){
             finish();
         }
+        else{
+            String matchID = intent.getStringExtra("match");
+            Intent i = new Intent(ActivitySelectMatch.this, ActivitySelectMatch.class);
+            i.putExtra("type", "onNotificationClicked");
+            i.putExtra("match", matchID);
+            finish();
+            startActivity(i);
+        }
     }
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, ActivityMain.class));
-        finish();
-        return;
+        super.onBackPressed();
+        Intent i = new Intent(this, ActivityMain.class);
+        //does not create another main activity if already in the stack, because it is single instance
+        startActivity(i);
     }
 }

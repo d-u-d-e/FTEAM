@@ -184,7 +184,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         });
 
         editDesc.setOnClickListener(new View.OnClickListener() {
-            //TODO
             @Override
             public void onClick(View v) {
                 EditDescriptionDialogue dialogue = new EditDescriptionDialogue("Insert a description", FragmentInfoMatch.this, editedMatch.getDescription());
@@ -414,7 +413,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
                 NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.cancel(key, 1);
-
 
                 return Transaction.success(currentData);
             }

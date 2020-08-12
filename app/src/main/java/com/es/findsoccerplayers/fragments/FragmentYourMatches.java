@@ -44,7 +44,7 @@ public class FragmentYourMatches extends FragmentMatches {
             public void onItemClick(int position) {
                 Intent i = new Intent(getContext(), ActivitySelectMatch.class);
                 i.putExtra("match", matches.get(position));
-                i.putExtra("type", "your");
+                i.putExtra("type", "yours");
                 startActivity(i);
             }
         });
