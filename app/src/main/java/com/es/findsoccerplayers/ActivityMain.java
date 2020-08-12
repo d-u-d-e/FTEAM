@@ -1,5 +1,6 @@
 package com.es.findsoccerplayers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,6 +20,16 @@ import com.es.findsoccerplayers.fragments.FragmentBookedMatches;
 import com.es.findsoccerplayers.fragments.FragmentYourMatches;
 import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.List;
 
 public class ActivityMain extends MyActivity {
 
@@ -38,6 +49,49 @@ public class ActivityMain extends MyActivity {
                     Manifest.permission.ACCESS_FINE_LOCATION)){
                 startActivity(new Intent(ActivityMain.this, LocationAccessActivity.class));
             }
+        }
+
+        Intent i = getIntent();
+        boolean logIN = i.getBooleanExtra("Login", false);
+        if(logIN){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference ref =
+                    db.getReference().child("users").child(user.getUid()).child("bookedMatches");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    for(DataSnapshot booked : snapshot.getChildren()){
+                        String matchID = booked.getKey();
+                        FirebaseMessaging.getInstance().subscribeToTopic(matchID);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+            DatabaseReference ref2 =
+                    db.getReference().child("users").child(user.getUid()).child("createdMatches");
+            ref2.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    for(DataSnapshot booked : snapshot.getChildren()){
+                        String matchID = booked.getKey();
+                        FirebaseMessaging.getInstance().subscribeToTopic(matchID);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
         Toolbar toolbar = findViewById(R.id.main_toolbar);

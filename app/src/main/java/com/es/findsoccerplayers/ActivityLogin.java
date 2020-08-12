@@ -214,7 +214,9 @@ public class ActivityLogin extends MyActivity{
                                                 createGoogleUser();
                                             else{
                                                 Utils.showToast(ActivityLogin.this, R.string.login_success);
-                                                startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                                                Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
+                                                intent.putExtra("Login", true);
+                                                startActivity(intent);
                                                 finish();
                                             }
                                         }
@@ -262,7 +264,9 @@ public class ActivityLogin extends MyActivity{
                 }
                 else{
                     Utils.showToast(ActivityLogin.this, R.string.login_success);
-                    startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                    Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
+                    intent.putExtra("Login", true);
+                    startActivity(intent);
                     finish();
                 }
             }

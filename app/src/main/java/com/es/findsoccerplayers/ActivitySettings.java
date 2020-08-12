@@ -1,5 +1,6 @@
 package com.es.findsoccerplayers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +15,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +60,7 @@ public class ActivitySettings extends MyActivity {
                     Intent i = new Intent(getApplicationContext(), ActivitySetLocation.class);
                     startActivity(i);
                 }else if(position == 2){
+                    unsubscribe();
                     logOut();
                 }
             }
@@ -62,18 +71,59 @@ public class ActivitySettings extends MyActivity {
 
     private void logOut(){
         //options required to log in with Google
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+            final GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            auth.signOut();
+            googleSignInClient.signOut();
+            finishAffinity();
+            Intent i = new Intent(this, ActivityLogin.class);
+            startActivity(i);
+    }
 
-        auth.signOut();
-        googleSignInClient.signOut();
-        finishAffinity();
-        Intent i = new Intent(this, ActivityLogin.class);
-        startActivity(i);
+    private void unsubscribe(){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference ref =
+                    db.getReference().child("users").child(user.getUid()).child("bookedMatches");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    for(DataSnapshot booked : snapshot.getChildren()){
+                        String matchID = booked.getKey();
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+            DatabaseReference ref2 =
+                    db.getReference().child("users").child(user.getUid()).child("createdMatches");
+            ref2.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    for(DataSnapshot booked : snapshot.getChildren()){
+                        String matchID = booked.getKey();
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
     }
 }
