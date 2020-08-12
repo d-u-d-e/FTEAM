@@ -1,13 +1,10 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,11 +13,7 @@ import com.es.findsoccerplayers.fragments.FragmentInfoMatch;
 import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 public class ActivitySelectMatch extends MyActivity {
 
@@ -45,28 +38,6 @@ public class ActivitySelectMatch extends MyActivity {
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.act_select_match_fragContainer, new FragmentInfoMatch(m, type), null);
             transaction.commit();
-        } else if(type.equals("msg")){
-            setContentView(R.layout.act_select_match_tabs);
-            final TabLayout tabs = findViewById(R.id.info_match_booked_tabs);
-            final ViewPager vp = findViewById(R.id.info_match_booked_vp);
-            final ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
-            DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + i.getStringExtra("match"));
-            r.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Match theMatch = snapshot.getValue(Match.class);
-                    adapter.addFragment(new FragmentInfoMatch(theMatch, "booked"), "INFO");
-                    adapter.addFragment(new FragmentChat(theMatch.getMatchID(), getApplicationContext()), "CHAT");
-                    vp.setAdapter(adapter);
-                    tabs.setupWithViewPager(vp);
-                    vp.setCurrentItem(1);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
         }else{
             Match m = extras.getParcelable("match");
             assert m != null;
@@ -81,6 +52,11 @@ public class ActivitySelectMatch extends MyActivity {
             adapter.addFragment(fragmentChat, "CHAT");
             vp.setAdapter(adapter);
 
+            if(type.equals("onNotificationClicked")){
+                vp.setCurrentItem(1);
+                FragmentChat.isDisplayed = true;
+            }
+
             vp.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
                 @Override
                 public void onPageSelected(int position) {
@@ -92,11 +68,9 @@ public class ActivitySelectMatch extends MyActivity {
             });
             tabs.setupWithViewPager(vp);
         }
-
         Toolbar toolbar = findViewById(R.id.act_select_match_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     @Override
@@ -125,12 +99,15 @@ public class ActivitySelectMatch extends MyActivity {
         if(action != null && action.equals("finishOnMatchDeleted")){
             finish();
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(this, ActivityMain.class));
-        finish();
-        return;
+        else{
+            Match m = intent.getParcelableExtra("match");
+            if(m != null){ //started by user clicking on a notification while this activity was already running
+                Intent i = new Intent(this, ActivitySelectMatch.class);
+                i.putExtra("match", m);
+                i.putExtra("type", "onNotificationClicked");
+                finish();
+                startActivity(i);
+            }
+        }
     }
 }

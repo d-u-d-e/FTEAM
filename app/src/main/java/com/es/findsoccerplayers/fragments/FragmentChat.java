@@ -172,7 +172,7 @@ public class FragmentChat extends Fragment {
             notificationNoti.put("body", Utils.getPreviewDescription(message));
             notificationNoti.put("icon", "ic_message");
 
-            //Contruct of the JSONObject fields
+            //Construct of the JSONObject fields
             notification.put("to", "/topics/" + matchID);
             notification.put("notification", notificationNoti );
             notification.put("data", notificationBody);

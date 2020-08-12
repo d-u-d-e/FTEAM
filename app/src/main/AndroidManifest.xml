@@ -48,6 +48,7 @@
         <activity
             android:name=".ActivitySelectMatch"
             android:parentActivityName=".ActivityMain"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ActivityAccount"
@@ -65,7 +66,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ActivityMain"
-            android:launchMode="singleTask" />
+            android:launchMode="singleInstance" />
         <activity
             android:name=".ActivityLogin"
             android:screenOrientation="portrait">
