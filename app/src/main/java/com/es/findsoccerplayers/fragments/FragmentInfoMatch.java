@@ -333,6 +333,8 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                     Utils.showToast(context, "Match successfully deleted");
             }
         });
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
+
         if(Utils.isOffline(getActivity()))
             Utils.showOfflineWriteToast(getActivity());
     }
