@@ -260,10 +260,8 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         for(boolean b: edits)
             if(b) count++;
 
-        if(count > 0){
+        if(count > 0)
             editBtn.setEnabled(true);
-            editBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        }
     }
 
     @Override
