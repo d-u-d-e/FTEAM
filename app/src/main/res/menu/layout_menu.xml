@@ -5,8 +5,34 @@
     <item
         android:id="@+id/acc_settings"
         android:icon="@drawable/ic_settings_24"
-        android:title="Settings"
+        android:title="settings"
         app:showAsAction="ifRoom"
         />
+
+    <item
+        app:showAsAction="never"
+        android:id="@+id/menu_sortByMatchDateAsc"
+        android:title="sort by match date asc"
+        android:checkable="true"
+        >
+    </item>
+
+    <item
+        app:showAsAction="never"
+        android:id="@+id/menu_sortByMatchDateDesc"
+        android:title="sort by match date desc"
+        android:checkable="true"
+        >
+    </item>
+
+
+    <item
+        app:showAsAction="never"
+        android:id="@+id/menu_sortByCreationDate"
+        android:title="sort by creation date"
+        android:checkable="true"
+        android:checked="true"
+        >
+    </item>
 
 </menu>

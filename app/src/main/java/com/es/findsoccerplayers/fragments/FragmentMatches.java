@@ -6,6 +6,8 @@ import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 abstract class FragmentMatches extends Fragment {
@@ -46,6 +48,29 @@ abstract class FragmentMatches extends Fragment {
             //just update in this case, the creator might have changed the description for example
             matches.set(i, m);
             matchAdapter.notifyItemChanged(i);
+        }
+    }
+
+    public void sortByMatchDate(boolean ascending){
+        matches.sort(new ComparatorByMatchDate(ascending));
+        matchAdapter.notifyDataSetChanged();
+    }
+
+    public void sortByCreationDate(){
+
+    }
+
+    static class ComparatorByMatchDate implements Comparator<Match> {
+        private boolean ascending;
+        ComparatorByMatchDate(boolean ascending){
+            this.ascending = ascending;
+        }
+        @Override
+        public int compare(Match o1, Match o2) {
+            if(ascending)
+                return Long.compare(o1.getTimestamp(), o2.getTimestamp());
+            else
+                return Long.compare(o1.getTimestamp(), o2.getTimestamp()) * (-1);
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.es.findsoccerplayers;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -23,7 +22,6 @@ import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,13 +29,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.util.List;
-
 public class ActivityMain extends MyActivity {
 
     private long backPressedTime = 0;
     private Toast backToast;
     ViewPagerTabs adapter;
+    ViewPager vp;
+
+    enum SortType{dateMatchAsc, dateMatchDesc, dateCreation};
+
+    SortType[] sortTabTypes = {SortType.dateCreation, SortType.dateCreation, SortType.dateCreation}; //one for each tab
+    MenuItem[] sortMenuItems = new MenuItem[SortType.values().length]; //one for each sort type
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,7 @@ public class ActivityMain extends MyActivity {
         setSupportActionBar(toolbar);
 
         TabLayout tabs = findViewById(R.id.main_tabs);
-        ViewPager vp = findViewById(R.id.main_vp);
+        vp = findViewById(R.id.main_vp);
         adapter = new ViewPagerTabs(getSupportFragmentManager());
 
         FragmentAvailableMatches am = new FragmentAvailableMatches();
@@ -82,6 +84,16 @@ public class ActivityMain extends MyActivity {
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
 
+        vp.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                int checkedAt = sortTabTypes[position].ordinal();
+                uncheckAll();
+                sortMenuItems[checkedAt].setChecked(true);
+                super.onPageSelected(position);
+            }
+        });
+
         if(Utils.isOffline(this))
             Utils.showOfflineReadToast(this);
     }
@@ -90,14 +102,43 @@ public class ActivityMain extends MyActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.layout_menu, menu);
+        sortMenuItems[0] = menu.findItem(R.id.menu_sortByMatchDateAsc);
+        sortMenuItems[1] = menu.findItem(R.id.menu_sortByMatchDateDesc);
+        sortMenuItems[2] = menu.findItem(R.id.menu_sortByCreationDate);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.acc_settings) {
-            startActivity(new Intent(this, ActivitySettings.class));
-            return true;
+        int tab = vp.getCurrentItem();
+        switch (item.getItemId()){
+            case R.id.acc_settings:
+                startActivity(new Intent(this, ActivitySettings.class));
+                return true;
+            case R.id.menu_sortByMatchDateAsc:
+                if(sortTabTypes[tab] != SortType.dateMatchAsc){
+                    uncheckAll();
+                    sortMenuItems[SortType.dateMatchAsc.ordinal()].setChecked(true);
+                    sortTabTypes[tab] = SortType.dateMatchAsc;
+                    sortByMatchDate(tab, true);
+                }
+                return true;
+            case R.id.menu_sortByMatchDateDesc:
+                if(sortTabTypes[tab] != SortType.dateMatchDesc){
+                    uncheckAll();
+                    sortMenuItems[SortType.dateMatchDesc.ordinal()].setChecked(true);
+                    sortTabTypes[tab] = SortType.dateMatchDesc;
+                    sortByMatchDate(tab, false);
+                }
+                return true;
+            case R.id.menu_sortByCreationDate:
+                if(sortTabTypes[tab] != SortType.dateCreation){
+                    uncheckAll();
+                    sortMenuItems[SortType.dateCreation.ordinal()].setChecked(true);
+                    sortTabTypes[tab] = SortType.dateMatchDesc;
+                    sortByCreationDate(tab);
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -115,6 +156,30 @@ public class ActivityMain extends MyActivity {
             backToast.show();
         }
         backPressedTime = System.currentTimeMillis();
+    }
+
+    private void sortByMatchDate(int tab, boolean ascending){
+        switch (tab){
+            case 0:
+                MyFragmentManager.getFragmentYourMatches().sortByMatchDate(ascending);
+                break;
+            case 1:
+                MyFragmentManager.getFragmentBookedMatches().sortByMatchDate(ascending);
+            default:
+                MyFragmentManager.getFragmentAvailableMatches().sortByMatchDate(ascending);
+        }
+    }
+
+    private void sortByCreationDate(int tab){
+        switch (tab){
+            case 0:
+                MyFragmentManager.getFragmentYourMatches().sortByCreationDate();
+                break;
+            case 1:
+                MyFragmentManager.getFragmentBookedMatches().sortByCreationDate();
+            default:
+                MyFragmentManager.getFragmentAvailableMatches().sortByCreationDate();
+        }
     }
 
     private void subscribe(){
@@ -156,5 +221,10 @@ public class ActivityMain extends MyActivity {
 
             }
         });
+    }
+
+    private void uncheckAll(){
+        for(int i = 0; i < 3; i++)
+            sortMenuItems[i].setChecked(false);
     }
 }
