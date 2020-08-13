@@ -201,6 +201,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
                     Intent i = new Intent(ActivitySetLocation.this, ActivityMain.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);
+                    finish();
                 }
 
             }

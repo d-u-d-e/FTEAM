@@ -20,7 +20,7 @@ public abstract class FragmentMatches extends Fragment {
 
     public enum SortType{dateMatchAsc, dateMatchDesc, none};
 
-    private SortType sortType = SortType.none;
+    protected SortType sortType = SortType.none;
 
     synchronized void removeUI(String matchID){
         //check if we have this match in the list
@@ -52,23 +52,18 @@ public abstract class FragmentMatches extends Fragment {
                 foundAt = i;
         }
 
-        if(foundAt == -1){ //we don't have it
+        if(foundAt == -1){ //we don't have it; goes on top if no order is set
             matches.add(position, m);
             matchAdapter.notifyItemInserted(position);
         }
         else{ //we have it, just update in this case, the creator might have changed the description for example
-            if(sortType == SortType.none){
-                matches.set(foundAt, m);
-                matchAdapter.notifyItemChanged(foundAt);
-            }
-            else{
-                matches.remove(foundAt);
-                if(position <= foundAt)
-                    matches.add(position, m);
-                else
-                    matches.add(position - 1, m);
-                matchAdapter.notifyDataSetChanged();
-            }
+            //if no order is set, this goes on top
+            matches.remove(foundAt);
+            if(position <= foundAt)
+                matches.add(position, m);
+            else
+                matches.add(position - 1, m);
+            matchAdapter.notifyDataSetChanged();
         }
     }
 

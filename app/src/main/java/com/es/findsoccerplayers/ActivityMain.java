@@ -107,6 +107,7 @@ public class ActivityMain extends MyActivity {
         sortMenuItems[0] = menu.findItem(R.id.menu_sortByMatchDateAsc);
         sortMenuItems[1] = menu.findItem(R.id.menu_sortByMatchDateDesc);
         sortMenuItems[2] = menu.findItem(R.id.menu_noOrder);
+        sortMenuItems[ym.getSortType().ordinal()].setChecked(true);
         return true;
     }
 
