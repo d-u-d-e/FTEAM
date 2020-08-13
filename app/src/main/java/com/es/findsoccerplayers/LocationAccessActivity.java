@@ -31,6 +31,12 @@ public class LocationAccessActivity extends MyActivity {
         });
     }
 
+    /**
+     * The response from the request permission is managed from this method.
+     * @param requestCode request code
+     * @param permissions
+     * @param grantResults the result
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
@@ -51,6 +57,9 @@ public class LocationAccessActivity extends MyActivity {
         }
     }
 
+    /**
+     * Request Location Permission.
+     */
     private void getLocationPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
     }

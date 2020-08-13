@@ -144,6 +144,11 @@ public class FragmentChat extends Fragment {
         return view;
     }
 
+    /**
+     * Method to compute the sendMessage. The param String is the message to delivery. This method write the message to the database and send a notification
+     * to the right topic, to notiy other users, that e new message has come
+     * @param message string to send
+     */
     private void sendMessage(String message){
         DatabaseReference ref = db.getReference("chats").child(matchID);
         String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
@@ -272,6 +277,10 @@ public class FragmentChat extends Fragment {
         ref.orderByKey().addChildEventListener(listener);
     }
 
+    /**
+     * This method send the notification, using the JSONObject passed. If fail, show a toast to inform
+     * @param notification the JSONObject to send
+     */
     private void sendNotification(JSONObject notification) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -283,11 +292,12 @@ public class FragmentChat extends Fragment {
                 new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i(TAG, "Error:" + error);
+                        Utils.showToast(getContext(), getString(R.string.notification_failed));
+                        Log.e(TAG, "Error:" + error);
                     }
                 }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders(){
                 Map<String, String> params = new HashMap<>();
                 params.put("Authorization", serverKey);
                 params.put("Content-Type", contentType);

@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="5dp"
-        android:background="@drawable/chat_background_right"
+        android:background="@drawable/border_style"
         android:maxWidth="300dp"
         android:minWidth="150dp"
         android:layout_marginBottom="10dp"
@@ -22,7 +22,9 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="5dp"
             android:text="username"
+            android:textColor="@color/colorPrimary"
             android:textStyle="italic|bold"
+            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,7 +32,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12:37"
+            android:textSize="12sp"
             android:textStyle="italic"
+            android:textColor="@color/colorPrimary"
             android:id="@+id/chat_timestamp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -50,6 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" "
+            android:textSize="12sp"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintEnd_toStartOf="@+id/chat_timestamp"
             app:layout_constraintStart_toEndOf="@+id/chat_user"
             app:layout_constraintTop_toTopOf="parent" />
