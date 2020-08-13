@@ -281,8 +281,10 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
         });
     }
 
-    /*POI is the "Point Of Interest". Many structures already exist in
-    * Google database with their names. We can set the position name name from the POI name */
+    /**
+    *POI is the "Point Of Interest". Many structures already exist in
+    * Google database with their names. We can set the position name name from the POI name
+    */
     private void setPoiClick(final GoogleMap map){
         map.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
             @Override

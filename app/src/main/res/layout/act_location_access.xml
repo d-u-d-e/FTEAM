@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LocationAccessActivity"
-    android:background="@color/colorPrimary">
+    android:background="@color/orange">
 
 
     <ImageView
@@ -26,8 +26,8 @@
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:text="@string/reason"
-        android:textColor="@color/white"
-        android:textSize="20dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,8 +40,8 @@
         android:id="@+id/next_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="20dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
         android:text="NEXT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

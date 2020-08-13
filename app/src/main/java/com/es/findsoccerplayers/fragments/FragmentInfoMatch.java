@@ -198,7 +198,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         LatLng location = new LatLng(originalMatch.getLatitude(), originalMatch.getLongitude());
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 13));
         marker = map.addMarker(new MarkerOptions().position(location).title(originalMatch.getPlaceName()));
     }
 
@@ -260,7 +260,10 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         for(boolean b: edits)
             if(b) count++;
 
-        editBtn.setEnabled(count > 0);
+        if(count > 0){
+            editBtn.setEnabled(true);
+            editBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        }
     }
 
     @Override
