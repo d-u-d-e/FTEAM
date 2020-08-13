@@ -32,7 +32,7 @@ public class FragmentYourMatches extends FragmentMatches {
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private int count = 0;
     private Integer readCount = 0;
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
