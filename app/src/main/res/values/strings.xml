@@ -135,8 +135,7 @@
     <string name="menu_lastUpdated">Last Updated</string>
 
     <string name="notification_failed">Message not delivered. Try later</string>
-    <string name="km">\" km\"</string>
-
+    <string name="km"> km</string>
 
 
 </resources>

@@ -3,6 +3,7 @@ package com.es.findsoccerplayers.fragments;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +69,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
     private Marker marker;
 
     private Button editBtn;
-    private boolean[] edits = new boolean[6];
+    private boolean[] edits = new boolean[5];
 
     public FragmentInfoMatch(Match m, String type) {
         originalMatch = m;
@@ -107,7 +108,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type.equals("your")) { //delete match case
+                if (type.equals("yours")) { //delete match case
                     deleteMatch(originalMatch.getMatchID());
                 }else if (type.equals("available")){
                     joinMatch();
@@ -260,8 +261,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         for(boolean b: edits)
             if(b) count++;
 
-        if(count > 0)
+        if(count > 0){
             editBtn.setEnabled(true);
+        }
     }
 
     @Override
@@ -344,7 +346,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         if(!editedMatch.getDescription().equals(desc)){
             this.desc.setText(desc);
             editedMatch.setDescription(desc);
-            updateEdits(!desc.equals(originalMatch.getDescription()), 5);
+            updateEdits(!desc.equals(originalMatch.getDescription()), 4);
         }
     }
 
