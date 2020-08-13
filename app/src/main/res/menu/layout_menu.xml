@@ -28,9 +28,8 @@
     <item
         app:showAsAction="never"
         android:id="@+id/menu_noOrder"
-        android:title="@string/menu_databaseOrder"
+        android:title="@string/menu_lastUpdated"
         android:checkable="true"
-        android:checked="true"
         >
     </item>
 

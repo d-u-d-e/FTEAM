@@ -60,6 +60,8 @@ public class FragmentBookedMatches extends FragmentMatches {
         recyclerView.setMotionEventSplittingEnabled(false);
         //recyclerView.setItemAnimator(null);
 
+        sortType = SortType.dateMatchAsc;
+
         sync();
         return view;
     }
@@ -70,7 +72,7 @@ public class FragmentBookedMatches extends FragmentMatches {
             DatabaseReference ref =
                     db.getReference().child("users").child(user.getUid()).child("bookedMatches");
 
-            ref.addChildEventListener(new ChildEventListener() {
+            ref.orderByValue().addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                     //user joins a match

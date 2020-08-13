@@ -85,6 +85,9 @@ public class FragmentAvailableMatches extends FragmentMatches {
             message.setText(String.format(getString(R.string.frag_avail_matches_preference_msg), km));
             sync();
         }
+
+        sortType = SortType.dateMatchAsc;
+
         return view;
     }
 
@@ -137,7 +140,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
         //have no means to select matches distant x meters apart from the user position directly
         //in the database
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.orderByChild("timestamp").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //prevent the attached listener to update the list
@@ -150,7 +153,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
                         assert m != null;
                         if(m.getPlayersNumber() > 0 && !booked && isLocationNearby(m.getLatitude(), m.getLongitude())
                                 && !userID.equals(m.getCreatorID()))
-                        matches.add(m);
+                        addUI(m);
                     }
                     matchAdapter.notifyDataSetChanged();
                 } //release the object only when we have read everything
@@ -221,6 +224,6 @@ public class FragmentAvailableMatches extends FragmentMatches {
             }
         };
 
-        ref.addChildEventListener(syncListener);
+        ref.orderByChild("timestamp").addChildEventListener(syncListener);
     }
 }

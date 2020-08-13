@@ -367,7 +367,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
                     HashMap<String, Object> map = new HashMap<>();
                     String uid = user.getUid();
-                    map.put("users/" + uid + "/bookedMatches/" + key, Calendar.getInstance().getTimeInMillis());
+                    map.put("users/" + uid + "/bookedMatches/" + key, originalMatch.getTimestamp());
                     map.put("matches/" + key + "/members/" + uid, true);
                     db.getReference().updateChildren(map);
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
