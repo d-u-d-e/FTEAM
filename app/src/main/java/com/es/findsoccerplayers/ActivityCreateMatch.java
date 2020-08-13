@@ -1,9 +1,11 @@
 package com.es.findsoccerplayers;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -224,48 +226,61 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
      */
     private void createMatch(final Match m){
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        if(m.getTimestamp() < Calendar.getInstance().getTimeInMillis()){
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-        String path = "users/" + user.getUid() + "/createdMatches";
+                        }
+                    }).create().show();
+        } else {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-        DatabaseReference ref = db.getReference(path).push();
-        final String key = ref.getKey();
+            String path = "users/" + user.getUid() + "/createdMatches";
 
-        Map<String, Object> map = new HashMap<>();
-        map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
-        m.setMatchID(key);
-        map.put("matches/" + key, m);
+            DatabaseReference ref = db.getReference(path).push();
+            final String key = ref.getKey();
 
-        db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if(databaseError != null)
-                    Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
-                else{ //match successfully created
-                    Utils.showToast(ActivityCreateMatch.this, "Match successfully created");
-                    MyFragmentManager.getFragmentYourMatches().registerForMatchEvents(key);
+            Map<String, Object> map = new HashMap<>();
+            map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
+            m.setMatchID(key);
+            map.put("matches/" + key, m);
+
+            db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if(databaseError != null)
+                        Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
+                    else{ //match successfully created
+                        Utils.showToast(ActivityCreateMatch.this, "Match successfully created");
+                        MyFragmentManager.getFragmentYourMatches().registerForMatchEvents(key);
+                    }
                 }
-            }
-        });
+            });
 
-        //Create and subscribe to a topic that we will use to send notification.
-        FirebaseMessaging.getInstance().subscribeToTopic(key).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Utils.showToast(ActivityCreateMatch.this, "Topic Created");
-            }
-        });
-
+            //Create and subscribe to a topic that we will use to send notification.
+            FirebaseMessaging.getInstance().subscribeToTopic(key).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Utils.showToast(ActivityCreateMatch.this, "Topic Created");
+                }
+            });
 
 
 
-        if(Utils.isOffline(this))
-            Utils.showOfflineWriteToast(this);
 
-        Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(i);
-        finish();
+            if(Utils.isOffline(this))
+                Utils.showOfflineWriteToast(this);
+
+            Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(i);
+            finish();
+        }
+
+
     }
 }

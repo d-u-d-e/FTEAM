@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class FragmentYourMatches extends FragmentMatches {
 
@@ -87,6 +88,7 @@ public class FragmentYourMatches extends FragmentMatches {
                 }
                 else{
                     Match m = snapshot.getValue(Match.class);
+                    long matchTime = m.getTimestamp();
                     synchronized (readCount){ //TODO ugly because it's done only at the start
                         if(readCount < count){
                             readCount++;
@@ -95,7 +97,8 @@ public class FragmentYourMatches extends FragmentMatches {
                             }
                         }
                     }
-                    addUI(m);
+                    if(matchTime > Calendar.getInstance().getTimeInMillis()) // if the match is in the future, show it
+                        addUI(m);
                 }
             }
 

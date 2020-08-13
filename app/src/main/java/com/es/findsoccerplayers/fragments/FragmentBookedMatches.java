@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FragmentBookedMatches extends FragmentMatches {
@@ -101,6 +102,7 @@ public class FragmentBookedMatches extends FragmentMatches {
                                 Match m = snapshot.getValue(Match.class);
                                 //TODO here use a similar method as above to notify any current ActivitySelectMatch to
                                 //update if the creator modifies the match
+                                if(m.getTimestamp() > Calendar.getInstance().getTimeInMillis())
                                 addUI(m);
                             }
                         }

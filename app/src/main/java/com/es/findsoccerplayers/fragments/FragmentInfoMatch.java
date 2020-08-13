@@ -2,6 +2,7 @@ package com.es.findsoccerplayers.fragments;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -294,24 +296,36 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
     private void editMatch(final Match m){
         //update the match on the db if some value are changed
+        if(m.getTimestamp() < Calendar.getInstance().getTimeInMillis()){
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
+                        }
+                    }).create().show();
+        } else {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
 
-        ref.setValue(m, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError error, DatabaseReference ref) {
-                Context context = MyFragmentManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
-                //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
-                //and the application will crash as soon as tries to make the toast
-                //context is the main activity now
-                if(error != null)
-                    Utils.showErrorToast(context, error.getMessage());
-                else //match successfully updated
-                    Utils.showToast(context, "Match successfully updated");
-            }
-        });
-        if(Utils.isOffline(getActivity()))
-            Utils.showOfflineWriteToast(getActivity());
+            ref.setValue(m, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError error, DatabaseReference ref) {
+                    Context context = MyFragmentManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
+                    //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
+                    //and the application will crash as soon as tries to make the toast
+                    //context is the main activity now
+                    if(error != null)
+                        Utils.showErrorToast(context, error.getMessage());
+                    else //match successfully updated
+                        Utils.showToast(context, "Match successfully updated");
+                }
+            });
+            if(Utils.isOffline(getActivity()))
+                Utils.showOfflineWriteToast(getActivity());
+        }
+
+
     }
 
     private void deleteMatch(String matchID){
