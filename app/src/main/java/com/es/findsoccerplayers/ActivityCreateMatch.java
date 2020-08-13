@@ -185,6 +185,12 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Set the Date
+     * @param year int indicating the selected year
+     * @param month int indicating the selected month
+     * @param day int indicating the selected day
+     */
     @Override
     public void onDateSet(int year, int month, int day) {
         Calendar c = Calendar.getInstance();
@@ -192,16 +198,30 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
         matchDate.setText(Utils.getDate(c.getTimeInMillis()));
     }
 
+    /**
+     * Set the hour
+     * @param hour int indicating the selected hour
+     * @param minute int indicating the selected minute
+     */
     @Override
     public void onTimeSet(int hour, int minute) {
         matchTime.setText(String.format("%02d:%02d", hour, minute));
     }
 
+    /**
+     * Set the number of missing players
+     * @param number selected number of missing players
+     */
     @Override
     public void onNumberSet(int number) {
         players.setText(Integer.toString(number));
     }
 
+
+    /**
+     * Create a match and add it to the FirebaseDatabase. The match object is passed as a param.
+     * @param m match object created
+     */
     private void createMatch(final Match m){
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

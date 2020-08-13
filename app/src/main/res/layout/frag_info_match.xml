@@ -269,6 +269,7 @@
                 android:enabled="false"
                 android:text="EDIT MATCH"
                 android:visibility="gone"
+                android:textColor="@color/white"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/info_match_descriptionText" />
@@ -301,6 +302,8 @@
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="30dp"
                 android:text="DELETE/DROP/JOIN"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

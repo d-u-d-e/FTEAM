@@ -160,7 +160,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 9));
                     }
                     index = progress * 0.5;
-                    distanceView.setText(index + " km");
+                    distanceView.setText(index + getString(R.string.km));
                 }
             }
 
@@ -233,7 +233,10 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
 
     }
 
-    // onMapMoving stops the tracking location if the user starts moving the camera.
+    /**
+     * onMapMoving stops the tracking location if the user starts moving the camera.
+     * @param map the map showed
+     */
     private void onMapMoving(GoogleMap map){
         map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
@@ -249,7 +252,10 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
     }
 
 
-    //If the user make a long click on the map, add in that position a marker and show an info window
+    /**
+     * If the user make a long click on the map, add in that position a marker
+     * @param map the map showed
+     */
     private void setMapLongClick(final GoogleMap map){
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -261,7 +267,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
                 }
                 radiusBar.setProgress(0);
                 map.addMarker(new MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                 myPosition = latLng;
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 12));
 
@@ -327,6 +333,13 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
     }
 
 
+    /**
+     * If the user start moving the seekBar, then draw a semitrasparent circle, so he can see the maximum distance he will
+     * cover to go to play a match.
+     * @param map the map where to draw the circle
+     * @param latlng center of the circle
+     * @param radius radius of the circle
+     */
     public void drawCircle(GoogleMap map, LatLng latlng, int radius){
         map.clear();
         map.addCircle(new CircleOptions()
@@ -349,6 +362,11 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
         }
     }
 
+
+    /**
+     * The user can deny permission in any time. There is no reason to do it, but he can
+     * . If he will use again the map, it's better to get permission again.
+     */
     private void getLocationPermission(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             locationAccess = true;

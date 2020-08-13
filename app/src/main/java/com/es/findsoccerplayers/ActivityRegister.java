@@ -168,6 +168,12 @@ public class ActivityRegister extends MyActivity implements DatePickerDialog.OnD
         selectedDate.setText(Utils.getDate(c.getTimeInMillis()));
     }
 
+
+    /**
+     * Create a Firebase user.
+     * @param username the Username to set
+     * @param date the date
+     */
     private void createFirebaseUser(String username, String date){
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();

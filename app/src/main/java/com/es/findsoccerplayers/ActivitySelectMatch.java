@@ -72,6 +72,11 @@ public class ActivitySelectMatch extends MyActivity {
         super.onPause();
     }
 
+    /**
+     * If the match is to join, so is not a booked match, or an user match, then create a layout without tabs
+     * @param m the Match Object selected
+     * @param type type of view to set
+     */
     private void setNoTabLayout(Match m, String type){
         setContentView(R.layout.act_select_match_notabs);
         FragmentManager manager = getSupportFragmentManager();
@@ -83,6 +88,12 @@ public class ActivitySelectMatch extends MyActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * If the match, is a booked match, or an user match, then shor the Tab Layout, whith match info fragment, and chat fragment
+     * @param m the Match Object selcted
+     * @param type type of view to set
+     * @param position position of starting ViewPager, info or chat
+     */
     private void setTabLayout(Match m, String type, int position){
         setContentView(R.layout.act_select_match_tabs);
         TabLayout tabs = findViewById(R.id.info_match_booked_tabs);

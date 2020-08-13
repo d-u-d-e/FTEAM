@@ -26,6 +26,10 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Settings or logout activity. Here the user can logout, or can select a new range and place to search games or set new games.
+ */
+
 public class ActivitySettings extends MyActivity {
     final List<SettingsElement> settElemList = new ArrayList<>();
 
@@ -68,7 +72,9 @@ public class ActivitySettings extends MyActivity {
 
     }
 
-
+    /**
+     * Method to logout the user, and go back to the login activity
+     */
     private void logOut(){
         //options required to log in with Google
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -85,6 +91,10 @@ public class ActivitySettings extends MyActivity {
             startActivity(i);
     }
 
+    /**
+     * If the user logout from the app, he needs to unsubscribe from all matches, so he
+     * will not get notification from chats.
+     */
     private void unsubscribe(){
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseDatabase db = FirebaseDatabase.getInstance();

@@ -112,19 +112,32 @@
         app:layout_constraintStart_toEndOf="@id/cr_match_imageViewLocation"
         app:layout_constraintTop_toBottomOf="@id/cr_match_playersNumber"/>
 
-    <EditText
-        android:id="@+id/cr_match_descriptionField"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/cr_match_descriptionImage"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="40dp"
-        android:background="@android:color/transparent"
-        android:hint="@string/description"
-        android:textSize="15sp"
-        android:textAlignment="center"
+        android:layout_marginTop="32dp"
+        app:srcCompat="@drawable/ic_baseline_description_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cr_match_imageViewLocation" />
+
+    <EditText
+        android:id="@+id/cr_match_descriptionField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="10dp"
+        android:background="@android:color/transparent"
+        android:hint="@string/description"
+        android:textAlignment="textStart"
+        android:textSize="15sp"
+        app:layout_constraintRight_toRightOf="@id/cr_match_fab"
+        app:layout_constraintLeft_toRightOf="@id/cr_match_descriptionImage"
+        app:layout_constraintTop_toBottomOf="@id/cr_match_imageViewLocation" />
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/cr_match_fab"

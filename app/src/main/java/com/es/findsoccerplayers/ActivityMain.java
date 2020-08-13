@@ -117,6 +117,11 @@ public class ActivityMain extends MyActivity {
         backPressedTime = System.currentTimeMillis();
     }
 
+    /**
+     * Users can logout and login any time. If the user logout, he unscribe from all match topics.
+     * If he come back again, will subscribe again to all his matches, created by him, or booked, so he can get notification for new messages in chat
+     *
+     */
     private void subscribe(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase db = FirebaseDatabase.getInstance();

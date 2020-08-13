@@ -226,7 +226,11 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
         onMapMoving(map); //if the camera moves because the user move it, stop tracking location. He's looking for a place.
     }
 
-    // onMapMoving stops the tracking location if the user starts moving the camera.
+    /**
+     * onMapMoving stops the tracking location if the user starts moving the camera. He is looking for a place
+     * so, don't need to take update of his actual position
+     * @param map the map that is showed
+     */
     private void onMapMoving(GoogleMap map){
         map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
@@ -241,7 +245,10 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
         });
     }
 
-    //If the user make a long click on the map, add in that position a marker and show an info window
+    /**
+     * If the user make a long click on the map, add in that position a marker and show an info window
+     * @param map the map that is showed
+     */
     private void setMapLongClick(final GoogleMap map){
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -281,8 +288,11 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
         });
     }
 
-    /*POI is the "Point Of Interest". Many structures already exist in
-    * Google database with their names. We can set the position name name from the POI name */
+    /**
+     * POI is the "Point Of Interest". Many structures already exist in
+     * Google database with their names. We can set the position name name from the POI name
+     * @param map is the map showed
+     */
     private void setPoiClick(final GoogleMap map){
         map.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
             @Override
@@ -302,6 +312,12 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
         });
     }
 
+
+    /**
+     * If the user click in the Info window that appear over the marker
+     * means he choose this place, so send the selected place to the ActivityCreateMatch
+     * @param map the map showed
+     */
     private void setInfoWindowClick(final GoogleMap map){
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -320,6 +336,9 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Request Location Permission.
+     */
     private void getLocationPermission(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             locationAccess = true;
@@ -327,6 +346,13 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
     }
 
+
+    /**
+     * Result from request location permission.
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
