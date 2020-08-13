@@ -16,7 +16,6 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import com.es.findsoccerplayers.fragments.FragmentChat;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,14 +23,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.util.Random;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private final String ADMIN_CHANNEL_ID ="fsp_channel";
 
     @Override
     public void onNewToken(String token) {
-        //TODO: In case of new token, update your token.
+        //TODO: In case of new token, update your token. Use this for user to user notification. To implement int the future
     }
 
     @Override
@@ -74,8 +72,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setContentText(remoteMessage.getData().get("body"))
                     .setAutoCancel(true)
                     .setSound(notificationSoundUri)
-                    .setContentIntent(pendingIntent)
-                    .setCategory(Notification.CATEGORY_MESSAGE);
+                    .setContentIntent(pendingIntent);
 
             //Set notification color to match your app color template
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){

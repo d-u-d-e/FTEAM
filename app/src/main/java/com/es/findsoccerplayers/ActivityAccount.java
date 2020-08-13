@@ -9,7 +9,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- * Shows the account information for the current user
+ * Shows the account information for the current user.
+ * TODO: Add the possibility to change the nickname, add an image profile, see the number of created games etc.
  * */
 
 public class ActivityAccount extends MyActivity{
