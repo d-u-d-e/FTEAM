@@ -5,14 +5,14 @@
     <item
         android:id="@+id/acc_settings"
         android:icon="@drawable/ic_settings_24"
-        android:title="settings"
+        android:title="@string/menu_settings"
         app:showAsAction="ifRoom"
         />
 
     <item
         app:showAsAction="never"
         android:id="@+id/menu_sortByMatchDateAsc"
-        android:title="sort by match date asc"
+        android:title="@string/sort_by_match_date_asc"
         android:checkable="true"
         >
     </item>
@@ -20,7 +20,7 @@
     <item
         app:showAsAction="never"
         android:id="@+id/menu_sortByMatchDateDesc"
-        android:title="sort by match date desc"
+        android:title="@string/sort_by_match_date_desc"
         android:checkable="true"
         >
     </item>
@@ -28,7 +28,7 @@
     <item
         app:showAsAction="never"
         android:id="@+id/menu_noOrder"
-        android:title="random"
+        android:title="@string/menu_databaseOrder"
         android:checkable="true"
         android:checked="true"
         >
