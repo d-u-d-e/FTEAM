@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.es.findsoccerplayers.fragments.FragmentAvailableMatches;
 import com.es.findsoccerplayers.fragments.FragmentBookedMatches;
+import com.es.findsoccerplayers.fragments.FragmentMatches;
 import com.es.findsoccerplayers.fragments.FragmentYourMatches;
 import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.google.android.material.tabs.TabLayout;
@@ -36,10 +37,11 @@ public class ActivityMain extends MyActivity {
     ViewPagerTabs adapter;
     ViewPager vp;
 
-    enum SortType{dateMatchAsc, dateMatchDesc, dateCreation};
+    MenuItem[] sortMenuItems = new MenuItem[FragmentMatches.SortType.values().length]; //one for each sort type
 
-    SortType[] sortTabTypes = {SortType.dateCreation, SortType.dateCreation, SortType.dateCreation}; //one for each tab
-    MenuItem[] sortMenuItems = new MenuItem[SortType.values().length]; //one for each sort type
+    FragmentAvailableMatches am;
+    FragmentYourMatches ym;
+    FragmentBookedMatches bm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +70,9 @@ public class ActivityMain extends MyActivity {
         vp = findViewById(R.id.main_vp);
         adapter = new ViewPagerTabs(getSupportFragmentManager());
 
-        FragmentAvailableMatches am = new FragmentAvailableMatches();
-        FragmentYourMatches ym = new FragmentYourMatches();
-        FragmentBookedMatches bm = new FragmentBookedMatches();
+        am = new FragmentAvailableMatches();
+        ym = new FragmentYourMatches();
+        bm = new FragmentBookedMatches();
 
         MyFragmentManager.setFragment(am);
         MyFragmentManager.setFragment(ym);
@@ -80,16 +82,16 @@ public class ActivityMain extends MyActivity {
         adapter.addFragment(bm, getString(R.string.act_main_frag_booked_title));
         adapter.addFragment(am, getString(R.string.act_main_frag_avail_title));
 
-        vp.setOffscreenPageLimit(adapter.getCount()-1); //2
+        vp.setOffscreenPageLimit(adapter.getCount() - 1); //2
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
 
         vp.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
             @Override
             public void onPageSelected(int position) {
-                int checkedAt = sortTabTypes[position].ordinal();
+                FragmentMatches frag = (FragmentMatches) adapter.getItem(position);
                 uncheckAll();
-                sortMenuItems[checkedAt].setChecked(true);
+                sortMenuItems[frag.getSortType().ordinal()].setChecked(true);
                 super.onPageSelected(position);
             }
         });
@@ -104,40 +106,31 @@ public class ActivityMain extends MyActivity {
         inflater.inflate(R.menu.layout_menu, menu);
         sortMenuItems[0] = menu.findItem(R.id.menu_sortByMatchDateAsc);
         sortMenuItems[1] = menu.findItem(R.id.menu_sortByMatchDateDesc);
-        sortMenuItems[2] = menu.findItem(R.id.menu_sortByCreationDate);
+        sortMenuItems[2] = menu.findItem(R.id.menu_noOrder);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int tab = vp.getCurrentItem();
+        FragmentMatches frag = (FragmentMatches) adapter.getItem(vp.getCurrentItem());
         switch (item.getItemId()){
             case R.id.acc_settings:
                 startActivity(new Intent(this, ActivitySettings.class));
                 return true;
             case R.id.menu_sortByMatchDateAsc:
-                if(sortTabTypes[tab] != SortType.dateMatchAsc){
-                    uncheckAll();
-                    sortMenuItems[SortType.dateMatchAsc.ordinal()].setChecked(true);
-                    sortTabTypes[tab] = SortType.dateMatchAsc;
-                    sortByMatchDate(tab, true);
-                }
+                uncheckAll();
+                sortMenuItems[FragmentMatches.SortType.dateMatchAsc.ordinal()].setChecked(true);
+                frag.sortByMatchDate(true);
                 return true;
             case R.id.menu_sortByMatchDateDesc:
-                if(sortTabTypes[tab] != SortType.dateMatchDesc){
-                    uncheckAll();
-                    sortMenuItems[SortType.dateMatchDesc.ordinal()].setChecked(true);
-                    sortTabTypes[tab] = SortType.dateMatchDesc;
-                    sortByMatchDate(tab, false);
-                }
+                uncheckAll();
+                sortMenuItems[FragmentMatches.SortType.dateMatchDesc.ordinal()].setChecked(true);
+                frag.sortByMatchDate(false);
                 return true;
-            case R.id.menu_sortByCreationDate:
-                if(sortTabTypes[tab] != SortType.dateCreation){
-                    uncheckAll();
-                    sortMenuItems[SortType.dateCreation.ordinal()].setChecked(true);
-                    sortTabTypes[tab] = SortType.dateMatchDesc;
-                    sortByCreationDate(tab);
-                }
+            case R.id.menu_noOrder:
+                uncheckAll();
+                frag.setOrderNone();
+                sortMenuItems[FragmentMatches.SortType.none.ordinal()].setChecked(true);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -156,30 +149,6 @@ public class ActivityMain extends MyActivity {
             backToast.show();
         }
         backPressedTime = System.currentTimeMillis();
-    }
-
-    private void sortByMatchDate(int tab, boolean ascending){
-        switch (tab){
-            case 0:
-                MyFragmentManager.getFragmentYourMatches().sortByMatchDate(ascending);
-                break;
-            case 1:
-                MyFragmentManager.getFragmentBookedMatches().sortByMatchDate(ascending);
-            default:
-                MyFragmentManager.getFragmentAvailableMatches().sortByMatchDate(ascending);
-        }
-    }
-
-    private void sortByCreationDate(int tab){
-        switch (tab){
-            case 0:
-                MyFragmentManager.getFragmentYourMatches().sortByCreationDate();
-                break;
-            case 1:
-                MyFragmentManager.getFragmentBookedMatches().sortByCreationDate();
-            default:
-                MyFragmentManager.getFragmentAvailableMatches().sortByCreationDate();
-        }
     }
 
     private void subscribe(){

@@ -25,11 +25,10 @@
         >
     </item>
 
-
     <item
         app:showAsAction="never"
-        android:id="@+id/menu_sortByCreationDate"
-        android:title="sort by creation date"
+        android:id="@+id/menu_noOrder"
+        android:title="random"
         android:checkable="true"
         android:checked="true"
         >
