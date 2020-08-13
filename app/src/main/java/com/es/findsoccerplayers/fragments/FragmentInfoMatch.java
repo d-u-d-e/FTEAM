@@ -261,9 +261,10 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         for(boolean b: edits)
             if(b) count++;
 
-        if(count > 0){
+        if(count > 0)
             editBtn.setEnabled(true);
-        }
+        else
+            editBtn.setEnabled(false);
     }
 
     @Override
