@@ -177,7 +177,7 @@ public class ActivityRegister extends MyActivity implements DatePickerDialog.OnD
     private void createFirebaseUser(String username, String date){
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), username, date);
+        User user = new User(ActivityLogin.currentUserID, username, date);
 
         db.child("users").child(user.getId()).setValue(user, new DatabaseReference.CompletionListener() {
             @Override

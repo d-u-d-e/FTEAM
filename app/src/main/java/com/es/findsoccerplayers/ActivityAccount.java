@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ActivityAccount extends MyActivity{
 
-    FirebaseUser acct = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +26,12 @@ public class ActivityAccount extends MyActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView nameTextView = findViewById(R.id.acc_username);
-        nameTextView.setText(String.format(getString(R.string.act_account_username), acct.getDisplayName()));
+        nameTextView.setText(String.format(getString(R.string.act_account_username), user.getDisplayName()));
 
         TextView id = findViewById(R.id.acc_userId);
         TextView email = findViewById(R.id.acc_email);
 
-        id.setText(String.format(getString(R.string.act_account_id), acct.getUid()));
-        email.setText(String.format(getString(R.string.act_account_email), acct.getEmail()));
+        id.setText(String.format(getString(R.string.act_account_id), ActivityLogin.currentUserID));
+        email.setText(String.format(getString(R.string.act_account_email), user.getEmail()));
     }
 }

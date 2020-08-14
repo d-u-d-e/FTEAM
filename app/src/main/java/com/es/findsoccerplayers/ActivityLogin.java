@@ -43,6 +43,7 @@ public class ActivityLogin extends MyActivity{
     private long backPressedTime;
     private Toast backToast;
     private ProgressBar progressBar;
+    public static String currentUserID = null;
 
 
     @Override
@@ -68,6 +69,7 @@ public class ActivityLogin extends MyActivity{
         FirebaseUser autUser = fAuth.getCurrentUser();
         //if someone has already logged, start ActivityMain (auto login)
         if(autUser != null) {
+            currentUserID = autUser.getUid();
             startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
             finish();
             return;
@@ -122,6 +124,7 @@ public class ActivityLogin extends MyActivity{
                     public void onComplete(Task<AuthResult> task) {
                         progressBar.setVisibility(View.INVISIBLE);
                         if (task.isSuccessful()){
+                            currentUserID = fAuth.getCurrentUser().getUid();
                             Utils.showToast(ActivityLogin.this, R.string.login_success);
                             Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
                             intent.putExtra("Login", true);
@@ -209,9 +212,8 @@ public class ActivityLogin extends MyActivity{
                                     //check if we need to store the user info, maybe it's the first time that
                                     //the user signs in
                                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                                    FirebaseAuth fAuth = FirebaseAuth.getInstance();
-                                    FirebaseUser user = fAuth.getCurrentUser();
-                                    DatabaseReference ref = db.child("users").child(user.getUid());
+                                    currentUserID = FirebaseAuth.getInstance().getUid();
+                                    DatabaseReference ref = db.child("users").child(currentUserID);
                                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -260,7 +262,7 @@ public class ActivityLogin extends MyActivity{
         }
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), username, "");
+        User user = new User(currentUserID, username, "");
 
         db.child("users").child(user.getId()).setValue(user, new DatabaseReference.CompletionListener() {
             @Override

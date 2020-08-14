@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.es.findsoccerplayers.ActivityCreateMatch;
+import com.es.findsoccerplayers.ActivityLogin;
 import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -108,7 +108,7 @@ public class FragmentYourMatches extends FragmentMatches {
 
     private void readMatches() { //done only at beginning
 
-        String path = "users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/createdMatches";
+        String path = "users/" + ActivityLogin.currentUserID + "/createdMatches";
 
         DatabaseReference ref = db.getReference(path);
 

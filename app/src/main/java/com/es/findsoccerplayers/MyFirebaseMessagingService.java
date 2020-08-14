@@ -15,8 +15,6 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -32,10 +30,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String openedMatch = ActivitySelectMatch.matchID;
 
-        if(uID.equals(remoteMessage.getData().get("sender")) || //I sent the message
+        if(ActivityLogin.currentUserID.equals(remoteMessage.getData().get("sender")) || //I sent the message
                 (openedMatch != null && openedMatch.equals(remoteMessage.getData().get("match")))){ //or this match is currently browsed by the user
             //do nothing
         }else{

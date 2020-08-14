@@ -1,7 +1,9 @@
 package com.es.findsoccerplayers.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,19 +12,17 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.es.findsoccerplayers.ActivityLogin;
 import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,6 +60,7 @@ public class FragmentBookedMatches extends FragmentMatches {
         recyclerView.setMotionEventSplittingEnabled(false);
         //recyclerView.setItemAnimator(null);
 
+        //default sort type is by match date ascending
         sortType = SortType.dateMatchAsc;
 
         sync();
@@ -68,11 +69,10 @@ public class FragmentBookedMatches extends FragmentMatches {
 
     private void sync(){
 
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             DatabaseReference ref =
-                    db.getReference().child("users").child(user.getUid()).child("bookedMatches");
+                    db.getReference().child("users").child(ActivityLogin.currentUserID).child("bookedMatches");
 
-            ref.orderByValue().addChildEventListener(new ChildEventListener() {
+            ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                     //user joins a match
@@ -84,23 +84,29 @@ public class FragmentBookedMatches extends FragmentMatches {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if(!snapshot.exists()){
-                                //TODO any user is browsing this match, what happens? Crash?
                                 String currentMatch = ActivitySelectMatch.matchID; //null if this activity is not running
                                 if(currentMatch != null && currentMatch.equals(matchKey)){
+                                    //this means the user is browsing a match which got deleted, so we notify him
                                     Intent i = new Intent(FragmentBookedMatches.this.getContext(), ActivitySelectMatch.class);
                                     i.setAction("finishOnMatchDeleted");
                                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivity(i);
                                     Utils.showErrorToast(getActivity(), "The match has been deleted by the creator");
                                 }
+                                //otherwise the listener for this match is removed, since the user is not more interested in it
                                 listenerHashMap.remove(matchKey);
                                 ref.removeEventListener(this);
                                 removeUI(matchKey);
+                                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.remove(ActivityLogin.currentUserID + "." + FragmentChat.LAST_VIEWED_MESSAGE);
+                                editor.apply();
                             }
                             else{
                                 Match m = snapshot.getValue(Match.class);
-                                //TODO here use a similar method as above to notify any current ActivitySelectMatch to
-                                //update if the creator modifies the match
+                                //TODO
+                                //notify select match to update in real time if the creator modifies the match
+                                //and the user is browsing this match
                                 addUI(m);
                             }
                         }
@@ -121,7 +127,7 @@ public class FragmentBookedMatches extends FragmentMatches {
                 }
 
                 @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) { //drop out
+                public void onChildRemoved(DataSnapshot dataSnapshot) { //the user drops out
                     String matchKey = dataSnapshot.getKey();
                     DatabaseReference ref = db.getReference().child("matches/" + matchKey);
                     assert matchKey != null;
@@ -129,8 +135,6 @@ public class FragmentBookedMatches extends FragmentMatches {
                     assert listener != null;
                     ref.removeEventListener(listener); //not more interested in changes from the db
                     removeUI(matchKey);
-                    //Unsubscribe from topic.
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(matchKey);
                 }
 
                 @Override

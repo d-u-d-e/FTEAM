@@ -5,8 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -79,7 +77,9 @@ public class Utils {
     }
 
     public static String getPreviewDescription(String description) {
-        if (description.length() <= 20)
+        if(description == null)
+            return  "";
+        else if (description.length() <= 20)
             return description;
         else
             return (description.substring(0, 21) + "...");
@@ -123,21 +123,20 @@ public class Utils {
     }
 
     /**
-     * Users can logout and login any time. If the user logout, he unscribe from all match topics.
-     * If he come back again, will subscribe again to all his matches, created by him, or booked, so he can get notification for new messages in chat
-     *
+     * Users can log out and log in any time. If the user logs out, he un-subscribes from all match topics.
+     * If he logs in again, he will subscribe again to all his matches, created or booked, so he can get notification for new messages in chat
      */
     static void subscribe(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference ref =
-                db.getReference().child("users").child(user.getUid()).child("bookedMatches");
+                db.getReference().child("users").child(ActivityLogin.currentUserID).child("bookedMatches");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
                 for(DataSnapshot booked : snapshot.getChildren()){
                     String matchID = booked.getKey();
+                    assert matchID != null;
                     FirebaseMessaging.getInstance().subscribeToTopic(matchID);
 
                 }
@@ -149,13 +148,14 @@ public class Utils {
             }
         });
         DatabaseReference ref2 =
-                db.getReference().child("users").child(user.getUid()).child("createdMatches");
+                db.getReference().child("users").child(ActivityLogin.currentUserID).child("createdMatches");
         ref2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
                 for(DataSnapshot booked : snapshot.getChildren()){
                     String matchID = booked.getKey();
+                    assert matchID != null;
                     FirebaseMessaging.getInstance().subscribeToTopic(matchID);
 
                 }
@@ -169,20 +169,20 @@ public class Utils {
     }
 
     /**
-     * If the user logout from the app, he needs to unsubscribe from all matches, so he
-     * will not get notification from chats.
+     * If the user logs out from the app, he needs to unsubscribe from all matches, so he
+     * will not get notification from chats
      */
     static void unsubscribe(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference ref =
-                db.getReference().child("users").child(user.getUid()).child("bookedMatches");
+                db.getReference().child("users").child(ActivityLogin.currentUserID).child("bookedMatches");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
                 for(DataSnapshot booked : snapshot.getChildren()){
                     String matchID = booked.getKey();
+                    assert matchID != null;
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
 
                 }
@@ -194,13 +194,14 @@ public class Utils {
             }
         });
         DatabaseReference ref2 =
-                db.getReference().child("users").child(user.getUid()).child("createdMatches");
+                db.getReference().child("users").child(ActivityLogin.currentUserID).child("createdMatches");
         ref2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
                 for(DataSnapshot booked : snapshot.getChildren()){
                     String matchID = booked.getKey();
+                    assert matchID != null;
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
 
                 }

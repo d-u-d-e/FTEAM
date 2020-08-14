@@ -94,6 +94,7 @@
     <string name="frag_info_booked_match_description_dropoutBtn">DROP OUT</string>
     <string name="delete">DELETE</string>
     <string name="join">JOIN</string>
+    <string name="drop">DROP OUT</string>
 
     <string name="new_unread_messages">You have %1d new messages to read</string>
 

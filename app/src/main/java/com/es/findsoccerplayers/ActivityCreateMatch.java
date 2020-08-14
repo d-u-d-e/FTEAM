@@ -14,8 +14,6 @@ import com.es.findsoccerplayers.pickers.DatePickerFragment;
 import com.es.findsoccerplayers.pickers.NumberPickerFragment;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -144,7 +142,7 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
                     match.setLongitude(longitude);
                     match.setLatitude(latitude);
                     match.setPlayersNumber(Integer.parseInt(players.getText().toString()));
-                    match.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    match.setCreatorID(ActivityLogin.currentUserID);
                     createMatch(match);
                 }
             }
@@ -217,10 +215,9 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
      */
     private void createMatch(final Match m){
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-        String path = "users/" + user.getUid() + "/createdMatches";
+        String path = "users/" + ActivityLogin.currentUserID + "/createdMatches";
 
         DatabaseReference ref = db.getReference(path).push();
         final String key = ref.getKey();
