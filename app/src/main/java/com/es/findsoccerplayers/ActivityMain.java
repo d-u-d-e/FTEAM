@@ -168,6 +168,7 @@ public class ActivityMain extends MyActivity {
 
                 for(DataSnapshot booked : snapshot.getChildren()){
                     String matchID = booked.getKey();
+                    if(matchID != null)
                     FirebaseMessaging.getInstance().subscribeToTopic(matchID);
 
                 }
@@ -186,6 +187,7 @@ public class ActivityMain extends MyActivity {
 
                 for(DataSnapshot booked : snapshot.getChildren()){
                     String matchID = booked.getKey();
+                    if (matchID != null)
                     FirebaseMessaging.getInstance().subscribeToTopic(matchID);
 
                 }

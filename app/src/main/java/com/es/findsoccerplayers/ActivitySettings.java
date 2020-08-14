@@ -106,6 +106,7 @@ public class ActivitySettings extends MyActivity {
 
                     for(DataSnapshot booked : snapshot.getChildren()){
                         String matchID = booked.getKey();
+                        if(matchID != null)
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
 
                     }
@@ -124,6 +125,7 @@ public class ActivitySettings extends MyActivity {
 
                     for(DataSnapshot booked : snapshot.getChildren()){
                         String matchID = booked.getKey();
+                        if(matchID != null)
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
 
                     }
