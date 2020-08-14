@@ -81,8 +81,8 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
         getLocationPermission(); //get location permission if we don'have it
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String lat = preferences.getString(LATITUDE, null);
-        String lng = preferences.getString(LONGITUDE, null);
+        String lat = preferences.getString(ActivityLogin.currentUserID + "." + LATITUDE, null);
+        String lng = preferences.getString(ActivityLogin.currentUserID + "." + LONGITUDE, null);
         if(lat != null && lng != null){
             latitude = Double.parseDouble(lat);
             longitude = Double.parseDouble(lng);
