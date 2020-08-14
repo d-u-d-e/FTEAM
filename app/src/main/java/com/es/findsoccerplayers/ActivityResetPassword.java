@@ -26,9 +26,8 @@ public class ActivityResetPassword extends MyActivity {
         Button reset = findViewById(R.id.rst_btn);
         final EditText email = findViewById(R.id.rst_email);
 
-         /** When the reset button is pressed, an email is sent to the user to reset his password.
-          * If the email is not found, an error is shown
-          * */
+         // When the reset button is pressed, an email is sent to the user to reset his password.
+        // If the email is not found, an error is shown
 
         reset.setOnClickListener(new View.OnClickListener() {
             @Override

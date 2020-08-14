@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.ActivitySetLocation;
 import com.es.findsoccerplayers.R;
+import com.es.findsoccerplayers.Utils;
 import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.android.gms.maps.model.LatLng;
@@ -208,9 +209,14 @@ public class FragmentAvailableMatches extends FragmentMatches {
                 Match m = dataSnapshot.getValue(Match.class);
                 assert m != null;
                 FragmentAvailableMatches.this.removeUI(m.getMatchID()); //delete entry if exists
-                //TODO what happens if the user is checking this match and it gets suddenly deleted?
-                //update: nothing; if the user then clicks on join match, he will get the toast: too late
-                //so notify select match to finish
+                String currentMatch = ActivitySelectMatch.matchID;
+                if(currentMatch != null && currentMatch.equals(m.getMatchID())){
+                    Intent i = new Intent(FragmentAvailableMatches.this.getContext(), ActivitySelectMatch.class);
+                    i.setAction("finishOnMatchDeleted");
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(i);
+                    Utils.showErrorToast(getActivity(), "The match has been deleted by the creator");
+                }
             }
 
             @Override

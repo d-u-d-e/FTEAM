@@ -1,12 +1,10 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,10 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.es.findsoccerplayers.fragments.FragmentChat;
-import com.es.findsoccerplayers.fragments.FragmentInfoMatch;
-import com.es.findsoccerplayers.fragments.ViewPagerTabs;
-import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -165,7 +159,7 @@ public class ActivityLogin extends MyActivity{
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(ActivityLogin.this, ActivityResetPassword.class));
-                //do not finish this activity since it will be shown again after registration
+                //do not finish this activity since it will be shown again after this
             }
         });
     }
@@ -194,6 +188,9 @@ public class ActivityLogin extends MyActivity{
         backPressedTime = System.currentTimeMillis();
     }
 
+    /**
+     * Log in with google
+     */
     void performGoogleLogin(Intent data){
         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
         try {
@@ -218,6 +215,8 @@ public class ActivityLogin extends MyActivity{
                                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
+                                            //if the database does not contain this user, then we create it
+                                            //createGoogleUser() also starts main activity on success
                                             if(!dataSnapshot.exists())
                                                 createGoogleUser();
                                             else{
@@ -251,9 +250,8 @@ public class ActivityLogin extends MyActivity{
     }
 
     /**
-     * Creates a new user, saving his information in the database
+     * Creates a new google user, saving his information in the database
      */
-
     private void createGoogleUser(){
         String username = fAuth.getCurrentUser().getDisplayName();
         if(username == null || username.isEmpty()){

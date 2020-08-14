@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -32,10 +31,7 @@ public class LocationAccessActivity extends MyActivity {
     }
 
     /**
-     * The response from the request permission is managed from this method.
-     * @param requestCode request code
-     * @param permissions
-     * @param grantResults the result
+     * The response from the request permission is managed by this method.
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

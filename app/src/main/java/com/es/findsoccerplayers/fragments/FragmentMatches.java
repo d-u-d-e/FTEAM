@@ -6,8 +6,6 @@ import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -18,9 +16,9 @@ public abstract class FragmentMatches extends Fragment {
     List<Match> matches;
     MatchAdapter matchAdapter;
 
-    public enum SortType{dateMatchAsc, dateMatchDesc, none};
+    public enum SortType{dateMatchAsc, dateMatchDesc, lastUpdated};
 
-    protected SortType sortType = SortType.none;
+    protected SortType sortType = SortType.lastUpdated;
 
     synchronized void removeUI(String matchID){
         //check if we have this match in the list
@@ -71,12 +69,12 @@ public abstract class FragmentMatches extends Fragment {
         return sortType;
     }
 
-    public void setOrderNone(){
-        sortType = SortType.none;
+    public void setOrderLastUpdated(){
+        sortType = SortType.lastUpdated;
     }
 
     public void sortByMatchDate(boolean ascending){
-        if(sortType == SortType.none){
+        if(sortType == SortType.lastUpdated){
             sortType = ascending? SortType.dateMatchAsc:SortType.dateMatchDesc;
             matches.sort(new ComparatorByMatchDate(ascending));
             matchAdapter.notifyDataSetChanged();

@@ -5,6 +5,10 @@ import com.es.findsoccerplayers.fragments.FragmentBookedMatches;
 import com.es.findsoccerplayers.fragments.FragmentChat;
 import com.es.findsoccerplayers.fragments.FragmentYourMatches;
 
+/**
+ * This helps keep track of useful fragments; not every fragment can be created by using a tag, or id, hence
+ * we cannot find it immediately with android api
+ */
 public class MyFragmentManager {
 
     private static MyFragmentManager myFragmentManager = null;

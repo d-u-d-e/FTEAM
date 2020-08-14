@@ -194,7 +194,6 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
                     editor.putString(LONGITUDE, longitude);
                     editor.putString(RADIUS, distance);
 
-
                     editor.commit();
                     Utils.showToast(ActivitySetLocation.this, R.string.preference_saved);
                     MyFragmentManager.getFragmentAvailableMatches().onNewPositionSet();

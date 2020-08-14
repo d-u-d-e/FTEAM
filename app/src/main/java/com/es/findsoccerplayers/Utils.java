@@ -1,35 +1,30 @@
 package com.es.findsoccerplayers;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.widget.Toast;
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class Utils {
 
-    private static String  CHANNEL_ID = "findSoccerPlayerChannel";
-
-    //private static HashMap<String, WeakReference<Toast>> toastMap = new HashMap<>();
-
     private static WeakReference<Toast> toast = null;
 
-    static void cancelToast( /*String activityName*/ ){
-        /*
-        WeakReference<Toast> toast = toastMap.remove(activityName);
-        if(toast != null && toast.get() != null)
-            toast.get().cancel();*/
+    static void cancelToast(){
+
         if(toast != null && toast.get() != null) toast.get().cancel();
     }
 
@@ -45,14 +40,6 @@ public class Utils {
 
     private static void showToast(Context c, String text, int duration){
 
-        /*String className = c.getClass().getName();
-        WeakReference<Toast> toast = toastMap.remove(className);
-        if(toast != null && toast.get() != null)
-            toast.get().cancel();
-        toast = new WeakReference<>(Toast.makeText(c, text, duration));
-        toast.get().show();
-        toastMap.put(className, toast);*/
-
         if(c == null) return;
 
         if(toast != null && toast.get() != null)
@@ -64,14 +51,6 @@ public class Utils {
     }
 
     private static void showToast(Context c, int resource, int duration){
-
-        /*String className = c.getClass().getName();
-        WeakReference<Toast> toast = toastMap.remove(className);
-        if(toast != null && toast.get() != null)
-            toast.get().cancel();
-        toast = new WeakReference<>(Toast.makeText(c, resource, duration));
-        toast.get().show();
-        toastMap.put(className, toast);*/
 
         if(c == null) return;
 
@@ -139,5 +118,99 @@ public class Utils {
         assert connectivityManager != null;
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo == null || !networkInfo.isConnectedOrConnecting();
+
+
+    }
+
+    /**
+     * Users can logout and login any time. If the user logout, he unscribe from all match topics.
+     * If he come back again, will subscribe again to all his matches, created by him, or booked, so he can get notification for new messages in chat
+     *
+     */
+    static void subscribe(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref =
+                db.getReference().child("users").child(user.getUid()).child("bookedMatches");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for(DataSnapshot booked : snapshot.getChildren()){
+                    String matchID = booked.getKey();
+                    FirebaseMessaging.getInstance().subscribeToTopic(matchID);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+        DatabaseReference ref2 =
+                db.getReference().child("users").child(user.getUid()).child("createdMatches");
+        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for(DataSnapshot booked : snapshot.getChildren()){
+                    String matchID = booked.getKey();
+                    FirebaseMessaging.getInstance().subscribeToTopic(matchID);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
+    /**
+     * If the user logout from the app, he needs to unsubscribe from all matches, so he
+     * will not get notification from chats.
+     */
+    static void unsubscribe(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref =
+                db.getReference().child("users").child(user.getUid()).child("bookedMatches");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for(DataSnapshot booked : snapshot.getChildren()){
+                    String matchID = booked.getKey();
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+        DatabaseReference ref2 =
+                db.getReference().child("users").child(user.getUid()).child("createdMatches");
+        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for(DataSnapshot booked : snapshot.getChildren()){
+                    String matchID = booked.getKey();
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+
     }
 }

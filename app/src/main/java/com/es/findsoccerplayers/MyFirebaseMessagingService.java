@@ -1,7 +1,6 @@
 package com.es.findsoccerplayers;
 
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,11 +12,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.es.findsoccerplayers.fragments.FragmentChat;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -29,22 +26,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(String token) {
-        //TODO: In case of new token, update your token. Use this for user to user notification. To implement int the future
+        Utils.subscribe();
     }
 
     @Override
-    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+    public void onMessageReceived(RemoteMessage remoteMessage) {
 
         String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String openMatch = FragmentChat.openMatch;
+        String openedMatch = ActivitySelectMatch.matchID;
 
-        if(uID.equals(remoteMessage.getData().get("sender"))){ //I send the message
-            //do Nothing
-        }else if(openMatch != null && openMatch.equals(remoteMessage.getData().get("match"))){
+        if(uID.equals(remoteMessage.getData().get("sender")) || //I sent the message
+                (openedMatch != null && openedMatch.equals(remoteMessage.getData().get("match")))){ //or this match is currently browsed by the user
             //do nothing
         }else{
             final Intent intent = new Intent(this, ActivitySelectMatch.class);
             intent.putExtra("type", "onNotificationClicked");
+            intent.setAction("onNotificationClicked");
             intent.putExtra("match", remoteMessage.getData().get("match"));
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             int notificationID = 1;
@@ -75,9 +72,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setContentIntent(pendingIntent);
 
             //Set notification color to match your app color template
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                notificationBuilder.setColor(getResources().getColor(R.color.colorAccent));
-            }
+            notificationBuilder.setColor(getResources().getColor(R.color.colorAccent));
             notificationManager.notify(notificationTAG, notificationID, notificationBuilder.build());
         }
 

@@ -12,7 +12,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.es.findsoccerplayers.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +32,7 @@ public class ActivityRegister extends MyActivity implements DatePickerDialog.OnD
 
     String name, surname, email, emailConf,pass, passConf;
 
+    //date of birth is not mandatory, but we inform the user to select it if he forgets, just one time
     boolean userSkipsDate = false;
     FirebaseAuth fAuth;
 

@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.es.findsoccerplayers.ActivitySelectMatch;
 import com.es.findsoccerplayers.models.Message;
 import com.es.findsoccerplayers.R;
 import com.es.findsoccerplayers.Utils;
@@ -58,7 +59,6 @@ public class FragmentChat extends Fragment {
 
     private EditText messageText;
     private String matchID;
-    public static String openMatch;
 
     private MessageAdapter messageAdapter;
     private List<Message> chats;
@@ -80,9 +80,9 @@ public class FragmentChat extends Fragment {
     private boolean seenMsgRetrieved = false;
     private int counter = 0;
 
-    public FragmentChat(String matchID, Context context){
+    public FragmentChat(Context context){
         super();
-        this.matchID = matchID;
+        this.matchID = ActivitySelectMatch.matchID;
         this.context = context;
         openMatch = matchID;
     }
@@ -206,7 +206,6 @@ public class FragmentChat extends Fragment {
         DatabaseReference ref = db.getReference("chats").child(matchID);
         ref.removeEventListener(listener);
         isDisplayed = false;
-        openMatch = null;
         endReached = true;
     }
 
