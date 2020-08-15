@@ -50,9 +50,14 @@ public class ActivityLogin extends MyActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fAuth = FirebaseAuth.getInstance();
+        FirebaseUser autUser = fAuth.getCurrentUser();
+
         Intent i = getIntent();
         Bundle extras = i.getExtras();
-        if(extras != null){
+        //system tray notification
+        if(extras != null & autUser != null){
+            currentUserID = autUser.getUid();
             if(Utils.isOffline(this))
                 Utils.showOfflineReadToast(this);
             else{
@@ -65,8 +70,6 @@ public class ActivityLogin extends MyActivity{
             return;
         }
 
-        fAuth = FirebaseAuth.getInstance();
-        FirebaseUser autUser = fAuth.getCurrentUser();
         //if someone has already logged, start ActivityMain (auto login)
         if(autUser != null) {
             currentUserID = autUser.getUid();

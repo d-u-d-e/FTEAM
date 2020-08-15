@@ -58,14 +58,14 @@ public class ActivityMain extends MyActivity {
         adapter = new ViewPagerTabs(getSupportFragmentManager());
 
         FragmentAvailableMatches am = new FragmentAvailableMatches();
-        FragmentYourMatches ym = new FragmentYourMatches();
+        ymFrag = new FragmentYourMatches();
         FragmentBookedMatches bm = new FragmentBookedMatches();
 
         MyFragmentManager.setFragment(am);
-        MyFragmentManager.setFragment(ym);
+        MyFragmentManager.setFragment(ymFrag);
         MyFragmentManager.setFragment(bm);
 
-        adapter.addFragment(ym, getString(R.string.act_main_frag_yours_title));
+        adapter.addFragment(ymFrag, getString(R.string.act_main_frag_yours_title));
         adapter.addFragment(bm, getString(R.string.act_main_frag_booked_title));
         adapter.addFragment(am, getString(R.string.act_main_frag_avail_title));
 
