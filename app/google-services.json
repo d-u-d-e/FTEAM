@@ -1,0 +1,72 @@
+{
+  "project_info": {
+    "project_number": "1080243861704",
+    "firebase_url": "https://findsoccerplayers.firebaseio.com",
+    "project_id": "findsoccerplayers",
+    "storage_bucket": "findsoccerplayers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080243861704:android:d54e3ba0d7690718f2cdfd",
+        "android_client_info": {
+          "package_name": "com.es.findsoccerplayers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080243861704-u2b41dqfldk4bebqi6unooepaduo21n7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.es.findsoccerplayers",
+            "certificate_hash": "6667156861286adc08ac98b5f3c0acb626e1835e"
+          }
+        },
+        {
+          "client_id": "1080243861704-2vlh0lfmdvhepa1qliasfqkn6mqk2mfu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.es.findsoccerplayers",
+            "certificate_hash": "c8464342d85fcd56129ce368ec6641ae09c2108d"
+          }
+        },
+        {
+          "client_id": "1080243861704-7c18pdjo0nmtduja3pbu1cdij8knpvqp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.es.findsoccerplayers",
+            "certificate_hash": "990beca5bbad395801288871dae035a5536e0634"
+          }
+        },
+        {
+          "client_id": "1080243861704-e5e3bkpu2g57dpokr53enkvhktfea361.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.es.findsoccerplayers",
+            "certificate_hash": "a33fc568133b8934e3a2c4a2e9f2f76e66046a4e"
+          }
+        },
+        {
+          "client_id": "1080243861704-60p4d0pcvuhavfdn40rqdle1lt3pur3r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAn9dIhqOwni56n6HgYoCZ904L5kud7zVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080243861704-60p4d0pcvuhavfdn40rqdle1lt3pur3r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
