@@ -167,9 +167,9 @@ public class ActivitySelectMatch extends MyActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Intent i = new Intent(this, ActivityMain.class);
-        //does not create another main activity if already in the stack, because it is single instance
+        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         //we need this because if the user taps on a notification while the app is in background or closed
-        //then only this activity is running, so hitting the back button will close the app, unless Main is started
+        //then only this activity is running, so hitting the back button will close the app, unless main is started
         startActivity(i);
     }
 }

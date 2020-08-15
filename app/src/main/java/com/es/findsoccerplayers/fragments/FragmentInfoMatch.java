@@ -125,6 +125,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 }
                 getActivity().finish(); //terminate selectMatch
                 Intent i = new Intent(getContext(), ActivityMain.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(i);
             }
         });

@@ -65,8 +65,7 @@
             android:parentActivityName=".ActivityLogin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivityMain"
-            android:launchMode="singleInstance" />
+            android:name=".ActivityMain" />
         <activity
             android:name=".ActivityLogin"
             android:screenOrientation="portrait">

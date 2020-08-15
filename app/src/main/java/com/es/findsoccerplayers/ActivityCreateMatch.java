@@ -256,10 +256,7 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
 
           if(Utils.isOffline(this))
             Utils.showOfflineWriteToast(this);
-     
-          Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
-          //Activity Main is a singleton, no need to set flags (check manifest)
-          startActivity(i);
+
           finish();
         }
     }
