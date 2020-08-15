@@ -121,7 +121,7 @@ public abstract class FragmentMatches extends Fragment {
     /**
      * Sorts matches by match date, ascending or descending according as the parameter is true or false
      */
-    public void sortByMatchDate(boolean ascending){
+    public synchronized void sortByMatchDate(boolean ascending){
         if(sortType == SortType.lastUpdated){
             sortType = ascending? SortType.dateMatchAsc:SortType.dateMatchDesc;
             matches.sort(new ComparatorByMatchDate(ascending));
