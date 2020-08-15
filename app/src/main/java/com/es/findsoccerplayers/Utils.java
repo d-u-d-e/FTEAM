@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,11 +70,11 @@ public class Utils {
     }
 
     public static void showOfflineWriteToast(Context c){
-        showToast(c, R.string.offlineWrite);
+        showToast(c, R.string.offline_write);
     }
 
     static void showOfflineReadToast(Context c){
-        showToast(c, R.string.offlineRead);
+        showToast(c, R.string.offline_read);
     }
 
     public static String getPreviewDescription(String description) {
@@ -212,6 +213,10 @@ public class Utils {
 
             }
         });
+    }
 
+    static void showMyLocation(GoogleMap map){
+        map.setMyLocationEnabled(true); // show a small blue circle for my position
+        map.getUiSettings().setMyLocationButtonEnabled(false);// I create my own beautiful position floating action button. Don't need this
     }
 }

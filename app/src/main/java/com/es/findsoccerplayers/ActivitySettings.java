@@ -33,9 +33,11 @@ public class ActivitySettings extends MyActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        settElemList.add(new SettingsElement(R.drawable.ic_account_24, "Account", "View and modify account options"));
-        settElemList.add(new SettingsElement(R.drawable.ic_edit_location_24, "Edit search range", "Modify the searching distance for the available matches"));
-        settElemList.add(new SettingsElement(R.drawable.ic_log_out_24, "Log out", "Disconnect from your account"));
+        settElemList.add(new SettingsElement(R.drawable.ic_account_24,
+                getString(R.string.act_sett_account), getString(R.string.act_sett_account_detailed)));
+        settElemList.add(new SettingsElement(R.drawable.ic_edit_location_24,
+                getString(R.string.act_sett_edit_pref_pos), getString(R.string.act_sett_edit_pref_pos_detailed)));
+        settElemList.add(new SettingsElement(R.drawable.ic_log_out_24, getString(R.string.act_sett_logout), getString(R.string.act_sett_logout_detailed)));
 
         RecyclerView recyclerView = findViewById(R.id.settings_recyclerview);
         recyclerView.setHasFixedSize(true);

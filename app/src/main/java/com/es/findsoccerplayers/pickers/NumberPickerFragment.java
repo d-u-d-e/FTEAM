@@ -9,6 +9,8 @@ import android.widget.NumberPicker;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.es.findsoccerplayers.R;
+
 public class NumberPickerFragment extends DialogFragment {
 
     public interface OnCompleteListener {
@@ -35,7 +37,7 @@ public class NumberPickerFragment extends DialogFragment {
         np.setValue(1);
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-        alertDialog.setTitle(title).setView(np).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        alertDialog.setTitle(title).setView(np).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mListener.onNumberSet(np.getValue());

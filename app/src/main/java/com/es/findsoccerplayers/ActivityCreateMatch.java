@@ -104,7 +104,7 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
         players.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment playerNumb = new NumberPickerFragment(ActivityCreateMatch.this, ActivityCreateMatch.this, getString(R.string.players_number));
+                DialogFragment playerNumb = new NumberPickerFragment(ActivityCreateMatch.this, ActivityCreateMatch.this, getString(R.string.act_cr_match_players_number));
                 playerNumb.show(getSupportFragmentManager(), "playerPicker");
             }
         });
@@ -121,8 +121,8 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
         matchFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(placeText.getText().toString().equals(getString(R.string.add_position)) ||
-                    players.getText().toString().equals(getString(R.string.players))){
+                if(placeText.getText().toString().equals(getString(R.string.act_cr_match_add_position)) ||
+                    players.getText().toString().equals(getString(R.string.act_cr_match_players))){
                     Utils.showToast(ActivityCreateMatch.this, getString(R.string.all_fields_required));
                 }else{
                     match = new Match();
@@ -245,7 +245,7 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
                     if(databaseError != null)
                         Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
                     else{ //match successfully created
-                        Utils.showToast(ActivityCreateMatch.this, "Match successfully created");
+                        Utils.showToast(ActivityCreateMatch.this, getString(R.string.match_created_success));
                         MyFragmentManager.getFragmentYourMatches().registerForMatchEvents(key);
                     }
                 }

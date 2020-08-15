@@ -25,7 +25,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.es.findsoccerplayers.position.MapElements;
 import com.es.findsoccerplayers.position.PositionClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -182,7 +181,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
             @Override
             public void onClick(View v) {
                 if(myPosition == null || index <= 0){
-                    Utils.showToast(ActivitySetLocation.this, R.string.complete_preferences);
+                    Utils.showToast(ActivitySetLocation.this, R.string.complete_pos_preferences);
                 } else {
                     latitude = String.valueOf(myPosition.latitude);
                     longitude = String.valueOf(myPosition.longitude);
@@ -216,7 +215,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
             if(PositionClient.isGpsOFF(ActivitySetLocation.this)){
                 PositionClient.turnGPSon(ActivitySetLocation.this);
             } else{
-                MapElements.showMyLocation(map);
+                Utils.showMyLocation(map);
             }
         }
 
@@ -288,7 +287,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
                 }else if(!isTracking){
                     isTracking = true;
                     PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
-                    MapElements.showMyLocation(map);
+                    Utils.showMyLocation(map);
                 }
             } else{
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -355,7 +354,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GPS_REQUEST) {
                 PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
-                MapElements.showMyLocation(map);
+                Utils.showMyLocation(map);
                 position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
             }
         }
@@ -377,7 +376,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
     @Override
     public void onBackPressed() {
         if(myPosition == null || index <= 0){
-            Utils.showToast(ActivitySetLocation.this, R.string.complete_preferences);
+            Utils.showToast(ActivitySetLocation.this, R.string.complete_pos_preferences);
         }
         else{
             if(isTracking){

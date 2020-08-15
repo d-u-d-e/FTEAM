@@ -69,8 +69,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         SettingsElement item = settingsElementList.get(position);
         Drawable drawable = AppCompatResources.getDrawable(context, item.getImage());
         holder.im.setImageDrawable(drawable);
-        holder.tx1.setText(item.getText1());
-        holder.tx2.setText(item.getText2());
+        holder.tx1.setText(item.getText());
+        holder.tx2.setText(item.getTextDetailed());
     }
 
     @Override

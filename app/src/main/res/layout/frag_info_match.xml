@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="10dp"
-                    android:text="@string/frag_info_booked_match_field"
+                    android:text="@string/frag_info_match_place"
                     android:textStyle="bold" />
 
                 <TextView
@@ -89,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_gravity="center"
-                    android:text="@string/frag_info_booked_match_day"
+                    android:text="@string/frag_info_match_day"
                     android:textStyle="bold" />
 
                 <TextView
@@ -184,7 +184,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_gravity="center"
-                    android:text="@string/frag_info_booked_match_missingPlayers"
+                    android:text="@string/frag_info_match_missingPlayers"
                     android:textStyle="bold"/>
 
                 <TextView

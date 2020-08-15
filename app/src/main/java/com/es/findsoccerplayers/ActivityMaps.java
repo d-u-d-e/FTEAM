@@ -5,7 +5,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.es.findsoccerplayers.position.MapElements;
 import com.es.findsoccerplayers.position.PositionClient;
 
 import android.Manifest;
@@ -205,7 +204,7 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
                 PositionClient.turnGPSon(ActivityMaps.this);
             } else {
                 //If I have location access and GPS is on then show a small blue circle to identify my position
-                MapElements.showMyLocation(map);
+                Utils.showMyLocation(map);
             }
         }
 
@@ -277,7 +276,7 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
                     }
                 } catch (Exception e){
                     e.printStackTrace();
-                    Utils.showToast(ActivityMaps.this, R.string.gecodo_failed);
+                    Utils.showToast(ActivityMaps.this, R.string.geocode_failed);
                     placeName = getString(R.string.default_position_name);
                 }
                 Marker myMarker = ActivityMaps.this.map.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(snippet)
@@ -361,7 +360,7 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
                 } else if(!isTracking){
                     isTracking = true;
                     PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
-                    MapElements.showMyLocation(map);
+                    Utils.showMyLocation(map);
                 }
             }  else{
                 //In case the user denied the permission
@@ -369,34 +368,34 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
                         Manifest.permission.ACCESS_FINE_LOCATION)) {
                     // now, user has denied permission (but not permanently!)
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-                    alertDialog.setMessage("For better experience, we need the Location access. Do you want to enable the location access?")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    alertDialog.setMessage(getString(R.string.alert_location_request))
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     getLocationPermission();
                                 }
                             })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Utils.showToast(ActivityMaps.this, "LOCATION ACCESS DENIED");
+                                    Utils.showToast(ActivityMaps.this, getString(R.string.location_access_denied));
                                 }
                             }).create().show();
 
                 } else {
                     // now, user has denied permission permanently!
                     AlertDialog.Builder alertDialogPermanently = new AlertDialog.Builder(this);
-                    alertDialogPermanently.setMessage("Location Permission Denied. Please enable the location Permission in Authorization. ")
-                            .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                    alertDialogPermanently.setMessage(getString(R.string.alert_location_denied_permanently))
+                            .setPositiveButton(getString(R.string.settings), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
                                 }
                             })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Utils.showToast(ActivityMaps.this, "ACCESS DENIED PERMANENTLY");
+                                    Utils.showToast(ActivityMaps.this, getString(R.string.access_denied_permanently));
                                 }
                             }).create().show();
 
@@ -414,7 +413,7 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
             //If the user choose to turn on the GPS then start tracking and set the widget in the correct colors etc
             // otherwise do nothing. He will zoom the map manually
             PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
-            MapElements.showMyLocation(map);
+            Utils.showMyLocation(map);
             position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
         }
     }

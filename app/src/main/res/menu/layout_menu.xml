@@ -12,7 +12,7 @@
     <item
         app:showAsAction="never"
         android:id="@+id/menu_sortByMatchDateAsc"
-        android:title="@string/sort_by_match_date_asc"
+        android:title="@string/menu_next_upcoming"
         android:checkable="true"
         >
     </item>
@@ -20,7 +20,7 @@
     <item
         app:showAsAction="never"
         android:id="@+id/menu_sortByMatchDateDesc"
-        android:title="@string/sort_by_match_date_desc"
+        android:title="@string/menu_remote_matches_first"
         android:checkable="true"
         >
     </item>
@@ -28,7 +28,7 @@
     <item
         app:showAsAction="never"
         android:id="@+id/menu_noOrder"
-        android:title="@string/menu_lastUpdated"
+        android:title="@string/menu_last_updated"
         android:checkable="true"
         >
     </item>

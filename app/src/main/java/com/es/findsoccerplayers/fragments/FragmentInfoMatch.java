@@ -131,7 +131,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
         switch (type){
             case "yours":
-                actionBtn.setText(R.string.delete);
+                actionBtn.setText(R.string.frag_info_match_delete);
                 editBtn.setVisibility(Button.VISIBLE);
                 editDay.setVisibility(View.VISIBLE);
                 editDesc.setVisibility(View.VISIBLE);
@@ -149,10 +149,10 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 });
                 break;
             case "available":
-                actionBtn.setText(R.string.join);
+                actionBtn.setText(R.string.frag_info_match_join);
                 break;
             case "booked":  //booked
-                actionBtn.setText(R.string.drop);
+                actionBtn.setText(R.string.frag_info_match_drop);
                 break;
         }
 
@@ -189,7 +189,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         editPlayers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment playerNumb = new NumberPickerFragment(getActivity(), FragmentInfoMatch.this, getString(R.string.how_many_players));
+                DialogFragment playerNumb = new NumberPickerFragment(getActivity(), FragmentInfoMatch.this, getString(R.string.frag_info_match_how_many_players));
                 playerNumb.show(manager, "playerPicker");
             }
         });
@@ -197,7 +197,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         editDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditDescriptionDialogue dialogue = new EditDescriptionDialogue("Insert a description", FragmentInfoMatch.this, editedMatch.getDescription());
+                EditDescriptionDialogue dialogue = new EditDescriptionDialogue(getString(R.string.insert_description), FragmentInfoMatch.this, editedMatch.getDescription());
                 dialogue.show(getChildFragmentManager(), null);
             }
         });
@@ -335,7 +335,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                     if(error != null)
                         Utils.showErrorToast(context, error.getMessage());
                     else //match successfully updated
-                        Utils.showToast(context, "Match successfully updated");
+                        Utils.showToast(context, getString(R.string.match_updated_success));
                 }
             });
             if(Utils.isOffline(getActivity()))
@@ -362,7 +362,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 if(error != null)
                     Utils.showErrorToast(context, error.getMessage());
                 else//match successfully deleted
-                    Utils.showToast(context, "Match successfully deleted");
+                    Utils.showToast(context, getString(R.string.match_deleted_success));
             }
         });
 
@@ -422,9 +422,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 //and the application will crash as soon as tries to make the toast
                 //context is the main activity now
                 if(committed){
-                    Utils.showToast(context, "You joined the match!");
+                    Utils.showToast(context, getString(R.string.join_success));
                 } else {
-                    Utils.showToast(context, "Either the match has been deleted or the maximum number of players have been reached");
+                    Utils.showToast(context, R.string.join_fail);
                 }
             }
         });
@@ -469,7 +469,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 //and the application will crash as soon as this code tries to make the toast
                 //context is the main activity now
                 if(committed){
-                    Utils.showToast(context, "You successfully retired from the match!");
+                    Utils.showToast(context, getString(R.string.drop_success));
                 } else {
                     Utils.showToast(context, getString(R.string.unexpected_error));
                 }

@@ -7,8 +7,6 @@ import android.content.IntentSender;
 import android.location.LocationManager;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -77,7 +75,7 @@ public class PositionClient {
                 from the LocationSettingsResponse object. We check only and override the onFailureListener. */
                 .addOnFailureListener((Activity) context, new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
+                    public void onFailure(Exception e) {
                         int statusCode = ((ApiException) e).getStatusCode();
                         switch (statusCode) {
                             /*If the status code is RESOLUTION_REQUIRED, the client can call startResolutionForResult(Activity, int)
