@@ -24,7 +24,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(String token) {
-        Utils.subscribe();
+        if(ActivityLogin.currentUserID != null)
+            Utils.subscribe();
     }
 
     @Override

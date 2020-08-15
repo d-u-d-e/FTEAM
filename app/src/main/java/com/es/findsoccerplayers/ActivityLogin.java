@@ -43,13 +43,14 @@ public class ActivityLogin extends MyActivity{
     private long backPressedTime;
     private Toast backToast;
     private ProgressBar progressBar;
-    public static String currentUserID = null;
+    public static String currentUserID;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        currentUserID = null;
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser autUser = fAuth.getCurrentUser();
 
