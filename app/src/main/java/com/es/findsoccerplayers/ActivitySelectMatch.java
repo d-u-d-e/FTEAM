@@ -38,6 +38,7 @@ public class ActivitySelectMatch extends MyActivity {
         if(type.equals("available")){
             Match m = extras.getParcelable("match");
             assert m != null;
+            matchID = m.getMatchID();
             setNoTabLayout(m, type);
 
         }else if(type.equals("booked") || type.equals("yours")){

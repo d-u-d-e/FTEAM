@@ -79,8 +79,8 @@ public class ActivitySettings extends MyActivity {
             FirebaseAuth auth = FirebaseAuth.getInstance();
             auth.signOut();
             googleSignInClient.signOut();
+            finishAffinity();
             Intent intent = new Intent(this, ActivityLogin.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
     }
 }
