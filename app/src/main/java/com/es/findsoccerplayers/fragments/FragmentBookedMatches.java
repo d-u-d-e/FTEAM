@@ -110,7 +110,7 @@ public class FragmentBookedMatches extends FragmentMatches {
                                 //and the user is browsing this match
                                 assert m != null;
                                 if(m.getTimestamp() > Calendar.getInstance().getTimeInMillis())
-                                    addUI(m);
+                                    addUpdateUI(m);
                             }
                         }
 

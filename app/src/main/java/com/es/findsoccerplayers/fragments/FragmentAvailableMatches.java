@@ -218,7 +218,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
                     if(booked || m.getPlayersNumber() == 0 || !isLocationNearby(m.getLatitude(), m.getLongitude()) || m.getTimestamp() < Calendar.getInstance().getTimeInMillis())
                         FragmentAvailableMatches.this.removeUI(m.getMatchID());
                     else
-                        FragmentAvailableMatches.this.addUI(m);
+                        FragmentAvailableMatches.this.addUpdateUI(m);
                 }
             }
 

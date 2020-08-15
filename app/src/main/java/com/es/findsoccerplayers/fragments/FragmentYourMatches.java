@@ -99,7 +99,7 @@ public class FragmentYourMatches extends FragmentMatches {
                         }
                     }
                     if(matchTime > Calendar.getInstance().getTimeInMillis()) // if the match is in the future, show it
-                        addUI(m);
+                        addUpdateUI(m);
                 }
             }
 

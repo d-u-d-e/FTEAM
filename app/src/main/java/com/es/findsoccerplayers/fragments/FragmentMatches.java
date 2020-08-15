@@ -44,9 +44,37 @@ public abstract class FragmentMatches extends Fragment {
     }
 
     /**
-     * Adds or updates the specified match to the UI list; sort order is taken into account.
+     * Adds the specified match to the UI list; sort order is taken into account. Note that this assumes
+     * that the match hasn't already been added: this will increase the performance in some cases, because
+     * addUpdateUI always checks for a duplicate, thus making the search always omega(n) where n is the
+     * current dimension of the list.
      */
     synchronized void addUI(Match m){
+
+        if(sortType == SortType.lastUpdated){
+            matches.add(0, m);
+            matchAdapter.notifyItemInserted(0);
+        }
+        else{
+            int position = 0;
+            for(int i = 0; i < matches.size(); i++){
+                Match match = matches.get(i);
+                if((sortType == SortType.dateMatchDesc && m.getTimestamp() >= match.getTimestamp()) ||
+                        (sortType == SortType.dateMatchAsc && m.getTimestamp() <= match.getTimestamp())){
+                    break;
+                }
+                position++;
+            }
+            matches.add(position, m);
+            matchAdapter.notifyItemInserted(position);
+        }
+    }
+
+    /**
+     * Adds or updates the specified match to the UI list; sort order is taken into account.
+     * Use this method when uncertain of the presence of m in the list.
+     */
+    synchronized void addUpdateUI(Match m){
         //check if we have this match in the list
         int position = 0;
         int foundAt = -1;
