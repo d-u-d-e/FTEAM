@@ -32,10 +32,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         String openedMatch = ActivitySelectMatch.matchID;
 
-        if(ActivityLogin.currentUserID.equals(remoteMessage.getData().get("sender")) || //I sent the message
-                (openedMatch != null && openedMatch.equals(remoteMessage.getData().get("match")))){ //or this match is currently browsed by the user
-            //do nothing
-        }else{
+        //If the current user sent the message or this match is currently browsed by the user do nothing
+        if(!ActivityLogin.currentUserID.equals(remoteMessage.getData().get("sender")) &&
+                !(openedMatch != null && openedMatch.equals(remoteMessage.getData().get("match")))){
             final Intent intent = new Intent(this, ActivitySelectMatch.class);
             intent.putExtra("type", "onNotificationClicked");
             intent.setAction("onNotificationClicked");

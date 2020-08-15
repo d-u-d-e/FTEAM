@@ -170,7 +170,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
                         assert m != null;
                         //we show relevant matches only, this is self explaining
                         if(m.getPlayersNumber() > 0 && m.getTimestamp() > Calendar.getInstance().getTimeInMillis() && !booked && isLocationNearby(m.getLatitude(), m.getLongitude())
-                                && !!ActivityLogin.currentUserID.equals(m.getCreatorID()))
+                                && !ActivityLogin.currentUserID.equals(m.getCreatorID()))
                         addUI(m);
                     }
                     matchAdapter.notifyDataSetChanged();

@@ -88,6 +88,7 @@ public class FragmentYourMatches extends FragmentMatches {
                 }
                 else{
                     Match m = snapshot.getValue(Match.class);
+                    assert m != null;
                     long matchTime = m.getTimestamp();
                     synchronized (readCount){ //TODO ugly because it's done only at the start
                         if(readCount < count){
