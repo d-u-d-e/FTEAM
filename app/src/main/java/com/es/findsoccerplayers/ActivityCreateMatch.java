@@ -1,7 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
@@ -11,17 +9,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.es.findsoccerplayers.models.Match;
 import com.es.findsoccerplayers.pickers.DatePickerFragment;
 import com.es.findsoccerplayers.pickers.NumberPickerFragment;
 import com.es.findsoccerplayers.pickers.TimePickerFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,7 +41,6 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
     private double latitude;
     private String nameOfThePlace;
 
-    private static final String TAG = "ActivityCreateMatch";
     private static final int MAPS_REQUEST_CODE = 42;
     private static final String MATCH_DATE = "matchDate";
     private static final String MATCH_HOUR = "matchHour";
@@ -56,8 +48,6 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
     private static final String DESCRIPTION = "description";
 
     private Match match;
-
-    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +143,7 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
                     match.setLongitude(longitude);
                     match.setLatitude(latitude);
                     match.setPlayersNumber(Integer.parseInt(players.getText().toString()));
-                    match.setCreatorID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    match.setCreatorID(ActivityLogin.currentUserID);
                     createMatch(match);
                 }
             }
@@ -225,7 +215,7 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
      * @param m match object created
      */
     private void createMatch(final Match m){
-
+      
         if(m.getTimestamp() < Calendar.getInstance().getTimeInMillis()){
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
             alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
@@ -260,27 +250,27 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
                     }
                 }
             });
+          
+          FirebaseDatabase db = FirebaseDatabase.getInstance();
+          String path = "users/" + ActivityLogin.currentUserID + "/createdMatches";
+          DatabaseReference ref = db.getReference(path).push();
+          final String key = ref.getKey();
+         
+          Map<String, Object> map = new HashMap<>();
+          map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
+          m.setMatchID(key);
+          map.put("matches/" + key, m);
 
-            //Create and subscribe to a topic that we will use to send notification.
-            FirebaseMessaging.getInstance().subscribeToTopic(key).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Utils.showToast(ActivityCreateMatch.this, "Topic Created");
-                }
-            });
+          //Create and subscribe to a topic that we will use to send notification.
+          FirebaseMessaging.getInstance().subscribeToTopic(key);
 
-
-
-
-            if(Utils.isOffline(this))
-                Utils.showOfflineWriteToast(this);
-
-            Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(i);
-            finish();
+          if(Utils.isOffline(this))
+            Utils.showOfflineWriteToast(this);
+     
+          Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
+          //Activity Main is a singleton, no need to set flags (check manifest)
+          startActivity(i);
+          finish();
         }
-
-
     }
 }

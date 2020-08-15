@@ -6,22 +6,28 @@ import com.es.findsoccerplayers.adapter.MatchAdapter;
 import com.es.findsoccerplayers.models.Match;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Super class for each fragment listing matches. It contains useful methods to add or delete a match
+ * taking into account the order set by the user. These methods however deal with the UI only, not with
+ * database coherence or user settings.
+ */
 public abstract class FragmentMatches extends Fragment {
 
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     List<Match> matches;
     MatchAdapter matchAdapter;
 
-    public enum SortType{dateMatchAsc, dateMatchDesc, none};
+    public enum SortType{dateMatchAsc, dateMatchDesc, lastUpdated};
 
-    protected SortType sortType = SortType.none;
+    SortType sortType = SortType.lastUpdated;
 
+    /**
+     * Removes the specified match from the UI list, if present.
+     */
     synchronized void removeUI(String matchID){
         //check if we have this match in the list
         int i;
@@ -37,6 +43,9 @@ public abstract class FragmentMatches extends Fragment {
         }
     }
 
+    /**
+     * Adds or updates the specified match to the UI list; sort order is taken into account.
+     */
     synchronized void addUI(Match m){
         //check if we have this match in the list
         int position = 0;
@@ -52,12 +61,12 @@ public abstract class FragmentMatches extends Fragment {
                 foundAt = i;
         }
 
-        if(foundAt == -1){ //we don't have it; goes on top if no order is set
+        if(foundAt == -1){ //we don't have it; match is added on top if no order is set
             matches.add(position, m);
             matchAdapter.notifyItemInserted(position);
         }
-        else{ //we have it, just update in this case, the creator might have changed the description for example
-            //if no order is set, this goes on top
+        else{ //we have it, just update in this case: the creator might have changed the description for example
+            //if no order is set, this is added on top
             matches.remove(foundAt);
             if(position <= foundAt)
                 matches.add(position, m);
@@ -67,16 +76,25 @@ public abstract class FragmentMatches extends Fragment {
         }
     }
 
+    /**
+     * Gets the current sortType for this fragment
+     */
     public SortType getSortType(){
         return sortType;
     }
 
-    public void setOrderNone(){
-        sortType = SortType.none;
+    /**
+     * Sets the current sortType to SortType.lastUpdated
+     */
+    public void setOrderLastUpdated(){
+        sortType = SortType.lastUpdated;
     }
 
+    /**
+     * Sorts matches by match date, ascending or descending according as the parameter is true or false
+     */
     public void sortByMatchDate(boolean ascending){
-        if(sortType == SortType.none){
+        if(sortType == SortType.lastUpdated){
             sortType = ascending? SortType.dateMatchAsc:SortType.dateMatchDesc;
             matches.sort(new ComparatorByMatchDate(ascending));
             matchAdapter.notifyDataSetChanged();
@@ -93,6 +111,9 @@ public abstract class FragmentMatches extends Fragment {
         }
     }
 
+    /**
+     * Comparator for sorting by match date
+     */
     static class ComparatorByMatchDate implements Comparator<Match> {
         private boolean ascending;
         ComparatorByMatchDate(boolean ascending){

@@ -190,16 +190,14 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
 
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(LATITUDE, latitude);
-                    editor.putString(LONGITUDE, longitude);
-                    editor.putString(RADIUS, distance);
+                    editor.putString(ActivityLogin.currentUserID + "." + LATITUDE, latitude);
+                    editor.putString(ActivityLogin.currentUserID + "." + LONGITUDE, longitude);
+                    editor.putString(ActivityLogin.currentUserID + "." + RADIUS, distance);
 
-
-                    editor.commit();
+                    editor.apply();
                     Utils.showToast(ActivitySetLocation.this, R.string.preference_saved);
                     MyFragmentManager.getFragmentAvailableMatches().onNewPositionSet();
                     Intent i = new Intent(ActivitySetLocation.this, ActivityMain.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);
                     finish();
                 }
@@ -335,7 +333,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
 
 
     /**
-     * If the user start moving the seekBar, then draw a semitrasparent circle, so he can see the maximum distance he will
+     * If the user start moving the seekBar, then draw a semi-transparent circle, so he can see the maximum distance he will
      * cover to go to play a match.
      * @param map the map where to draw the circle
      * @param latlng center of the circle
@@ -365,8 +363,8 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
 
 
     /**
-     * The user can deny permission in any time. There is no reason to do it, but he can
-     * . If he will use again the map, it's better to get permission again.
+     * The user can deny permission in any time. There is no reason to do it, but he can.
+     * If he will use again the map, it's better to get permission again.
      */
     private void getLocationPermission(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){

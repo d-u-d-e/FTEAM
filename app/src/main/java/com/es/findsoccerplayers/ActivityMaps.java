@@ -24,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -82,8 +81,8 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
         getLocationPermission(); //get location permission if we don'have it
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String lat = preferences.getString(LATITUDE, null);
-        String lng = preferences.getString(LONGITUDE, null);
+        String lat = preferences.getString(ActivityLogin.currentUserID + "." + LATITUDE, null);
+        String lng = preferences.getString(ActivityLogin.currentUserID + "." + LONGITUDE, null);
         if(lat != null && lng != null){
             latitude = Double.parseDouble(lat);
             longitude = Double.parseDouble(lng);
@@ -349,9 +348,6 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
 
     /**
      * Result from request location permission.
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

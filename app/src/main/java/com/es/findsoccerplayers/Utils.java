@@ -1,35 +1,28 @@
 package com.es.findsoccerplayers;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.widget.Toast;
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class Utils {
 
-    private static String  CHANNEL_ID = "findSoccerPlayerChannel";
-
-    //private static HashMap<String, WeakReference<Toast>> toastMap = new HashMap<>();
-
     private static WeakReference<Toast> toast = null;
 
-    static void cancelToast( /*String activityName*/ ){
-        /*
-        WeakReference<Toast> toast = toastMap.remove(activityName);
-        if(toast != null && toast.get() != null)
-            toast.get().cancel();*/
+    static void cancelToast(){
+
         if(toast != null && toast.get() != null) toast.get().cancel();
     }
 
@@ -45,14 +38,6 @@ public class Utils {
 
     private static void showToast(Context c, String text, int duration){
 
-        /*String className = c.getClass().getName();
-        WeakReference<Toast> toast = toastMap.remove(className);
-        if(toast != null && toast.get() != null)
-            toast.get().cancel();
-        toast = new WeakReference<>(Toast.makeText(c, text, duration));
-        toast.get().show();
-        toastMap.put(className, toast);*/
-
         if(c == null) return;
 
         if(toast != null && toast.get() != null)
@@ -64,14 +49,6 @@ public class Utils {
     }
 
     private static void showToast(Context c, int resource, int duration){
-
-        /*String className = c.getClass().getName();
-        WeakReference<Toast> toast = toastMap.remove(className);
-        if(toast != null && toast.get() != null)
-            toast.get().cancel();
-        toast = new WeakReference<>(Toast.makeText(c, resource, duration));
-        toast.get().show();
-        toastMap.put(className, toast);*/
 
         if(c == null) return;
 
@@ -100,7 +77,9 @@ public class Utils {
     }
 
     public static String getPreviewDescription(String description) {
-        if (description.length() <= 20)
+        if(description == null)
+            return  "";
+        else if (description.length() <= 20)
             return description;
         else
             return (description.substring(0, 21) + "...");
@@ -139,5 +118,100 @@ public class Utils {
         assert connectivityManager != null;
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo == null || !networkInfo.isConnectedOrConnecting();
+
+
+    }
+
+    /**
+     * Users can log out and log in any time. If the user logs out, he un-subscribes from all match topics.
+     * If he logs in again, he will subscribe again to all his matches, created or booked, so he can get notification for new messages in chat
+     */
+    static void subscribe(){
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref =
+                db.getReference().child("users").child(ActivityLogin.currentUserID).child("bookedMatches");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for(DataSnapshot booked : snapshot.getChildren()){
+                    String matchID = booked.getKey();
+                    assert matchID != null;
+                    FirebaseMessaging.getInstance().subscribeToTopic(matchID);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+        DatabaseReference ref2 =
+                db.getReference().child("users").child(ActivityLogin.currentUserID).child("createdMatches");
+        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for(DataSnapshot booked : snapshot.getChildren()){
+                    String matchID = booked.getKey();
+                    assert matchID != null;
+                    FirebaseMessaging.getInstance().subscribeToTopic(matchID);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
+    /**
+     * If the user logs out from the app, he needs to unsubscribe from all matches, so he
+     * will not get notification from chats
+     */
+    static void unsubscribe(){
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref =
+                db.getReference().child("users").child(ActivityLogin.currentUserID).child("bookedMatches");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for(DataSnapshot booked : snapshot.getChildren()){
+                    String matchID = booked.getKey();
+                    assert matchID != null;
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+        DatabaseReference ref2 =
+                db.getReference().child("users").child(ActivityLogin.currentUserID).child("createdMatches");
+        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for(DataSnapshot booked : snapshot.getChildren()){
+                    String matchID = booked.getKey();
+                    assert matchID != null;
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+
     }
 }

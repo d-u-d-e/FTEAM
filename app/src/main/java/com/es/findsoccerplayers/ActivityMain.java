@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -21,14 +20,6 @@ import com.es.findsoccerplayers.fragments.FragmentMatches;
 import com.es.findsoccerplayers.fragments.FragmentYourMatches;
 import com.es.findsoccerplayers.fragments.ViewPagerTabs;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 public class ActivityMain extends MyActivity {
 
@@ -37,11 +28,9 @@ public class ActivityMain extends MyActivity {
     ViewPagerTabs adapter;
     ViewPager vp;
 
-    MenuItem[] sortMenuItems = new MenuItem[FragmentMatches.SortType.values().length]; //one for each sort type
 
-    FragmentAvailableMatches am;
-    FragmentYourMatches ym;
-    FragmentBookedMatches bm;
+    FragmentYourMatches ymFrag;
+    MenuItem[] sortMenuItems = new MenuItem[FragmentMatches.SortType.values().length]; //one for each sort type
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +47,8 @@ public class ActivityMain extends MyActivity {
         }
 
         Intent i = getIntent();
-        boolean logIN = i.getBooleanExtra("Login", false);
-        if(logIN){
-            subscribe();
-        }
+        if(i.getBooleanExtra("Login", false))
+            Utils.subscribe();
 
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
@@ -70,9 +57,9 @@ public class ActivityMain extends MyActivity {
         vp = findViewById(R.id.main_vp);
         adapter = new ViewPagerTabs(getSupportFragmentManager());
 
-        am = new FragmentAvailableMatches();
-        ym = new FragmentYourMatches();
-        bm = new FragmentBookedMatches();
+        FragmentAvailableMatches am = new FragmentAvailableMatches();
+        FragmentYourMatches ym = new FragmentYourMatches();
+        FragmentBookedMatches bm = new FragmentBookedMatches();
 
         MyFragmentManager.setFragment(am);
         MyFragmentManager.setFragment(ym);
@@ -82,7 +69,8 @@ public class ActivityMain extends MyActivity {
         adapter.addFragment(bm, getString(R.string.act_main_frag_booked_title));
         adapter.addFragment(am, getString(R.string.act_main_frag_avail_title));
 
-        vp.setOffscreenPageLimit(adapter.getCount() - 1); //2
+        //each fragment is kept in memory, and its view is not created again when another tab is selected
+        vp.setOffscreenPageLimit(adapter.getCount() - 1); // 2
         vp.setAdapter(adapter);
         tabs.setupWithViewPager(vp);
 
@@ -107,7 +95,7 @@ public class ActivityMain extends MyActivity {
         sortMenuItems[0] = menu.findItem(R.id.menu_sortByMatchDateAsc);
         sortMenuItems[1] = menu.findItem(R.id.menu_sortByMatchDateDesc);
         sortMenuItems[2] = menu.findItem(R.id.menu_noOrder);
-        sortMenuItems[ym.getSortType().ordinal()].setChecked(true);
+        sortMenuItems[ymFrag.getSortType().ordinal()].setChecked(true);
         return true;
     }
 
@@ -130,8 +118,8 @@ public class ActivityMain extends MyActivity {
                 return true;
             case R.id.menu_noOrder:
                 uncheckAll();
-                frag.setOrderNone();
-                sortMenuItems[FragmentMatches.SortType.none.ordinal()].setChecked(true);
+                frag.setOrderLastUpdated();
+                sortMenuItems[FragmentMatches.SortType.lastUpdated.ordinal()].setChecked(true);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -153,53 +141,8 @@ public class ActivityMain extends MyActivity {
     }
 
     /**
-     * Users can logout and login any time. If the user logout, he unscribe from all match topics.
-     * If he come back again, will subscribe again to all his matches, created by him, or booked, so he can get notification for new messages in chat
-     *
+     * Uncheck all checkbox
      */
-    private void subscribe(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference ref =
-                db.getReference().child("users").child(user.getUid()).child("bookedMatches");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for(DataSnapshot booked : snapshot.getChildren()){
-                    String matchID = booked.getKey();
-                    if(matchID != null)
-                    FirebaseMessaging.getInstance().subscribeToTopic(matchID);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        DatabaseReference ref2 =
-                db.getReference().child("users").child(user.getUid()).child("createdMatches");
-        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for(DataSnapshot booked : snapshot.getChildren()){
-                    String matchID = booked.getKey();
-                    if (matchID != null)
-                    FirebaseMessaging.getInstance().subscribeToTopic(matchID);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     private void uncheckAll(){
         for(int i = 0; i < 3; i++)
             sortMenuItems[i].setChecked(false);

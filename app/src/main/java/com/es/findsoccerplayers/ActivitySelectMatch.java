@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -52,13 +51,13 @@ public class ActivitySelectMatch extends MyActivity {
             DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
             r.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                public void onDataChange(DataSnapshot snapshot) {
                     Match m = snapshot.getValue(Match.class);
                     setTabLayout(m, "onNotificationClicked", 1);
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                public void onCancelled(DatabaseError error) {
 
                 }
             });
@@ -73,9 +72,9 @@ public class ActivitySelectMatch extends MyActivity {
     }
 
     /**
-     * If the match is to join, so is not a booked match, or an user match, then create a layout without tabs
+     * If the user selects a match from the available matches only, then a layout without tabs is created
      * @param m the Match Object selected
-     * @param type type of view to set
+     * @param type type of view
      */
     private void setNoTabLayout(Match m, String type){
         setContentView(R.layout.act_select_match_notabs);
@@ -89,9 +88,9 @@ public class ActivitySelectMatch extends MyActivity {
     }
 
     /**
-     * If the match, is a booked match, or an user match, then shor the Tab Layout, whith match info fragment, and chat fragment
-     * @param m the Match Object selcted
-     * @param type type of view to set
+     * If the user selects a match from the booked matches or from his created matches , then a layout with tabs is created
+     * @param m the Match Object selected
+     * @param type type of view
      * @param position position of starting ViewPager, info or chat
      */
     private void setTabLayout(Match m, String type, int position){
@@ -100,7 +99,7 @@ public class ActivitySelectMatch extends MyActivity {
         vp = findViewById(R.id.info_match_booked_vp);
         ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
         adapter.addFragment(new FragmentInfoMatch(m, type), "INFO");
-        final FragmentChat fragmentChat = new FragmentChat(matchID, this);
+        final FragmentChat fragmentChat = new FragmentChat(this);
         MyFragmentManager.setFragment(fragmentChat);
         adapter.addFragment(fragmentChat, "CHAT");
         vp.setAdapter(adapter);
@@ -109,7 +108,8 @@ public class ActivitySelectMatch extends MyActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                if(FragmentChat.isDisplayed && position == 0)//switch from 1 to 0
+                //switch from chat to info tab: new messages are considered read now
+                if(FragmentChat.isDisplayed && position == 0)
                     MyFragmentManager.getFragmentChat().onNewMessagesRead();
                 FragmentChat.isDisplayed = position == 1;
             }
@@ -140,11 +140,15 @@ public class ActivitySelectMatch extends MyActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         String action = intent.getAction();
+        //this intent with this particular action is sent from FragmentBookedMatches or FragmentAvailableMatches when the user is browsing
+        // a match which got deleted
         if(action != null && action.equals("finishOnMatchDeleted")){
             finish();
         }
-        else{
+        else if(action != null && action.equals("onNotificationClicked")){
+            //in this case our firebase service started this activity, while this activity was running
             String matchID = intent.getStringExtra("match");
+            //this activity gets replaced with another one, displaying the correct match
             Intent i = new Intent(ActivitySelectMatch.this, ActivitySelectMatch.class);
             i.putExtra("type", "onNotificationClicked");
             i.putExtra("match", matchID);
@@ -158,6 +162,8 @@ public class ActivitySelectMatch extends MyActivity {
         super.onBackPressed();
         Intent i = new Intent(this, ActivityMain.class);
         //does not create another main activity if already in the stack, because it is single instance
+        //we need this because if the user taps on a notification while the app is in background or closed
+        //then only this activity is running, so hitting the back button will close the app, unless Main is started
         startActivity(i);
     }
 }

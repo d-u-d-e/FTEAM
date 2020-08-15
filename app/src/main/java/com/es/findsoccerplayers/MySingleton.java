@@ -6,14 +6,16 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import java.lang.ref.WeakReference;
+
 public class MySingleton {
 
-    private  static MySingleton instance;
+    private static MySingleton instance;
     private RequestQueue requestQueue;
-    private Context ctx;
+    private WeakReference<Context> ctx;
 
     private MySingleton(Context context) {
-        ctx = context;
+        ctx = new WeakReference<>(context);
         requestQueue = getRequestQueue();
     }
 
@@ -24,11 +26,11 @@ public class MySingleton {
         return instance;
     }
 
-    public RequestQueue getRequestQueue() {
+    private RequestQueue getRequestQueue() {
         if (requestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
-            requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
+            requestQueue = Volley.newRequestQueue(ctx.get().getApplicationContext());
         }
         return requestQueue;
     }

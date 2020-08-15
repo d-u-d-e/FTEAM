@@ -1,6 +1,5 @@
 package com.es.findsoccerplayers;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,13 +14,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +21,6 @@ import java.util.List;
 /**
  * Settings or logout activity. Here the user can logout, or can select a new range and place to search games or set new games.
  */
-
 public class ActivitySettings extends MyActivity {
     final List<SettingsElement> settElemList = new ArrayList<>();
 
@@ -64,7 +55,7 @@ public class ActivitySettings extends MyActivity {
                     Intent i = new Intent(getApplicationContext(), ActivitySetLocation.class);
                     startActivity(i);
                 }else if(position == 2){
-                    unsubscribe();
+                    Utils.unsubscribe();
                     logOut();
                 }
             }
@@ -73,7 +64,7 @@ public class ActivitySettings extends MyActivity {
     }
 
     /**
-     * Method to logout the user, and go back to the login activity
+     * Logs out the user, and goes back to the login activity
      */
     private void logOut(){
         //options required to log in with Google
@@ -89,53 +80,5 @@ public class ActivitySettings extends MyActivity {
             finishAffinity();
             Intent i = new Intent(this, ActivityLogin.class);
             startActivity(i);
-    }
-
-    /**
-     * If the user logout from the app, he needs to unsubscribe from all matches, so he
-     * will not get notification from chats.
-     */
-    private void unsubscribe(){
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference ref =
-                    db.getReference().child("users").child(user.getUid()).child("bookedMatches");
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    for(DataSnapshot booked : snapshot.getChildren()){
-                        String matchID = booked.getKey();
-                        if(matchID != null)
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-            DatabaseReference ref2 =
-                    db.getReference().child("users").child(user.getUid()).child("createdMatches");
-            ref2.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    for(DataSnapshot booked : snapshot.getChildren()){
-                        String matchID = booked.getKey();
-                        if(matchID != null)
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
     }
 }

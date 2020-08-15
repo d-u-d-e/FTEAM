@@ -9,11 +9,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.es.findsoccerplayers.ActivityLogin;
 import com.es.findsoccerplayers.fragments.FragmentChat;
 import com.es.findsoccerplayers.models.Message;
 import com.es.findsoccerplayers.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -99,8 +98,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (chats.get(position).getSenderID().equals(currentUser.getUid()))
+        if (chats.get(position).getSenderID().equals(ActivityLogin.currentUserID))
             return MSG_TYPE_RIGHT;
         else
             return MSG_TYPE_LEFT;
