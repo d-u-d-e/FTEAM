@@ -57,7 +57,7 @@ public class ActivityLogin extends MyActivity{
                 Utils.showOfflineReadToast(this);
             else{
                 Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
-                intent.putExtra("type", "onNotificationClicked");
+                intent.putExtra("type", "notification");
                 intent.putExtra("match", i.getStringExtra("match"));
                 startActivity(intent);
             }

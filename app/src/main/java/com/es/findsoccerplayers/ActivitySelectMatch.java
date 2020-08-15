@@ -47,13 +47,18 @@ public class ActivitySelectMatch extends MyActivity {
             setTabLayout(m, type, 0);
         }
         else { //activity started by messaging service when user taps on notification
+                //type is "notification"
             matchID = i.getStringExtra("match");
             DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
             r.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     Match m = snapshot.getValue(Match.class);
-                    setTabLayout(m, "onNotificationClicked", 1);
+                    assert m != null;
+                    String type = "booked";
+                    if(m.getCreatorID().equals(ActivityLogin.currentUserID))
+                        type = "yours";
+                    setTabLayout(m, type, 1);
                 }
 
                 @Override
@@ -150,7 +155,7 @@ public class ActivitySelectMatch extends MyActivity {
             String matchID = intent.getStringExtra("match");
             //this activity gets replaced with another one, displaying the correct match
             Intent i = new Intent(ActivitySelectMatch.this, ActivitySelectMatch.class);
-            i.putExtra("type", "onNotificationClicked");
+            i.putExtra("type", "notification");
             i.putExtra("match", matchID);
             finish();
             startActivity(i);

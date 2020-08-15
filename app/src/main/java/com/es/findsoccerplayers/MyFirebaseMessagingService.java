@@ -36,7 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(!ActivityLogin.currentUserID.equals(remoteMessage.getData().get("sender")) &&
                 !(openedMatch != null && openedMatch.equals(remoteMessage.getData().get("match")))){
             final Intent intent = new Intent(this, ActivitySelectMatch.class);
-            intent.putExtra("type", "onNotificationClicked");
+            intent.putExtra("type", "notification");
             intent.setAction("onNotificationClicked");
             intent.putExtra("match", remoteMessage.getData().get("match"));
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
