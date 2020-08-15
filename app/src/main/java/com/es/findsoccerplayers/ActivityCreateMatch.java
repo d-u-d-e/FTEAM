@@ -3,6 +3,7 @@ package com.es.findsoccerplayers;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -226,10 +227,9 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
                         }
                     }).create().show();
         } else {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-            String path = "users/" + user.getUid() + "/createdMatches";
+            String path = "users/" + ActivityLogin.currentUserID + "/createdMatches";
 
             DatabaseReference ref = db.getReference(path).push();
             final String key = ref.getKey();
@@ -250,16 +250,6 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
                     }
                 }
             });
-          
-          FirebaseDatabase db = FirebaseDatabase.getInstance();
-          String path = "users/" + ActivityLogin.currentUserID + "/createdMatches";
-          DatabaseReference ref = db.getReference(path).push();
-          final String key = ref.getKey();
-         
-          Map<String, Object> map = new HashMap<>();
-          map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
-          m.setMatchID(key);
-          map.put("matches/" + key, m);
 
           //Create and subscribe to a topic that we will use to send notification.
           FirebaseMessaging.getInstance().subscribeToTopic(key);

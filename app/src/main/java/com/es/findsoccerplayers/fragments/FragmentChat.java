@@ -186,7 +186,6 @@ public class FragmentChat extends Fragment {
 
 
         } catch (JSONException e) {
-            Log.e(TAG, "Error: " + e);
         }
         sendNotification(notification);
     }

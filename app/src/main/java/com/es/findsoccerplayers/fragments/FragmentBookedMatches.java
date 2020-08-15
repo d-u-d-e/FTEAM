@@ -108,6 +108,7 @@ public class FragmentBookedMatches extends FragmentMatches {
                                 //TODO
                                 //notify select match to update in real time if the creator modifies the match
                                 //and the user is browsing this match
+                                assert m != null;
                                 if(m.getTimestamp() > Calendar.getInstance().getTimeInMillis())
                                     addUI(m);
                             }
