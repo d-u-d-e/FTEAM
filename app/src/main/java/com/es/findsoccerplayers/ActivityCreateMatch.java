@@ -3,6 +3,7 @@ package com.es.findsoccerplayers;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -214,40 +215,62 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
      * @param m match object created
      */
     private void createMatch(final Match m){
+      
+        if(m.getTimestamp() < Calendar.getInstance().getTimeInMillis()){
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
+                        }
+                    }).create().show();
+        } else {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-        String path = "users/" + ActivityLogin.currentUserID + "/createdMatches";
+            String path = "users/" + user.getUid() + "/createdMatches";
 
-        DatabaseReference ref = db.getReference(path).push();
-        final String key = ref.getKey();
+            DatabaseReference ref = db.getReference(path).push();
+            final String key = ref.getKey();
 
-        Map<String, Object> map = new HashMap<>();
-        map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
-        m.setMatchID(key);
-        map.put("matches/" + key, m);
+            Map<String, Object> map = new HashMap<>();
+            map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
+            m.setMatchID(key);
+            map.put("matches/" + key, m);
 
-        db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if(databaseError != null)
-                    Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
-                else{ //match successfully created
-                    Utils.showToast(ActivityCreateMatch.this, "Match successfully created");
-                    MyFragmentManager.getFragmentYourMatches().registerForMatchEvents(key);
+            db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if(databaseError != null)
+                        Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
+                    else{ //match successfully created
+                        Utils.showToast(ActivityCreateMatch.this, "Match successfully created");
+                        MyFragmentManager.getFragmentYourMatches().registerForMatchEvents(key);
+                    }
                 }
-            }
-        });
+            });
+          
+          FirebaseDatabase db = FirebaseDatabase.getInstance();
+          String path = "users/" + ActivityLogin.currentUserID + "/createdMatches";
+          DatabaseReference ref = db.getReference(path).push();
+          final String key = ref.getKey();
+         
+          Map<String, Object> map = new HashMap<>();
+          map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
+          m.setMatchID(key);
+          map.put("matches/" + key, m);
 
-        //Create and subscribe to a topic that we will use to send notification.
-        FirebaseMessaging.getInstance().subscribeToTopic(key);
+          //Create and subscribe to a topic that we will use to send notification.
+          FirebaseMessaging.getInstance().subscribeToTopic(key);
 
-        if(Utils.isOffline(this))
+          if(Utils.isOffline(this))
             Utils.showOfflineWriteToast(this);
-
-        Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
-        //Activity Main is a singleton, no need to set flags (check manifest)
-        startActivity(i);
-        finish();
+     
+          Intent i = new Intent(ActivityCreateMatch.this, ActivityMain.class);
+          //Activity Main is a singleton, no need to set flags (check manifest)
+          startActivity(i);
+          finish();
+        }
     }
 }

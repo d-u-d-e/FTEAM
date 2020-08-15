@@ -71,6 +71,7 @@
     <string name="add_position">Click here to add your position </string>
     <string name="title_activity_maps">Map</string>
     <string name="all_fields_required">All fields are required</string>
+    <string name="error_time_set">You can\'t play a game in the past. Change your date or time</string>
 
     <!--MapActivities strings-->
     <string name="normal_map">Normal View</string>
@@ -137,6 +138,7 @@
 
     <string name="notification_failed">Message not delivered. Try later</string>
     <string name="km"> km</string>
+    <string name="joke_title_for_time_error">Time Traveler?</string>
 
 
 </resources>

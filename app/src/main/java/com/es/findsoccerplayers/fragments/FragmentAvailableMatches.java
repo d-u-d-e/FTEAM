@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class FragmentAvailableMatches extends FragmentMatches {
 
@@ -168,8 +169,8 @@ public class FragmentAvailableMatches extends FragmentMatches {
                         boolean booked = data.child("members/" + ActivityLogin.currentUserID).exists();
                         assert m != null;
                         //we show relevant matches only, this is self explaining
-                        if(m.getPlayersNumber() > 0 && !booked && isLocationNearby(m.getLatitude(), m.getLongitude())
-                                && !ActivityLogin.currentUserID.equals(m.getCreatorID()))
+                        if(m.getPlayersNumber() > 0 && m.getTimestamp() > Calendar.getInstance().getTimeInMillis() && !booked && isLocationNearby(m.getLatitude(), m.getLongitude())
+                                && !!ActivityLogin.currentUserID.equals(m.getCreatorID()))
                         addUI(m);
                     }
                     matchAdapter.notifyDataSetChanged();
@@ -201,7 +202,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
                 assert m != null;
                 //see if it is relevant to the user
                 boolean booked = dataSnapshot.child("members/" + ActivityLogin.currentUserID).exists();
-                if(m.getPlayersNumber() > 0 && !booked && isLocationNearby(m.getLatitude(), m.getLongitude())
+                if(m.getPlayersNumber() > 0 && m.getTimestamp() > Calendar.getInstance().getTimeInMillis() && !booked && isLocationNearby(m.getLatitude(), m.getLongitude())
                         && !ActivityLogin.currentUserID.equals(m.getCreatorID()))
                     FragmentAvailableMatches.this.addUI(m);
             }
@@ -214,7 +215,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
                 if(!ActivityLogin.currentUserID.equals(m.getCreatorID())){ //if I am the creator, then m is not even listed
                     boolean booked = dataSnapshot.child("members/" + ActivityLogin.currentUserID).exists();
                     //TODO notify select match to update in real time
-                    if(booked || m.getPlayersNumber() == 0 || !isLocationNearby(m.getLatitude(), m.getLongitude()))
+                    if(booked || m.getPlayersNumber() == 0 || !isLocationNearby(m.getLatitude(), m.getLongitude()) || m.getTimestamp() < Calendar.getInstance().getTimeInMillis())
                         FragmentAvailableMatches.this.removeUI(m.getMatchID());
                     else
                         FragmentAvailableMatches.this.addUI(m);

@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FragmentBookedMatches extends FragmentMatches {
@@ -107,7 +108,8 @@ public class FragmentBookedMatches extends FragmentMatches {
                                 //TODO
                                 //notify select match to update in real time if the creator modifies the match
                                 //and the user is browsing this match
-                                addUI(m);
+                                if(m.getTimestamp() > Calendar.getInstance().getTimeInMillis())
+                                    addUI(m);
                             }
                         }
 
