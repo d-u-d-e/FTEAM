@@ -98,7 +98,7 @@ public class FragmentChat extends Fragment {
                 if(!message.equals(""))
                     sendMessage(message);
                 else
-                    Utils.showToast(getActivity(), R.string.send_empty_message);
+                    Utils.showToast(getActivity(), R.string.send_empty_message, true);
                 messageText.setText("");
             }
         });

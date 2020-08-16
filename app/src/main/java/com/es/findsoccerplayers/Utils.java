@@ -30,16 +30,31 @@ public class Utils {
     static void showErrorToast(Context c, Exception ex){
         String error = c.getString(R.string.unknown_error);
         if(ex != null) error = ex.getMessage();
-        showToast(c, error, Toast.LENGTH_LONG);
+        //error should be displayed immediately, hence unique is true.
+        showToast(c, error, Toast.LENGTH_LONG, true);
     }
 
-    public static void showErrorToast(Context c, String s){
-        showToast(c, s, Toast.LENGTH_LONG);
+    public static void showErrorToast(Context c, String s, boolean unique){
+        showToast(c, s, Toast.LENGTH_LONG, unique);
     }
 
-    private static void showToast(Context c, String text, int duration){
+    /**
+     * unique is used as a flag to indicate that any previously unique toast should be cancelled and
+     * replaced by another toast. If unique is false, the toast is stacked. unique is set to true
+     * usually when the user might generate the same toast more than once, for example when he tries to
+     * create a match without entering all the required fields: so we avoid stacking the same toast again,
+     * by cancelling the current one and replacing it with the same toast. Also unique is set to true when
+     * we don't want to display the toast if another activity is started (meaning that the current one goes on pause).
+     * My Activity overrides onPause() to cancel the current unique toast.
+     */
+    private static void showToast(Context c, String text, int duration, boolean unique){
 
         if(c == null) return;
+
+        if(!unique){
+            Toast.makeText(c, text, duration).show();
+            return;
+        }
 
         if(toast != null && toast.get() != null)
             toast.get().cancel();
@@ -49,9 +64,14 @@ public class Utils {
         t.show();
     }
 
-    private static void showToast(Context c, int resource, int duration){
+    static void showToast(Context c, int resource, int duration, boolean unique){
 
         if(c == null) return;
+
+        if(!unique){
+            Toast.makeText(c, resource, duration).show();
+            return;
+        }
 
         if(toast != null && toast.get() != null)
             toast.get().cancel();
@@ -61,20 +81,20 @@ public class Utils {
         t.show();
     }
 
-    public static void showToast(Context c, String text){
-        showToast(c, text, Toast.LENGTH_SHORT);
+    public static void showToast(Context c, String text, boolean unique){
+        showToast(c, text, Toast.LENGTH_SHORT, unique);
     }
 
-    public static void showToast(Context c, int resource){
-        showToast(c, resource, Toast.LENGTH_SHORT);
+    public static void showToast(Context c, int resource, boolean unique){
+        showToast(c, resource, Toast.LENGTH_SHORT, unique);
     }
 
-    public static void showOfflineWriteToast(Context c){
-        showToast(c, R.string.offline_write);
+    public static void showOfflineWriteToast(Context c, boolean unique){
+        showToast(c, R.string.offline_write, unique);
     }
 
-    static void showOfflineReadToast(Context c){
-        showToast(c, R.string.offline_read);
+    static void showOfflineReadToast(Context c, boolean unique){
+        showToast(c, R.string.offline_read, unique);
     }
 
     public static String getPreviewDescription(String description) {

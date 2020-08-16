@@ -85,7 +85,7 @@ public class ActivityMain extends MyActivity {
         });
 
         if(Utils.isOffline(this))
-            Utils.showOfflineReadToast(this);
+            Utils.showOfflineReadToast(this, false);
     }
 
     @Override

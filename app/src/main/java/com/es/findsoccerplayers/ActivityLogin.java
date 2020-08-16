@@ -60,7 +60,7 @@ public class ActivityLogin extends MyActivity{
         if(extras != null & autUser != null){
             currentUserID = autUser.getUid();
             if(Utils.isOffline(this))
-                Utils.showOfflineReadToast(this);
+                Utils.showOfflineReadToast(this, false);
             else{
                 Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
                 intent.putExtra("type", "notification");
@@ -129,7 +129,7 @@ public class ActivityLogin extends MyActivity{
                         progressBar.setVisibility(View.INVISIBLE);
                         if (task.isSuccessful()){
                             currentUserID = fAuth.getCurrentUser().getUid();
-                            Utils.showToast(ActivityLogin.this, R.string.login_success);
+                            Utils.showToast(ActivityLogin.this, R.string.login_success, false);
                             Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
                             intent.putExtra("Login", true);
                             startActivity(intent);
@@ -203,7 +203,7 @@ public class ActivityLogin extends MyActivity{
         try {
             final GoogleSignInAccount account = task.getResult(ApiException.class);
             if(account == null){
-                Utils.showErrorToast(this, getString(R.string.unknown_error));
+                Utils.showErrorToast(this, getString(R.string.unknown_error), true);
             }
             else{
                 final AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
@@ -226,7 +226,7 @@ public class ActivityLogin extends MyActivity{
                                             if(!dataSnapshot.exists())
                                                 createGoogleUser();
                                             else{
-                                                Utils.showToast(ActivityLogin.this, R.string.login_success);
+                                                Utils.showToast(ActivityLogin.this, R.string.login_success, false);
                                                 Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
                                                 intent.putExtra("Login", true);
                                                 startActivity(intent);
@@ -235,7 +235,7 @@ public class ActivityLogin extends MyActivity{
                                         }
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
-                                                    Utils.showErrorToast(ActivityLogin.this, getString(R.string.unexpected_error));
+                                                    Utils.showErrorToast(ActivityLogin.this, getString(R.string.unexpected_error), true);
                                         }
                                     });
                                 } else
@@ -247,7 +247,7 @@ public class ActivityLogin extends MyActivity{
             //The exception with code 12501 is a feedback from google that the sign in was cancelled by the user,
             //so it isn't an exception that requires to be handled or shown
             if(e.getStatusCode() != 12501){
-                Utils.showErrorToast(this, CommonStatusCodes.getStatusCodeString(e.getStatusCode()));
+                Utils.showErrorToast(this, CommonStatusCodes.getStatusCodeString(e.getStatusCode()), true);
                 //TODO maybe show an even better description
                 // for network errors is just a simple and ugly string "NETWORK_ERROR"
             }
@@ -261,7 +261,7 @@ public class ActivityLogin extends MyActivity{
     private void createGoogleUser(){
         String username = fAuth.getCurrentUser().getDisplayName();
         if(username == null || username.isEmpty()){
-            Utils.showErrorToast(ActivityLogin.this, getString(R.string.missing_google_username));
+            Utils.showErrorToast(ActivityLogin.this, getString(R.string.missing_google_username), false);
             username = "user";
         }
 
@@ -272,10 +272,10 @@ public class ActivityLogin extends MyActivity{
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if(databaseError != null){
-                    Utils.showErrorToast(ActivityLogin.this, databaseError.getMessage());
+                    Utils.showErrorToast(ActivityLogin.this, databaseError.getMessage(), true);
                 }
                 else{
-                    Utils.showToast(ActivityLogin.this, R.string.login_success);
+                    Utils.showToast(ActivityLogin.this, R.string.login_success, false);
                     Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
                     intent.putExtra("Login", true);
                     startActivity(intent);

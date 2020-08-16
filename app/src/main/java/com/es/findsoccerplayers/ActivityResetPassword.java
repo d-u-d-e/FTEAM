@@ -36,7 +36,7 @@ public class ActivityResetPassword extends MyActivity {
                 String emailAddress = email.getText().toString();
 
                 if(emailAddress.isEmpty()){
-                    Utils.showErrorToast(ActivityResetPassword.this, getString(R.string.field_missing));
+                    Utils.showErrorToast(ActivityResetPassword.this, getString(R.string.field_missing), true);
                     return;
                 }
 
@@ -45,7 +45,7 @@ public class ActivityResetPassword extends MyActivity {
                             @Override
                             public void onComplete(Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Utils.showToast(ActivityResetPassword.this, R.string.reset_psw_success);
+                                    Utils.showToast(ActivityResetPassword.this, R.string.reset_psw_success, false);
                                     Intent i = new Intent(ActivityResetPassword.this, ActivityLogin.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                                     startActivity(i);

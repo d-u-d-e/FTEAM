@@ -95,6 +95,7 @@
     <string name="geocode_failed">Position name not found. Geocode did not work.</string>
     <string name="default_position_name">My position</string>
     <string name="select_a_place">Select a place</string>
+    <string name="gps_connecting">Connecting to GPS…</string>
 
     <!--ActivitySetLocation strings-->
     <string name="complete_pos_preferences">Select a distance and a position please!</string>

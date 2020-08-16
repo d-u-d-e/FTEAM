@@ -171,7 +171,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if(myPosition == null){
-                    Utils.showToast(ActivitySetLocation.this, R.string.no_initial_position);
+                    Utils.showToast(ActivitySetLocation.this, R.string.no_initial_position, true);
                     radiusBar.setProgress(0);
                 }
             }
@@ -181,7 +181,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
             @Override
             public void onClick(View v) {
                 if(myPosition == null || index <= 0){
-                    Utils.showToast(ActivitySetLocation.this, R.string.complete_pos_preferences);
+                    Utils.showToast(ActivitySetLocation.this, R.string.complete_pos_preferences, true);
                 } else {
                     latitude = String.valueOf(myPosition.latitude);
                     longitude = String.valueOf(myPosition.longitude);
@@ -194,7 +194,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
                     editor.putString(ActivityLogin.currentUserID + "." + RADIUS, distance);
 
                     editor.apply();
-                    Utils.showToast(ActivitySetLocation.this, R.string.preference_saved);
+                    Utils.showToast(ActivitySetLocation.this, R.string.preference_saved, false);
                     MyFragmentManager.getFragmentAvailableMatches().onNewPositionSet();
                     Intent i = new Intent(ActivitySetLocation.this, ActivityMain.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -305,7 +305,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
                             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Utils.showToast(ActivitySetLocation.this, R.string.location_access_denied);
+                                    Utils.showToast(ActivitySetLocation.this, R.string.location_access_denied, true);
                                 }
                             }).create().show();
 
@@ -322,7 +322,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
                             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Utils.showToast(ActivitySetLocation.this, R.string.access_denied_permanently);
+                                    Utils.showToast(ActivitySetLocation.this, R.string.access_denied_permanently, true);
                                 }
                             }).create().show();
 
@@ -377,7 +377,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
     @Override
     public void onBackPressed() {
         if(myPosition == null || index <= 0){
-            Utils.showToast(ActivitySetLocation.this, R.string.complete_pos_preferences);
+            Utils.showToast(ActivitySetLocation.this, R.string.complete_pos_preferences, true);
         }
         else{
             if(isTracking){

@@ -235,7 +235,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
                     i.setAction("finishOnMatchDeleted");
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(i);
-                    Utils.showErrorToast(getActivity(), getString(R.string.match_deleted_by_creator));
+                    Utils.showErrorToast(getActivity(), getString(R.string.match_deleted_by_creator), false);
                 }
             }
 

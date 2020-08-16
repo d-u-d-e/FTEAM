@@ -118,7 +118,7 @@ public class ActivityRegister extends MyActivity implements DatePickerDialog.OnD
 
                 //birth date is not mandatory; user is prompted once to insert it if it's missing
                 if(!userSkipsDate && selectedDate.getText().toString().equals(getString(R.string.act_register_select_date))){
-                    Utils.showToast(ActivityRegister.this, R.string.select_birth_date);
+                    Utils.showToast(ActivityRegister.this, R.string.select_birth_date, true);
                     userSkipsDate = true;
                     return;
                 }
@@ -184,10 +184,10 @@ public class ActivityRegister extends MyActivity implements DatePickerDialog.OnD
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if(databaseError != null){
-                    Utils.showErrorToast(ActivityRegister.this, databaseError.getMessage());
+                    Utils.showErrorToast(ActivityRegister.this, databaseError.getMessage(), true);
                 }
                 else{
-                    Toast.makeText(ActivityRegister.this, R.string.register_success, Toast.LENGTH_SHORT).show();
+                    Utils.showToast(ActivityRegister.this, R.string.register_success, Toast.LENGTH_SHORT, false);
                     Intent i = new Intent(ActivityRegister.this, ActivityLogin.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(i);

@@ -92,7 +92,7 @@ public class FragmentBookedMatches extends FragmentMatches {
                                     i.setAction("finishOnMatchDeleted");
                                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivity(i);
-                                    Utils.showErrorToast(getActivity(), getString(R.string.match_deleted_by_creator));
+                                    Utils.showErrorToast(getActivity(), getString(R.string.match_deleted_by_creator), false);
                                 }
                                 //otherwise the listener for this match is removed, since the user is not more interested in it
                                 listenerHashMap.remove(matchKey);

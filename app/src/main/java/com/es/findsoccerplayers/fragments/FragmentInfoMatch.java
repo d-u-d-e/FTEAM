@@ -334,13 +334,13 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                     //and the application will crash as soon as tries to make the toast
                     //context is the main activity now
                     if(error != null)
-                        Utils.showErrorToast(context, error.getMessage());
+                        Utils.showErrorToast(context, error.getMessage(), true);
                     else //match successfully updated
-                        Utils.showToast(context, getString(R.string.match_updated_success));
+                        Utils.showToast(context, getString(R.string.match_updated_success), true);
                 }
             });
             if(Utils.isOffline(getActivity()))
-                Utils.showOfflineWriteToast(getActivity());
+                Utils.showOfflineWriteToast(getActivity(), false);
         }
     }
 
@@ -361,9 +361,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 //and the application will crash as soon as this code tries to make the toast
                 //context is the main activity now
                 if(error != null)
-                    Utils.showErrorToast(context, error.getMessage());
+                    Utils.showErrorToast(context, error.getMessage(), true);
                 else//match successfully deleted
-                    Utils.showToast(context, getString(R.string.match_deleted_success));
+                    Utils.showToast(context, getString(R.string.match_deleted_success), false);
             }
         });
 
@@ -374,7 +374,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         FirebaseMessaging.getInstance().unsubscribeFromTopic(matchID);
 
         if(Utils.isOffline(getActivity()))
-            Utils.showOfflineWriteToast(getActivity());
+            Utils.showOfflineWriteToast(getActivity(), false);
     }
 
     @Override
@@ -423,9 +423,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 //and the application will crash as soon as tries to make the toast
                 //context is the main activity now
                 if(committed){
-                    Utils.showToast(context, getString(R.string.join_success));
+                    Utils.showToast(context, getString(R.string.join_success), false);
                 } else {
-                    Utils.showToast(context, R.string.join_fail);
+                    Utils.showToast(context, R.string.join_fail, false);
                 }
             }
         });
@@ -470,9 +470,9 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 //and the application will crash as soon as this code tries to make the toast
                 //context is the main activity now
                 if(committed){
-                    Utils.showToast(context, getString(R.string.drop_success));
+                    Utils.showToast(context, getString(R.string.drop_success), false);
                 } else {
-                    Utils.showToast(context, getString(R.string.unexpected_error));
+                    Utils.showToast(context, getString(R.string.unexpected_error), false);
                 }
             }
         });

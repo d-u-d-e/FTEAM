@@ -122,7 +122,7 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 if(placeName == null)
-                    Utils.showToast(ActivityMaps.this, R.string.select_a_place);
+                    Utils.showToast(ActivityMaps.this, R.string.select_a_place, true);
                 else {
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra(LATITUDE, latitude);
@@ -197,7 +197,7 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
         map.getUiSettings().setMapToolbarEnabled(false);
         mapReady = true;
 
-        Utils.showToast(this, "Connecting to GPS...");
+        Utils.showToast(this, getString(R.string.gps_connecting), true);
 
         if(locationAccess){
             if(PositionClient.isGpsOFF(ActivityMaps.this)){
@@ -276,7 +276,7 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
                     }
                 } catch (Exception e){
                     e.printStackTrace();
-                    Utils.showToast(ActivityMaps.this, R.string.geocode_failed);
+                    Utils.showToast(ActivityMaps.this, R.string.geocode_failed, true);
                     placeName = getString(R.string.default_position_name);
                 }
                 Marker myMarker = ActivityMaps.this.map.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(snippet)
@@ -378,7 +378,7 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
                             .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Utils.showToast(ActivityMaps.this, getString(R.string.location_access_denied));
+                                    Utils.showToast(ActivityMaps.this, getString(R.string.location_access_denied), true);
                                 }
                             }).create().show();
 
@@ -395,7 +395,7 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
                             .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Utils.showToast(ActivityMaps.this, getString(R.string.access_denied_permanently));
+                                    Utils.showToast(ActivityMaps.this, getString(R.string.access_denied_permanently), true);
                                 }
                             }).create().show();
 

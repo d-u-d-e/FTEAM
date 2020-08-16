@@ -123,7 +123,7 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
             public void onClick(View v) {
                 if(placeText.getText().toString().equals(getString(R.string.act_cr_match_add_position)) ||
                     players.getText().toString().equals(getString(R.string.act_cr_match_players))){
-                    Utils.showToast(ActivityCreateMatch.this, getString(R.string.all_fields_required));
+                    Utils.showToast(ActivityCreateMatch.this, getString(R.string.all_fields_required), true);
                 }else{
                     match = new Match();
                     match.setDescription(description.getText().toString());
@@ -243,9 +243,9 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                     if(databaseError != null)
-                        Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage());
+                        Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage(), true);
                     else{ //match successfully created
-                        Utils.showToast(ActivityCreateMatch.this, getString(R.string.match_created_success));
+                        Utils.showToast(ActivityCreateMatch.this, getString(R.string.match_created_success), false);
                         MyFragmentManager.getFragmentYourMatches().registerForMatchEvents(key);
                     }
                 }
@@ -255,7 +255,7 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
           FirebaseMessaging.getInstance().subscribeToTopic(key);
 
           if(Utils.isOffline(this))
-            Utils.showOfflineWriteToast(this);
+            Utils.showOfflineWriteToast(this, false);
 
           finish();
         }
