@@ -23,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 public class ActivitySelectMatch extends MyActivity {
 
     public static String matchID = null;
-    private boolean startedFromNotification = false;
     ViewPager vp;
 
     @Override
@@ -50,7 +49,6 @@ public class ActivitySelectMatch extends MyActivity {
         }
         else { //activity started by messaging service when user taps on notification
                 //type is "notification"
-            startedFromNotification = true;
             matchID = i.getStringExtra("match");
             DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
             r.addListenerForSingleValueEvent(new ValueEventListener() {
