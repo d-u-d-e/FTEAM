@@ -155,4 +155,5 @@ public class ActivityMain extends MyActivity {
         for(int i = 0; i < 3; i++)
             sortMenuItems[i].setChecked(false);
     }
+
 }

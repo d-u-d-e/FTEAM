@@ -24,7 +24,6 @@ public class ActivitySelectMatch extends MyActivity {
 
     public static String matchID = null;
     ViewPager vp;
-    private boolean startedFromNotification = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +49,6 @@ public class ActivitySelectMatch extends MyActivity {
         }
         else { //activity started by messaging service when user taps on notification
                 //type is "notification"
-            startedFromNotification = true;
             matchID = i.getStringExtra("match");
             DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
             r.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -155,11 +153,8 @@ public class ActivitySelectMatch extends MyActivity {
         }
         else if(action != null && action.equals("onNotificationClicked")){
             //in this case our firebase service started this activity, while this activity was running on foreground
-            String matchID = intent.getStringExtra("match");
-            //this activity gets replaced with another one, displaying the correct match
             Intent i = new Intent(ActivitySelectMatch.this, ActivitySelectMatch.class);
-            i.putExtra("type", "notification");
-            i.putExtra("match", matchID);
+            i.putExtra("match", intent.getStringExtra("match"));
             finish();
             startActivity(i);
         }
@@ -167,15 +162,11 @@ public class ActivitySelectMatch extends MyActivity {
 
     @Override
     public void onBackPressed() {
-        if(startedFromNotification){
-            Intent i = new Intent(this, ActivityMain.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            //we need this because if the user taps on a notification while the app is in background or closed
-            //then only this activity is running, so hitting the back button will close the app, unless main is started
-            startActivity(i);
-            finish();
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
+        Intent i = new Intent(this, ActivityMain.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        //we need this because if the user taps on a notification while the app is in background or closed
+        //then only this activity is running, so hitting the back button will close the app, unless main is started
+        startActivity(i);
     }
 }
