@@ -142,6 +142,27 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                 editBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        //can't play in the past
+                        if(editedMatch.getTimestamp() < System.currentTimeMillis()){
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
+                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    }).create().show();
+
+                            //use the old values in this case
+                            date.setText(Utils.getDate(originalMatch.getTimestamp()));
+                            time.setText(Utils.getTime(originalMatch.getTimestamp()));
+                            //update edits for date and time, which are now not more edited
+                            updateEdits(false, 1);
+                            updateEdits(false, 2);
+                            return;
+                        }
+
                         editMatch(editedMatch);
                         editBtn.setEnabled(false);
                         originalMatch = new Match(editedMatch);
@@ -247,18 +268,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
 
-        if(c.getTimeInMillis() < System.currentTimeMillis()){
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    }).create().show();
-            return;
-        }
-
         String dateStr = Utils.getDate(c.getTimeInMillis());
         date.setText(dateStr);
 
@@ -306,18 +315,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.HOUR_OF_DAY, hour);
         long newTimestamp = c.getTimeInMillis();
-
-        if(newTimestamp < System.currentTimeMillis()){
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    }).create().show();
-            return;
-        }
 
         if(newTimestamp != editTimestamp){
             time.setText(Utils.getTime(newTimestamp));

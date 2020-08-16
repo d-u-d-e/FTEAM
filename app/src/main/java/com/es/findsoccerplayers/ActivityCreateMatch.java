@@ -135,7 +135,22 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
                         Date d = sdf.parse(dateTime);
                         if(d == null)
                             throw new IllegalStateException("Parsing of date has failed");
+
+                        //can't play in the past
+                        if(d.getTime() < Calendar.getInstance().getTimeInMillis()){
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityCreateMatch.this);
+                            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
+                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    }).create().show();
+                            return;
+                        }
+
                         match.setTimestamp(d.getTime());
+
                     } catch (ParseException e) {
                         throw new IllegalStateException("Parsing of date has failed");
                     }
@@ -216,48 +231,37 @@ public class ActivityCreateMatch extends MyActivity implements DatePickerFragmen
      * @param m match object created
      */
     private void createMatch(final Match m){
-      
-        if(m.getTimestamp() < Calendar.getInstance().getTimeInMillis()){
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
 
-                        }
-                    }).create().show();
-        } else {
-            FirebaseDatabase db = FirebaseDatabase.getInstance();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-            String path = "users/" + ActivityLogin.currentUserID + "/createdMatches";
+        String path = "users/" + ActivityLogin.currentUserID + "/createdMatches";
 
-            DatabaseReference ref = db.getReference(path).push();
-            final String key = ref.getKey();
+        DatabaseReference ref = db.getReference(path).push();
+        final String key = ref.getKey();
 
-            Map<String, Object> map = new HashMap<>();
-            map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
-            m.setMatchID(key);
-            map.put("matches/" + key, m);
+        Map<String, Object> map = new HashMap<>();
+        map.put(path + "/" + key, Calendar.getInstance().getTimeInMillis());
+        m.setMatchID(key);
+        map.put("matches/" + key, m);
 
-            db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    if(databaseError != null)
-                        Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage(), true);
-                    else{ //match successfully created
-                        Utils.showToast(ActivityCreateMatch.this, getString(R.string.match_created_success), false);
-                        MyFragmentManager.getFragmentYourMatches().registerForMatchEvents(key);
-                    }
+        db.getReference().updateChildren(map, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null)
+                    Utils.showErrorToast(ActivityCreateMatch.this, databaseError.getMessage(), true);
+                else{ //match successfully created
+                    Utils.showToast(ActivityCreateMatch.this, getString(R.string.match_created_success), false);
+                    MyFragmentManager.getFragmentYourMatches().registerForMatchEvents(key);
                 }
-            });
+            }
+        });
 
-          //Create and subscribe to a topic that we will use to send notification.
-          FirebaseMessaging.getInstance().subscribeToTopic(key);
+        //Create and subscribe to a topic that we will use to send notification.
+        FirebaseMessaging.getInstance().subscribeToTopic(key);
 
-          if(Utils.isOffline(this))
+        if(Utils.isOffline(this))
             Utils.showOfflineWriteToast(this, false);
 
-          finish();
-        }
+        finish();
     }
 }
