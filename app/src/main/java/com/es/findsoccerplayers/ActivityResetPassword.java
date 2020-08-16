@@ -46,9 +46,6 @@ public class ActivityResetPassword extends MyActivity {
                             public void onComplete(Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Utils.showToast(ActivityResetPassword.this, R.string.reset_psw_success, false);
-                                    Intent i = new Intent(ActivityResetPassword.this, ActivityLogin.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                                    startActivity(i);
                                     finish();
                                 }
                                 else
