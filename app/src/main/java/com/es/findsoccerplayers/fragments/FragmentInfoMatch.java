@@ -243,8 +243,22 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
 
     @Override
     public void onDateSet(int year, int month, int day) {
+
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
+
+        if(c.getTimeInMillis() < System.currentTimeMillis()){
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).create().show();
+            return;
+        }
+
         String dateStr = Utils.getDate(c.getTimeInMillis());
         date.setText(dateStr);
 
@@ -314,34 +328,25 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
      * because editBtn is intelligent (see updateEdits())
      * */
     private void editMatch(final Match m){
-        if(m.getTimestamp() < Calendar.getInstance().getTimeInMillis()){
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
 
-                        }
-                    }).create().show();
-        } else {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("matches/" + m.getMatchID());
 
-            ref.setValue(m, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError error, DatabaseReference ref) {
-                    Context context = MyFragmentManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
-                    //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
-                    //and the application will crash as soon as tries to make the toast
-                    //context is the main activity now
-                    if(error != null)
-                        Utils.showErrorToast(context, error.getMessage(), true);
-                    else //match successfully updated
-                        Utils.showToast(context, getString(R.string.match_updated_success), true);
-                }
-            });
-            if(Utils.isOffline(getActivity()))
-                Utils.showOfflineWriteToast(getActivity(), false);
-        }
+        ref.setValue(m, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, DatabaseReference ref) {
+                Context context = MyFragmentManager.getFragmentYourMatches().getActivity(); //we can't use getContext(), because the activity
+                //hosting this fragment will be destroyed, and could happen well before this method is called. Hence getContext() will be null,
+                //and the application will crash as soon as tries to make the toast
+                //context is the main activity now
+                if(error != null)
+                    Utils.showErrorToast(context, error.getMessage(), true);
+                else //match successfully updated
+                    Utils.showToast(context, getString(R.string.match_updated_success), true);
+            }
+        });
+        if(Utils.isOffline(getActivity()))
+            Utils.showOfflineWriteToast(getActivity(), false);
+
     }
 
     private void deleteMatch(String matchID){
