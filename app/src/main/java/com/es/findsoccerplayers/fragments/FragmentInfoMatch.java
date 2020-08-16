@@ -307,6 +307,18 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         c.set(Calendar.HOUR_OF_DAY, hour);
         long newTimestamp = c.getTimeInMillis();
 
+        if(newTimestamp < System.currentTimeMillis()){
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+            alertDialog.setMessage(R.string.error_time_set).setTitle(R.string.joke_title_for_time_error).setIcon(R.drawable.ic_access_time)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).create().show();
+            return;
+        }
+
         if(newTimestamp != editTimestamp){
             time.setText(Utils.getTime(newTimestamp));
             editedMatch.setTimestamp(newTimestamp);
