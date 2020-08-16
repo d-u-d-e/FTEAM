@@ -24,6 +24,7 @@ public class ActivitySelectMatch extends MyActivity {
 
     public static String matchID = null;
     ViewPager vp;
+    public String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class ActivitySelectMatch extends MyActivity {
         Intent i = getIntent();
         Bundle extras = i.getExtras();
         assert extras != null;
-        String type = i.getStringExtra("type");
+        type = i.getStringExtra("type");
         assert type != null;
 
         if(type.equals("available")){
@@ -165,10 +166,16 @@ public class ActivitySelectMatch extends MyActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(this, ActivityMain.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        //we need this because if the user taps on a notification while the app is in background or closed
-        //then only this activity is running, so hitting the back button will close the app, unless main is started
-        startActivity(i);
+        if(type.equals("notification")){
+            Intent i = new Intent(this, ActivityMain.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            //we need this because if the user taps on a notification while the app is in background or closed
+            //then only this activity is running, so hitting the back button will close the app, unless main is started
+            startActivity(i);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+
     }
 }
