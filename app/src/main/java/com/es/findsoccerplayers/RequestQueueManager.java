@@ -8,20 +8,20 @@ import com.android.volley.toolbox.Volley;
 
 import java.lang.ref.WeakReference;
 
-public class MySingleton {
+public class RequestQueueManager {
 
-    private static MySingleton instance;
+    private static RequestQueueManager instance;
     private RequestQueue requestQueue;
     private WeakReference<Context> ctx;
 
-    private MySingleton(Context context) {
+    private RequestQueueManager(Context context) {
         ctx = new WeakReference<>(context);
         requestQueue = getRequestQueue();
     }
 
-    public static synchronized MySingleton getInstance(Context context) {
+    public static synchronized RequestQueueManager getInstance(Context context) {
         if (instance == null) {
-            instance = new MySingleton(context);
+            instance = new RequestQueueManager(context);
         }
         return instance;
     }

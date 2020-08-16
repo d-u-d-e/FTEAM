@@ -24,7 +24,7 @@ public class ActivitySelectMatch extends MyActivity {
 
     public static String matchID = null;
     ViewPager vp;
-    public String type;
+    private boolean startedFromNotification = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class ActivitySelectMatch extends MyActivity {
         Intent i = getIntent();
         Bundle extras = i.getExtras();
         assert extras != null;
-        type = i.getStringExtra("type");
+        String type = i.getStringExtra("type");
         assert type != null;
 
         if(type.equals("available")){
@@ -50,6 +50,7 @@ public class ActivitySelectMatch extends MyActivity {
         }
         else { //activity started by messaging service when user taps on notification
                 //type is "notification"
+            startedFromNotification = true;
             matchID = i.getStringExtra("match");
             DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
             r.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -153,7 +154,7 @@ public class ActivitySelectMatch extends MyActivity {
             finish();
         }
         else if(action != null && action.equals("onNotificationClicked")){
-            //in this case our firebase service started this activity, while this activity was running
+            //in this case our firebase service started this activity, while this activity was running on foreground
             String matchID = intent.getStringExtra("match");
             //this activity gets replaced with another one, displaying the correct match
             Intent i = new Intent(ActivitySelectMatch.this, ActivitySelectMatch.class);
@@ -166,7 +167,7 @@ public class ActivitySelectMatch extends MyActivity {
 
     @Override
     public void onBackPressed() {
-        if(type.equals("notification")){
+        if(startedFromNotification){
             Intent i = new Intent(this, ActivityMain.class);
             i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             //we need this because if the user taps on a notification while the app is in background or closed
@@ -176,6 +177,5 @@ public class ActivitySelectMatch extends MyActivity {
         } else {
             super.onBackPressed();
         }
-
     }
 }

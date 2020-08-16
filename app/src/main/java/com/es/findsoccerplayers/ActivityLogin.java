@@ -55,16 +55,16 @@ public class ActivityLogin extends MyActivity{
         FirebaseUser autUser = fAuth.getCurrentUser();
 
         Intent i = getIntent();
-        Bundle extras = i.getExtras();
+        String match = i.getStringExtra("match");
         //system tray notification
-        if(extras != null & autUser != null){
-            currentUserID = autUser.getUid();
+        if(match != null & autUser != null){
             if(Utils.isOffline(this))
                 Utils.showOfflineReadToast(this, false);
             else{
+                currentUserID = autUser.getUid();
                 Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
                 intent.putExtra("type", "notification");
-                intent.putExtra("match", i.getStringExtra("match"));
+                intent.putExtra("match", match);
                 startActivity(intent);
             }
             finish();

@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.Map;
-import com.es.findsoccerplayers.MySingleton;
+import com.es.findsoccerplayers.RequestQueueManager;
 
 public class FragmentChat extends Fragment {
 
@@ -181,9 +181,8 @@ public class FragmentChat extends Fragment {
 
             //Construct of the JSONObject fields
             notification.put("to", "/topics/" + ActivitySelectMatch.matchID);
-            notification.put("notification", notificationNoti );
+            notification.put("notification", notificationNoti);
             notification.put("data", notificationBody);
-
 
         } catch (JSONException e) {
         }
@@ -309,6 +308,6 @@ public class FragmentChat extends Fragment {
                 return params;
             }
         };
-        MySingleton.getInstance(FragmentChat.this.getActivity()).addToRequestQueue(jsonObjectRequest);
+        RequestQueueManager.getInstance(FragmentChat.this.getActivity()).addToRequestQueue(jsonObjectRequest);
     }
 }
