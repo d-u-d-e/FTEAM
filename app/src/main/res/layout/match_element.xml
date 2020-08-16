@@ -15,7 +15,7 @@
         android:layout_marginBottom="20dp"
         android:textSize="40sp"
         android:textStyle="bold"
-        android:textColor="@color/date_color"
+        android:textColor="@color/dateColor"
         app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintEnd_toStartOf="@id/match_element_time_label"
         app:layout_constraintStart_toStartOf="parent"

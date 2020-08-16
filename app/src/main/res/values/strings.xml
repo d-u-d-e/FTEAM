@@ -1,31 +1,46 @@
 <resources>
-    <string name="app_name">FindSoccerPlayers</string>
+    <string name="app_name">F-TEAM</string>
 
     <!--general result user feedback strings-->
     <string name="unknown_error">Unknown error</string>
     <string name="network_error">Network error</string>
-    <string name="login_success">Successfully logged in</string>
+    <string name="login_success">Successfully logged in.</string>
     <string name="register_success">Registration went fine, please log in with the new credentials.</string>
     <string name="field_missing">Required field!</string>
     <string name="unimplemented">TODO</string>
-    <string name="double_back">Push twice to exit</string>
-    <string name="select_birth_date">Select your birthdate!</string>
-    <string name="pass_too_short">Password must be 6 character long</string>
-    <string name="pass_not_equal">Passwords do not match</string>
-    <string name="email_not_equal">Emails do not match</string>
-    <string name="reset_psw_success">An email has been sent to you. Check your email box</string>
-    <string name="send_empty_message">You can\'t send an empty message</string>
-    <string name="missing_google_username">Your google username is missing, please edit your google profile. Default name assigned as "User"</string>
+    <string name="double_back">Push twice to exit.</string>
+    <string name="select_birth_date">Select your birth date!</string>
+    <string name="pass_too_short">Password must be 6 character long!</string>
+    <string name="pass_not_equal">Passwords do not match!</string>
+    <string name="email_not_equal">Emails do not match!</string>
+    <string name="reset_psw_success">An email has been sent to you. Check your email box.</string>
+    <string name="send_empty_message">You can\'t send an empty message.</string>
+    <string name="missing_google_username">Your google username is missing, please edit your google profile. Default name assigned as "User".</string>
     <string name="default_username">User</string>
-    <string name="unexpected_error">Unexpected error. If the error is due to network issues, please try later</string>
-    <string name="offlineWrite">You appear to be offline. Any performed operation will be queued and sent when the application is online</string>
-    <string name="offlineRead">You appear to be offline. Turn on Internet in order to load your data</string>
-    <string name="preferred_pos_not_set">Please check your settings and set a range in order to find matches</string>
-    <string name="empty_username">Username cannot be empty</string>
+    <string name="unexpected_error">Unexpected error. If the error is due to network issues, please try later.</string>
+    <string name="offline_write">You appear to be offline. Any performed operation will be queued and sent when the application is online.</string>
+    <string name="offline_read">You appear to be offline. Turn on Internet in order to load your data.</string>
+    <string name="preferred_pos_not_set">Please check your settings and set a range in order to find matches.</string>
+    <string name="empty_username">Username cannot be empty!</string>
+    <string name="all_fields_required">All fields are required!</string>
+    <string name="error_time_set">You can\'t play a game in the past. Change your date or time!</string>
+    <string name="gps_disabled_toast">GPS Disabled. Please enable for better experience.</string>
+    <string name="preference_saved">Preferences Saved!</string>
+    <string name="no_initial_position">Please set an initial position with a long press, or activate your GPS.</string>
+    <string name="local_permission_denied">Location permission denied!</string>
+    <string name="access_denied_permanently">ACCESS DENIED PERMANENTLY!</string>
+    <string name="location_access_denied">LOCATION ACCESS DENIED!</string>
+    <string name="joke_title_for_time_error">Time Traveler?</string>
+    <string name="match_deleted_by_creator">The match has been deleted by the creator!</string>
+    <string name="match_updated_success">Match successfully updated!</string>
+    <string name="match_deleted_success">Match successfully deleted!</string>
+    <string name="match_created_success">Match successfully created!</string>
+    <string name="join_success">You joined the match!</string>
+    <string name="join_fail">Either the match has been deleted or the maximum number of players have been reached.</string>
+    <string name="drop_success">You retired from the match!</string>
 
     <!--activities strings-->
     <string name="act_account_title">SIGNED IN WITH</string>
-    <string name="act_account_logout">LOG OUT</string>
     <string name="act_account_id">ID: %1$s</string>
     <string name="act_account_username">Username: %1$s</string>
     <string name="act_account_email">Email: %1$s</string>
@@ -47,9 +62,8 @@
     <string name="act_register_confirm_pass">Password confirm (required)</string>
     <string name="act_register_name">Name (required)</string>
     <string name="act_register_surname">Surname (required)</string>
-    <string name="act_register_date_birth">Birthdate:</string>
+    <string name="act_register_date_birth">Birth date:</string>
 
-    <string name="act_main_title">MAIN ACTIVITY</string>
     <string name="act_main_frag_avail_title">AVAILABLE MATCHES</string>
     <string name="act_main_frag_booked_title">BOOKED MATCHES</string>
     <string name="act_main_frag_yours_title">YOUR MATCHES</string>
@@ -57,85 +71,77 @@
     <string name="act_reset_sentence">Insert the email you used to register:</string>
     <string name="act_reset_title">RESET PASSWORD</string>
 
-    <string name="act_chat_title">Group chat</string>
+    <string name="act_cr_match_date_and_hour">SET DATE AND HOUR: </string>
+    <string name="act_cr_match_players_number">SET NUMBER OF PLAYERS: </string>
+    <string name="act_cr_match_players">Players</string>
+    <string name="act_cr_match_description">Description</string>
+    <string name="act_cr_match_create_game">Create game</string>
+    <string name="act_cr_match_add_position">CLICK HERE TO ADD YOUR POSITION </string>
+    <string name="act_cr_match_title_activity_maps">Map</string>
 
-    <string name="title_activity_info_match_booked">InfoMatchBookedActivity</string>
-
-
-    <!--MatchActivities strings-->
-    <string name="date_and_hour">Set date and hour: </string>
-    <string name="players_number">Set number of players: </string>
-    <string name="players">Players</string>
-    <string name="description">Description</string>
-    <string name="create_game">Create game</string>
-    <string name="add_position">Click here to add your position </string>
-    <string name="title_activity_maps">Map</string>
-    <string name="all_fields_required">All fields are required</string>
+    <string name="act_sett_account">Account</string>
+    <string name="act_sett_account_detailed">View and modify account options</string>
+    <string name="act_sett_edit_pref_pos">Edit search range</string>
+    <string name="act_sett_edit_pref_pos_detailed">Modify the searching distance for the available matches</string>
+    <string name="act_sett_logout">Log out</string>
+    <string name="act_sett_logout_detailed">Disconnect from your account</string>
 
     <!--MapActivities strings-->
-    <string name="normal_map">Normal View</string>
-    <string name="hybrid_map">Hybrid View</string>
-    <string name="satellite_map">Satellite View</string>
-    <string name="terrain_map">Terrain View</string>
-    <string name="gps_disabled_toast">GPS Disabled. Please enable for better experience</string>
-    <string name="local_permission_denied">Location Permission Denied</string>
-    <string name="gecodo_failed">Position name not found. Geocode didn\'t work.</string>
-    <string name="default_position_name">My Position</string>
-    <string name="how_many_players">How many players?</string>
-    <string name="select_a_place">Select a Place</string>
+    <string name="normal_map">Normal view</string>
+    <string name="hybrid_map">Hybrid view</string>
+    <string name="satellite_map">Satellite view</string>
+    <string name="terrain_map">Terrain view</string>
 
-
-    <!--FragmentInfoMatch strings-->
-    <string name="frag_info_booked_match_field">PLACE: </string>
-    <string name="frag_info_booked_match_day">DAY: </string>
-    <string name="frag_info_booked_match_missingPlayers">MISSING PLAYERS: </string>
-    <string name="frag_info_booked_match_description">DESCRIPTION: </string>
-    <string name="frag_info_booked_match_quota">QUOTA:</string>
-    <string name="frag_info_booked_match_description_dropoutBtn">DROP OUT</string>
-    <string name="delete">DELETE</string>
-    <string name="join">JOIN</string>
-
-    <string name="new_unread_messages">You have %1d new messages to read</string>
-
-
-    <!--FragmentAvailableMatches strings-->
-
-    <string name="frag_avail_matches_preference_msg">You are searching matches in a range of %1d km</string>
+    <string name="geocode_failed">Position name not found. Geocode did not work.</string>
+    <string name="default_position_name">My position</string>
+    <string name="select_a_place">Select a place</string>
+    <string name="gps_connecting">Connecting to GPS…</string>
 
     <!--ActivitySetLocation strings-->
-    <string name="complete_preferences">Select a distance and a position please!</string>
+    <string name="complete_pos_preferences">Select a distance and a position please!</string>
     <string name="select_a_distance">Select a distance</string>
     <string name="select_this_position_txt_btn">Select this position</string>
-    <string name="access_denied_permanently">ACCESS DENIED PERMANENTLY</string>
-    <string name="location_access_denied">LOCATION ACCESS DENIED</string>
-    <string name="preference_saved">Preferences Saved!</string>
-    <string name="no_initial_position">Please set an initial position with a long press, or activate your GPS.</string>
+    <string name="settings">Settings</string>
+    <string name="km"> km</string>
 
+    <!--FragmentInfoMatch strings-->
+    <string name="frag_info_match_place">PLACE: </string>
+    <string name="frag_info_match_day">DAY: </string>
+    <string name="frag_info_match_missingPlayers">MISSING PLAYERS: </string>
+    <string name="frag_info_match_description">DESCRIPTION: </string>
+    <string name="frag_info_match_how_many_players">How many players?</string>
+    <string name="frag_info_match_description_dropout">DROP OUT</string>
+    <string name="frag_info_match_delete">DELETE</string>
+    <string name="frag_info_match_join">JOIN</string>
+    <string name="frag_info_match_drop">DROP OUT</string>
+    <string name="chat_frag_title">CHAT</string>
+    <string name="info_frag_title">INFO</string>
+
+    <!--FragmentAvailableMatches strings-->
+    <string name="frag_avail_matches_preference_msg">You are searching matches in a range of %1d km</string>
 
     <!--Match element strings-->
     <string name="match_element_place_label">PLACE:</string>
     <string name="match_element_time_label">HOUR:</string>
     <string name="match_element_desc_label">DESCRIPTION:</string>
-    <string name="info_match_delete">DELETE MATCH</string>
 
-    <!--Dialog strings-->
+    <!--FragmentChat strings-->
+    <string name="new_unread_messages">You have %1d new messages to read</string>
+
+    <!--Dialogs strings-->
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="alert_location_request">For better experience, we need Location Permission . Do you want to enable the location?</string>
-    <string name="settings">Settings</string>
     <string name="alert_location_denied_permanently">\"Location Permission Denied. Please enable the Location Permission in Authorization. \"</string>
+    <string name="insert_description">Insert a description</string>
 
-    <!--LocationPermissionActivity strings-->
+    <!--LocationAccessActivity strings-->
     <string name="reason">For a better usage experience, we need the access to your Location.</string>
     <string name="alert_dialog_loc_perm">Without Location Permission, the interaction with maps is only manual. You can give this permission later.</string>
 
-    <string name="sort_by_match_date_desc">Remote</string>
-    <string name="sort_by_match_date_asc">Next upcoming</string>
+    <!--Menu strings-->
+    <string name="menu_remote_matches_first">Remote first</string>
+    <string name="menu_next_upcoming">Upcoming first</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_lastUpdated">Last Updated</string>
-
-    <string name="notification_failed">Message not delivered. Try later</string>
-    <string name="km"> km</string>
-
-
+    <string name="menu_last_updated">Last updated first</string>
 </resources>

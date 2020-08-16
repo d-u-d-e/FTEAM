@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="10dp"
-                    android:text="@string/frag_info_booked_match_field"
+                    android:text="@string/frag_info_match_place"
                     android:textStyle="bold" />
 
                 <TextView
@@ -89,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_gravity="center"
-                    android:text="@string/frag_info_booked_match_day"
+                    android:text="@string/frag_info_match_day"
                     android:textStyle="bold" />
 
                 <TextView
@@ -184,7 +184,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_gravity="center"
-                    android:text="@string/frag_info_booked_match_missingPlayers"
+                    android:text="@string/frag_info_match_missingPlayers"
                     android:textStyle="bold"/>
 
                 <TextView
@@ -275,7 +275,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/info_match_descriptionText" />
 
-            <com.es.findsoccerplayers.models.CustomMapView
+            <com.es.fteam.models.CustomMapView
                 android:id="@+id/info_match_mapPreview"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
@@ -292,7 +292,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-            </com.es.findsoccerplayers.models.CustomMapView>
+            </com.es.fteam.models.CustomMapView>
 
             <Button
                 android:id="@+id/info_match_actionBtn"
