@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 public class ActivitySelectMatch extends MyActivity {
 
     public static String matchID = null;
+    private boolean startedFromNotification = false;
     ViewPager vp;
 
     @Override
@@ -49,6 +50,7 @@ public class ActivitySelectMatch extends MyActivity {
         }
         else { //activity started by messaging service when user taps on notification
                 //type is "notification"
+            startedFromNotification = true;
             matchID = i.getStringExtra("match");
             DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
             r.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -165,7 +167,6 @@ public class ActivitySelectMatch extends MyActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         Intent i = new Intent(this, ActivityMain.class);
         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         //we need this because if the user taps on a notification while the app is in background or closed
