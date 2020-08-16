@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.es.findsoccerplayers">
+    package="com.es.fteam">
     <!--
             The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
             Google Maps Android API v2, but you must specify either coarse or fine
@@ -22,8 +22,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="ExtraText">
         <activity
-            android:name=".ActivitySetLocation"
-            android:parentActivityName=".ActivitySettings" />
+            android:name="com.es.fteam.ActivitySetLocation"
+            android:parentActivityName="com.es.fteam.ActivitySettings" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -37,38 +37,38 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ActivityMaps"
-            android:parentActivityName=".ActivityCreateMatch" />
+            android:name="com.es.fteam.ActivityMaps"
+            android:parentActivityName="com.es.fteam.ActivityCreateMatch" />
         <activity
-            android:name=".LocationAccessActivity"
-            android:parentActivityName=".ActivityMain"
+            android:name="com.es.fteam.LocationAccessActivity"
+            android:parentActivityName="com.es.fteam.ActivityMain"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ActivityCreateMatch"
-            android:parentActivityName=".ActivityMain" />
+            android:name="com.es.fteam.ActivityCreateMatch"
+            android:parentActivityName="com.es.fteam.ActivityMain" />
         <activity
-            android:name=".ActivitySelectMatch"
-            android:parentActivityName=".ActivityMain"
+            android:name="com.es.fteam.ActivitySelectMatch"
+            android:parentActivityName="com.es.fteam.ActivityMain"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivityAccount"
-            android:parentActivityName=".ActivitySettings" />
+            android:name="com.es.fteam.ActivityAccount"
+            android:parentActivityName="com.es.fteam.ActivitySettings" />
         <activity
-            android:name=".ActivitySettings"
-            android:parentActivityName=".ActivityMain" />
+            android:name="com.es.fteam.ActivitySettings"
+            android:parentActivityName="com.es.fteam.ActivityMain" />
         <activity
-            android:name=".ActivityResetPassword"
-            android:parentActivityName=".ActivityLogin"
+            android:name="com.es.fteam.ActivityResetPassword"
+            android:parentActivityName="com.es.fteam.ActivityLogin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivityRegister"
-            android:parentActivityName=".ActivityLogin"
+            android:name="com.es.fteam.ActivityRegister"
+            android:parentActivityName="com.es.fteam.ActivityLogin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivityMain" />
+            android:name="com.es.fteam.ActivityMain" />
         <activity
-            android:name=".ActivityLogin"
+            android:name="com.es.fteam.ActivityLogin"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -78,7 +78,7 @@
         </activity>
 
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name="com.es.fteam.MyFirebaseMessagingService"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

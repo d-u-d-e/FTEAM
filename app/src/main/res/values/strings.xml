@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FindSoccerPlayers</string>
+    <string name="app_name">F-TEAM</string>
 
     <!--general result user feedback strings-->
     <string name="unknown_error">Unknown error</string>

@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
-        applicationId "com.es.findsoccerplayers"
+        applicationId "com.es.fteam"
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
