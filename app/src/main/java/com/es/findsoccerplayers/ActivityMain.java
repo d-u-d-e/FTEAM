@@ -29,8 +29,6 @@ public class ActivityMain extends MyActivity {
     private Toast backToast;
     ViewPagerTabs adapter;
     ViewPager vp;
-    private final String FIRST_TIME = "First_time";
-
 
     FragmentYourMatches ymFrag;
     MenuItem[] sortMenuItems = new MenuItem[FragmentMatches.SortType.values().length]; //one for each sort type
@@ -40,14 +38,14 @@ public class ActivityMain extends MyActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean firstTime = sharedPreferences.getBoolean(ActivityLogin.currentUserID + "." + FIRST_TIME, true);
+        boolean firstTime = sharedPreferences.getBoolean(ActivityLogin.currentUserID + "." + "firstTime", true);
 
         //Start check location
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             if(firstTime){
                 //show only if is the first time we open the app
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(ActivityLogin.currentUserID + "." + FIRST_TIME, false);
+                editor.putBoolean(ActivityLogin.currentUserID + "." + "firstTime", false);
                 editor.commit();
                 startActivity(new Intent(ActivityMain.this, LocationAccessActivity.class));
             }else if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)){
