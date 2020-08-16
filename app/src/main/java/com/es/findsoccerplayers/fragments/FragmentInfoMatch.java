@@ -112,6 +112,7 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
         actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getActivity().finish(); //terminate selectMatch
                 switch (type) {
                     case "yours":  //delete match case
                         deleteMatch(originalMatch.getMatchID());
@@ -123,7 +124,6 @@ public class FragmentInfoMatch extends Fragment implements OnMapReadyCallback, D
                         dropOut();
                         break;
                 }
-                getActivity().finish(); //terminate selectMatch
                 Intent i = new Intent(getContext(), ActivityMain.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(i);

@@ -229,11 +229,10 @@ public class FragmentAvailableMatches extends FragmentMatches {
                 assert m != null;
                 FragmentAvailableMatches.this.removeUI(m.getMatchID()); //delete entry if exists
                 String matchBrowsed = ActivitySelectMatch.matchID; //non null if this activity is running
-                if(matchBrowsed != null && matchBrowsed.equals(m.getMatchID())){
+                if(matchBrowsed != null && matchBrowsed.equals(m.getMatchID()) && !ActivityLogin.currentUserID.equals(m.getCreatorID())){
                     //this means the user is browsing a match which got deleted, so we notify him
                     Intent i = new Intent(FragmentAvailableMatches.this.getContext(), ActivitySelectMatch.class);
                     i.setAction("finishOnMatchDeleted");
-                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(i);
                     Utils.showErrorToast(getActivity(), getString(R.string.match_deleted_by_creator), false);
                 }
