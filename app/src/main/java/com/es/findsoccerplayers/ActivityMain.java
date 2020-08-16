@@ -7,8 +7,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +29,7 @@ public class ActivityMain extends MyActivity {
     private Toast backToast;
     ViewPagerTabs adapter;
     ViewPager vp;
+    private final String FIRST_TIME = "First_time";
 
 
     FragmentYourMatches ymFrag;
@@ -36,12 +39,19 @@ public class ActivityMain extends MyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean firstTime = sharedPreferences.getBoolean(FIRST_TIME, true);
 
         //Start check location
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            //Show only if the  user denied it, but not permanently
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)){
+            if(firstTime){
+                //show only if is the first time we open the app
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(FIRST_TIME, false);
+                editor.commit();
+                startActivity(new Intent(ActivityMain.this, LocationAccessActivity.class));
+            }else if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)){
+                //Show only if the  user denied it, but not permanently
                 startActivity(new Intent(ActivityMain.this, LocationAccessActivity.class));
             }
         }
