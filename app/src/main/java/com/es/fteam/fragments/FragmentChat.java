@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -83,11 +85,52 @@ public class FragmentChat extends Fragment {
         this.context = context;
     }
 
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        db = FirebaseDatabase.getInstance();
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        //here endReached is adjusted when user scrolls the list
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                assert manager != null;
+                int position = manager.findLastVisibleItemPosition();
+                int total = manager.getItemCount();
+                if (position != RecyclerView.NO_POSITION)
+                    endReached = position >= total - 1;
+            }
+        });
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        //preferences are set for each user used to log in with
+        lastViewedMessage = preferences.getString(ActivityLogin.currentUserID + "." +
+                ActivitySelectMatch.matchID + "." + LAST_VIEWED_MESSAGE, null);
+
+        //will be updated after
+        endReached = true;
+        isDisplayed = true;
+        chats = new ArrayList<>();
+        messageAdapter = new MessageAdapter(context, chats);
+        recyclerView.setAdapter(messageAdapter);
+        //clearly if no lastViewedMessage exists, then 0 seen msg have also been retrieved
+        if (lastViewedMessage == null)
+            seenMsgRetrieved = true;
+
+        NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(ActivitySelectMatch.matchID, 1);
+        sync();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_chat, container, false);
-
-        db = FirebaseDatabase.getInstance();
         ImageButton sendButton = view.findViewById(R.id.chat_send_btn);
         messageText = view.findViewById(R.id.chat_message_text);
 
@@ -105,43 +148,6 @@ public class FragmentChat extends Fragment {
 
 
         recyclerView = view.findViewById(R.id.chat_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        //here endReached is adjusted when user scrolls the list
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                assert manager != null;
-                int position = manager.findLastVisibleItemPosition();
-                int total = manager.getItemCount();
-                if(position != RecyclerView.NO_POSITION)
-                    endReached = position >= total - 1;
-            }
-        });
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        //preferences are set for each user used to log in with
-        lastViewedMessage = preferences.getString(ActivityLogin.currentUserID + "." +
-                ActivitySelectMatch.matchID + "." + LAST_VIEWED_MESSAGE, null);
-
-        //will be updated after
-        endReached = true;
-        isDisplayed = true;
-        chats = new ArrayList<>();
-        messageAdapter = new MessageAdapter(context, chats);
-        recyclerView.setAdapter(messageAdapter);
-        //clearly if no lastViewedMessage exists, then 0 seen msg have also been retrieved
-        if(lastViewedMessage == null)
-            seenMsgRetrieved = true;
-
-        NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(ActivitySelectMatch.matchID, 1);
-
-        sync();
         return view;
     }
 

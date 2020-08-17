@@ -18,6 +18,7 @@ import com.es.fteam.R;
 import com.es.fteam.Utils;
 import com.es.fteam.adapter.MatchAdapter;
 import com.es.fteam.models.Match;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -71,7 +72,7 @@ public class FragmentBookedMatches extends FragmentMatches {
     private void sync(){
 
             DatabaseReference ref =
-                    db.getReference().child("users").child(ActivityLogin.currentUserID).child("bookedMatches");
+                    db.getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("bookedMatches");
 
             ref.addChildEventListener(new ChildEventListener() {
                 @Override

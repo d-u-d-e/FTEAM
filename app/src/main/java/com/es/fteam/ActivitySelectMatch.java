@@ -23,11 +23,14 @@ import com.google.firebase.database.ValueEventListener;
 public class ActivitySelectMatch extends MyActivity {
 
     public static String matchID = null;
+    private boolean onReplace;
     ViewPager vp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        onReplace = false;
 
         Intent i = getIntent();
         Bundle extras = i.getExtras();
@@ -132,14 +135,14 @@ public class ActivitySelectMatch extends MyActivity {
 
     @Override
     protected void onPause() {
-        FragmentChat.isDisplayed = false;
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
         FragmentChat.isDisplayed = false;
-        super.onDestroy();
+        if(onReplace){
+            Intent i = new Intent(this, ActivitySelectMatch.class);
+            i.putExtra("type", "notification");
+            i.putExtra("match", matchID);
+            startActivity(i);
+        }
     }
 
     @Override
@@ -154,23 +157,8 @@ public class ActivitySelectMatch extends MyActivity {
         else if(action != null && action.equals("onNotificationClicked")){
             //in this case our firebase service started this activity, while this activity was running on foreground
             matchID = intent.getStringExtra("match");
-            DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
-            r.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    Match m = snapshot.getValue(Match.class);
-                    assert m != null;
-                    String type = "booked";
-                    if(m.getCreatorID().equals(ActivityLogin.currentUserID))
-                        type = "yours";
-                    setTabLayout(m, type, 1);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError error) {
-
-                }
-            });
+            onReplace = true;
+            finish();
         }
     }
 
