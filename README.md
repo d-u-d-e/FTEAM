@@ -10,7 +10,7 @@ email: embededprog@gmail.com (yes there are no typos)<br>
 password: androidst1
 
 and click on https://console.firebase.google.com/u/1/project/findsoccerplayers. Then go to "project settings" and add your digital fingerprint obtained from Android Studio
-(double click on signingReport at usually <i> Gradle -> FTEAM -> Tasks -> android -> signingReport</i>)
+(double click on signingReport at usually *Gradle -> FTEAM -> Tasks -> android -> signingReport*)
 
 ### Requirements
 Minimum OS: Android 7.0 (API 24)
