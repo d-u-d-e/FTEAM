@@ -64,8 +64,6 @@ public class FragmentChat extends Fragment {
     private static final String CONTENT_TYPE = "application/json";
     static final String LAST_VIEWED_MESSAGE = "lastViewedMessage";
 
-    private ChildEventListener listener;
-
     //true if current user is looking at the chat, otherwise false
     public static boolean isDisplayed = false;
     //true if the end of the message list has been reached, otherwise false.
@@ -87,7 +85,6 @@ public class FragmentChat extends Fragment {
         this.context = context;
         this.matchID = matchID;
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -203,6 +200,10 @@ public class FragmentChat extends Fragment {
      * When this method is called, all new messages are cleared
      */
     public void onNewMessagesRead(){
+        final SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(ActivityLogin.currentUserID + "." +
+                matchID + "." + LAST_VIEWED_MESSAGE, lastViewedMessage);
+        editor.apply();
         mutex.lock();
         try {
             messageAdapter.onNewMessagesRead();
@@ -215,10 +216,12 @@ public class FragmentChat extends Fragment {
 
     private void sync(){
         DatabaseReference ref = db.getReference("chats").child(matchID);
-        final SharedPreferences.Editor editor = preferences.edit();
         //Cancel the notification if we open the related chat
 
-        listener = new ChildEventListener() {
+        //while not every already seen message have been retrieved, do this
+        //at the end counter indicates the point where new messages start
+        //sending a message will "clear" all new (unread) messages
+        ChildEventListener listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
                 Message m = snapshot.getValue(Message.class);
@@ -227,33 +230,28 @@ public class FragmentChat extends Fragment {
                 mutex.lock();
                 try {
                     chats.add(m);
-                    if(!seenMsgRetrieved){ //while not every already seen message have been retrieved, do this
+                    if (!seenMsgRetrieved) { //while not every already seen message have been retrieved, do this
                         counter++;
                         //at the end counter indicates the point where new messages start
-                        if(messageID.equals(lastViewedMessage)){
+                        if (messageID.equals(lastViewedMessage)) {
                             seenMsgRetrieved = true;
                             messageAdapter.setNewMsgStartingPosition(counter);
                             messageAdapter.notifyDataSetChanged();
                             recyclerView.scrollToPosition(counter);
                         }
-                    }
-                    else{
+                    } else {
                         messageAdapter.notifyItemInserted(chats.size() - 1);
-
                         //sending a message will "clear" all new (unread) messages
-                        if(m.getSenderID().equals(ActivityLogin.currentUserID))
+                        if (m.getSenderID().equals(ActivityLogin.currentUserID))
                             onNewMessagesRead();
-                        else{
+                        else {
                             messageAdapter.incrementNewMessagesCounter();
-                            editor.putString(ActivityLogin.currentUserID + "." +
-                                    matchID + "." + LAST_VIEWED_MESSAGE, m.getMessageID());
                             lastViewedMessage = m.getMessageID();
-                            editor.apply();
-                            if(isDisplayed && endReached)
-                                    recyclerView.scrollToPosition(chats.size()-1);
+                            if (isDisplayed && endReached)
+                                recyclerView.scrollToPosition(chats.size() - 1);
                         }
                     }
-                }finally {
+                } finally {
                     mutex.unlock();
                 }
             }

@@ -147,6 +147,7 @@ public class ActivitySelectMatch extends MyActivity {
         }
         else if(action != null && action.equals("onNotificationClicked")){
             //in this case our firebase service started this activity, while this activity was running on foreground
+            //or the system tray launched ActivityLogin, while this activity was running on background
             Intent i = new Intent(this, ActivitySelectMatch.class);
             i.putExtra("type", "notification");
             i.putExtra("match", intent.getStringExtra("match"));
