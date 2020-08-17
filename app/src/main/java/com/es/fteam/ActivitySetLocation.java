@@ -35,6 +35,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -59,6 +60,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
     private LatLng myPosition;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private boolean locationAccess;
+    private Circle circle;
 
     private FloatingActionButton position_fab;
 
@@ -143,12 +145,8 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(isTracking){
-                    PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
-                    isTracking = false;
-                }
                 if(myPosition != null){
-                    drawCircle(map, myPosition, progress * 500);
+                    circle.setRadius(progress * 500);
                     if(progress <= 10){
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 12));
                     } else if(progress < 20){
@@ -165,7 +163,13 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                //Do nothing
+                if(myPosition != null){
+                    circle = drawCircle(map, myPosition);
+                }
+                if(isTracking){
+                    PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
+                    isTracking = false;
+                }
             }
 
             @Override
@@ -334,16 +338,16 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
      * cover to go to play a match.
      * @param map the map where to draw the circle
      * @param latlng center of the circle
-     * @param radius radius of the circle
      */
-    public void drawCircle(GoogleMap map, LatLng latlng, int radius){
+    public Circle drawCircle(GoogleMap map, LatLng latlng){
         map.clear();
-        map.addCircle(new CircleOptions()
-        .center(latlng)
-        .strokeColor(Color.BLUE)
-        .strokeWidth(1)
-        .radius(radius)
-        .fillColor(Color.parseColor("#500084d3")));
+        Circle cir =  map.addCircle(new CircleOptions()
+                .center(latlng)
+                .strokeColor(Color.BLUE)
+                .strokeWidth(1)
+                .radius(0)
+                .fillColor(Color.parseColor("#500084d3")));
+        return cir;
     }
 
     @Override
@@ -352,6 +356,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GPS_REQUEST) {
                 PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
+                isTracking = true;
                 Utils.showMyLocation(map);
                 position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
             }
