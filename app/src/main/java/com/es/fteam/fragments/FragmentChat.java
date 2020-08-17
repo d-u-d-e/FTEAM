@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.es.fteam.ActivityLogin;
-import com.es.fteam.ActivitySelectMatch;
 import com.es.fteam.models.Message;
 import com.es.fteam.R;
 import com.es.fteam.Utils;
@@ -76,7 +75,7 @@ public class FragmentChat extends Fragment {
     private boolean seenMsgRetrieved = false;
 
     //counter for already seen messages
-    private int counter = 0;
+    private int seenCounter = 0;
 
     private String matchID;
 
@@ -90,9 +89,9 @@ public class FragmentChat extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         db = FirebaseDatabase.getInstance();
-        recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         //here endReached is adjusted when user scrolls the list
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -196,14 +195,19 @@ public class FragmentChat extends Fragment {
         sendNotification(notification);
     }
 
+
+    public void updateLastViewedMessage(){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(ActivityLogin.currentUserID + "." +
+                matchID + "." + LAST_VIEWED_MESSAGE, lastViewedMessage);
+        editor.apply();
+    } 
+
     /**
      * When this method is called, all new messages are cleared
      */
     public void onNewMessagesRead(){
-        final SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(ActivityLogin.currentUserID + "." +
-                matchID + "." + LAST_VIEWED_MESSAGE, lastViewedMessage);
-        editor.apply();
+        updateLastViewedMessage();
         mutex.lock();
         try {
             messageAdapter.onNewMessagesRead();
@@ -231,16 +235,21 @@ public class FragmentChat extends Fragment {
                 try {
                     chats.add(m);
                     if (!seenMsgRetrieved) { //while not every already seen message have been retrieved, do this
-                        counter++;
+                        seenCounter++;
                         //at the end counter indicates the point where new messages start
                         if (messageID.equals(lastViewedMessage)) {
                             seenMsgRetrieved = true;
-                            messageAdapter.setNewMsgStartingPosition(counter);
+                            messageAdapter.setNewMsgStartingPosition(seenCounter);
                             messageAdapter.notifyDataSetChanged();
-                            recyclerView.scrollToPosition(counter);
+                            recyclerView.scrollToPosition(seenCounter - 1);
                         }
                     } else {
+
                         messageAdapter.notifyItemInserted(chats.size() - 1);
+
+                        if(chats.size() == seenCounter + 1)
+                            recyclerView.scrollToPosition(seenCounter);
+
                         //sending a message will "clear" all new (unread) messages
                         if (m.getSenderID().equals(ActivityLogin.currentUserID))
                             onNewMessagesRead();

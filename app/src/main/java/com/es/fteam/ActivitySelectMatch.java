@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 public class ActivitySelectMatch extends MyActivity {
 
     ViewPager vp;
+    FragmentChat fragmentChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class ActivitySelectMatch extends MyActivity {
         vp = findViewById(R.id.info_match_booked_vp);
         ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
         adapter.addFragment(new FragmentInfoMatch(m, type), getString(R.string.info_frag_title));
-        final FragmentChat fragmentChat = new FragmentChat(this, m.getMatchID());
+        fragmentChat = new FragmentChat(this, m.getMatchID());
         MyFragmentManager.setFragment(fragmentChat);
         adapter.addFragment(fragmentChat, getString(R.string.chat_frag_title));
         vp.setAdapter(adapter);
@@ -110,7 +111,7 @@ public class ActivitySelectMatch extends MyActivity {
                 super.onPageSelected(position);
                 //switch from chat to info tab: new messages are considered read now
                 if(FragmentChat.isDisplayed && position == 0)
-                    MyFragmentManager.getFragmentChat().onNewMessagesRead();
+                    fragmentChat.onNewMessagesRead();
                 FragmentChat.isDisplayed = position == 1;
             }
         });
@@ -159,6 +160,11 @@ public class ActivitySelectMatch extends MyActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+        if(FragmentChat.isDisplayed){
+            fragmentChat.updateLastViewedMessage();
+        }
+
         Intent i = new Intent(this, ActivityMain.class);
         i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         //we need this because if the user taps on a notification while the app is in background or closed
