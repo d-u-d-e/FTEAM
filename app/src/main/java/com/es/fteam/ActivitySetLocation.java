@@ -25,7 +25,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.es.fteam.position.PositionClient;
+import com.es.fteam.position.Position;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
@@ -35,6 +35,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -59,6 +60,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
     private LatLng myPosition;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private boolean locationAccess;
+    private Circle circle;
 
     private FloatingActionButton position_fab;
 
@@ -69,6 +71,7 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
     private boolean mapReady = false;
     private boolean isTracking = false;
     private double index;
+    private Position.PositionSettings currentPosSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +89,12 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
-
         position_fab = findViewById(R.id.setting_position_fab);
         distanceView = findViewById(R.id.radius);
         radiusBar = findViewById(R.id.seek_bar);
         Button save = findViewById(R.id.save_button);
+
+        currentPosSettings = Position.getPositionSettings(this);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         //create a callback when receive a location result
@@ -105,9 +109,8 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
             }
         };
 
-
-        //check if the GPS is disabled or locationAccess enabled and set the right configuration
-        if(PositionClient.isGpsOFF(getApplicationContext()) || !locationAccess){
+        //check if the GPS is disabled or locationAccess is not enabled and set the right configuration
+        if(Position.isGpsOFF(getApplicationContext()) || !locationAccess){
             //if the GPS is disabled show a Toast
             Toast.makeText(ActivitySetLocation.this, R.string.gps_disabled_toast, Toast.LENGTH_SHORT).show();
             position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
@@ -121,12 +124,12 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
                 if(!locationAccess){
                     getLocationPermission();
                 }else {
-                    if(PositionClient.isGpsOFF(getApplicationContext())){
-                        PositionClient.turnGPSon(ActivitySetLocation.this);
+                    if(Position.isGpsOFF(getApplicationContext())){
+                        Position.turnGPSon(ActivitySetLocation.this);
                     } else {
                         // Go to the new view in the map and change the color
                         if(!isTracking){
-                            PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
+                            Position.startTrackingPosition(fusedLocationClient, locationCallback);
                             isTracking = true;
                             map.clear();
                             position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
@@ -143,12 +146,8 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(isTracking){
-                    PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
-                    isTracking = false;
-                }
                 if(myPosition != null){
-                    drawCircle(map, myPosition, progress * 500);
+                    circle.setRadius(progress * 500);
                     if(progress <= 10){
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 12));
                     } else if(progress < 20){
@@ -165,7 +164,13 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                //Do nothing
+                if(myPosition != null){
+                    circle = drawCircle(map, myPosition);
+                }
+                if(isTracking){
+                    Position.stopTrackingPosition(fusedLocationClient, locationCallback);
+                    isTracking = false;
+                }
             }
 
             @Override
@@ -210,23 +215,21 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
         mapReady = true;
 
         if(locationAccess){
-            if(PositionClient.isGpsOFF(ActivitySetLocation.this)){
-                PositionClient.turnGPSon(ActivitySetLocation.this);
+            if(Position.isGpsOFF(ActivitySetLocation.this)){
+                Position.turnGPSon(ActivitySetLocation.this);
             } else{
-                Utils.showMyLocation(map);
+                Position.showMyLocation(map);
             }
         }
 
 
         if(!isTracking && locationAccess){
-            PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
+            Position.startTrackingPosition(fusedLocationClient, locationCallback);
             isTracking = true;
         }
 
-
         onMapMoving(map);//if the camera moves because the user move it, stop tracking location. He's looking for a place.
         setMapLongClick(map);// Add a marker in a long position click
-
     }
 
     /**
@@ -239,14 +242,13 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
             public void onCameraMoveStarted(int reason) {
                 if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE){
                     if(isTracking){
-                        PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
+                        Position.stopTrackingPosition(fusedLocationClient, locationCallback);
                         isTracking = false;
                     }
                 }
             }
         });
     }
-
 
     /**
      * If the user make a long click on the map, add in that position a marker
@@ -257,16 +259,15 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
             @Override
             public void onMapLongClick(LatLng latLng) {
                 map.clear();
-                if(isTracking){
-                    PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
-                    isTracking = false;
-                }
                 radiusBar.setProgress(0);
                 map.addMarker(new MarkerOptions().position(latLng)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                 myPosition = latLng;
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 12));
-
+                if(isTracking){
+                    Position.stopTrackingPosition(fusedLocationClient, locationCallback);
+                    isTracking = false;
+                }
             }
         });
 
@@ -277,15 +278,15 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //If I have the permission to access to the location set locationAcces to true
+                //If I have the permission to access the location set locationAccess to true
                 locationAccess = true;
                 //if the GPS is turned off, ask to turn it on
-                if(PositionClient.isGpsOFF(getApplicationContext())){
-                    PositionClient.turnGPSon(ActivitySetLocation.this);
+                if(Position.isGpsOFF(getApplicationContext())){
+                    Position.turnGPSon(ActivitySetLocation.this);
                 }else if(!isTracking){
                     isTracking = true;
-                    PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
-                    Utils.showMyLocation(map);
+                    Position.startTrackingPosition(fusedLocationClient, locationCallback);
+                    Position.showMyLocation(map);
                 }
             } else{
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -333,17 +334,16 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
      * If the user start moving the seekBar, then draw a semi-transparent circle, so he can see the maximum distance he will
      * cover to go to play a match.
      * @param map the map where to draw the circle
-     * @param latlng center of the circle
-     * @param radius radius of the circle
+     * @param latLng center of the circle
      */
-    public void drawCircle(GoogleMap map, LatLng latlng, int radius){
+    public Circle drawCircle(GoogleMap map, LatLng latLng){
         map.clear();
-        map.addCircle(new CircleOptions()
-        .center(latlng)
-        .strokeColor(Color.BLUE)
-        .strokeWidth(1)
-        .radius(radius)
-        .fillColor(Color.parseColor("#500084d3")));
+        return map.addCircle(new CircleOptions()
+                .center(latLng)
+                .strokeColor(Color.BLUE)
+                .strokeWidth(1)
+                .radius(0)
+                .fillColor(Color.parseColor("#500084d3")));
     }
 
     @Override
@@ -351,8 +351,9 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GPS_REQUEST) {
-                PositionClient.startTrackingPosition(fusedLocationClient, locationCallback);
-                Utils.showMyLocation(map);
+                Position.startTrackingPosition(fusedLocationClient, locationCallback);
+                isTracking = true;
+                Position.showMyLocation(map);
                 position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
             }
         }
@@ -367,21 +368,22 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             locationAccess = true;
         } else {
+            locationAccess = false;
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         }
     }
 
     @Override
     public void onBackPressed() {
-        if(myPosition == null || index <= 0){
-            Utils.showToast(ActivitySetLocation.this, R.string.complete_pos_preferences, true);
-        }
-        else{
+        if(currentPosSettings != null){
             if(isTracking){
-                PositionClient.stopTrackingPosition(fusedLocationClient, locationCallback);
+                Position.stopTrackingPosition(fusedLocationClient, locationCallback);
                 isTracking = false;
             }
             super.onBackPressed();
+        }
+        else{
+            Utils.showToast(ActivitySetLocation.this, R.string.complete_pos_preferences, true);
         }
     }
 }

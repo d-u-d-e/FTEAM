@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.es.fteam.ActivityLogin;
+import com.es.fteam.ActivitySetLocation;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -16,13 +20,19 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 
 
-public class PositionClient {
+public class Position {
 
     private static final int GPS_REQUEST = 1001;
-    private static final String TAG = "PositionClient";
+
+    public static class PositionSettings{
+        public LatLng position;
+        public double radius;
+    }
 
     /*Location Request builder.
     * A data object that contains quality of service parameters for requests to the FusedLocationProviderClient.*/
@@ -63,7 +73,7 @@ public class PositionClient {
 
         //Build a LocationSettingRequest passing a LocationRequest.
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(PositionClient.getLocationReq());
+                .addLocationRequest(Position.getLocationReq());
         LocationSettingsRequest mLocationSettingsRequest = builder.build(); //Creates a LocationSettingsRequest that can be used with SettingsApi.
         builder.setAlwaysShow(true); //Set this to true if location is required to continue and false if having location provides better results, but is not required. This changes the wording/appearance of the dialog accordingly.
 
@@ -87,18 +97,40 @@ public class PositionClient {
                                     ResolvableApiException rae = (ResolvableApiException) e;
                                     rae.startResolutionForResult((Activity) context, GPS_REQUEST);
                                 } catch (IntentSender.SendIntentException sie) {
-                                    //Google say to ignore this error
-                                    Log.i(TAG, "PendingIntent unable to execute request.");
+                                    //Google says to ignore this error
                                 }
                                 break;
                             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                                 //An error in LocationSetting.
                                 String errorMessage = "Location settings are inadequate";
-                                Log.e(TAG, errorMessage);
+                                Log.e("Position", errorMessage);
                                 break;
                         }
                     }
                 });
     }
 
+    /**
+     * Get the current preferred position from the preferences. As always each string key is prepended by
+     * the current user + dot
+     */
+    public static PositionSettings getPositionSettings(Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String pLng = sharedPreferences.getString(ActivityLogin.currentUserID + "." + ActivitySetLocation.LONGITUDE, null);
+        String pLat = sharedPreferences.getString(ActivityLogin.currentUserID + "." + ActivitySetLocation.LATITUDE, null);
+        String pRad =  sharedPreferences.getString(ActivityLogin.currentUserID + "." + ActivitySetLocation.RADIUS, null);
+
+        if(pLat == null || pLng == null) return null;
+        assert pRad != null;
+
+        PositionSettings ps = new PositionSettings();
+        ps.position = new LatLng(Double.parseDouble(pLat), Double.parseDouble(pLng));
+        ps.radius = Double.parseDouble(pRad);
+        return ps;
+    }
+
+    public static void showMyLocation(GoogleMap map){
+        map.setMyLocationEnabled(true); // show a small blue circle for my position
+        map.getUiSettings().setMyLocationButtonEnabled(false);// I create my own beautiful position floating action button. Don't need this
+    }
 }

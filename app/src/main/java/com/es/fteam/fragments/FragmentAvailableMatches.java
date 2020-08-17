@@ -3,10 +3,8 @@ package com.es.fteam.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +21,7 @@ import com.es.fteam.R;
 import com.es.fteam.Utils;
 import com.es.fteam.adapter.MatchAdapter;
 import com.es.fteam.models.Match;
-import com.google.android.gms.maps.model.LatLng;
+import com.es.fteam.position.Position;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,11 +33,7 @@ import java.util.Calendar;
 
 public class FragmentAvailableMatches extends FragmentMatches {
 
-    private static class PositionSettings{
-        LatLng position;
-        double radius;
-    }
-    private PositionSettings positionSettings;
+    private Position.PositionSettings positionSettings;
     private TextView message;
 
     @Override
@@ -66,7 +60,7 @@ public class FragmentAvailableMatches extends FragmentMatches {
         recyclerView.setMotionEventSplittingEnabled(false);
         //recyclerView.setItemAnimator(null);
 
-        positionSettings = getPositionSettings();
+        positionSettings = Position.getPositionSettings(getContext());
 
         //this message simply shows the current preference radius
         message = view.findViewById(R.id.availableMatchMessage);
@@ -109,35 +103,16 @@ public class FragmentAvailableMatches extends FragmentMatches {
     }
 
     /**
-     * Get the current preferred position from the preferences. As always each string key is prepended by
-     * the current user + dot
-     */
-    private PositionSettings getPositionSettings(){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-        String pLng = sharedPreferences.getString(ActivityLogin.currentUserID + "." + ActivitySetLocation.LONGITUDE, null);
-        String pLat = sharedPreferences.getString(ActivityLogin.currentUserID + "." + ActivitySetLocation.LATITUDE, null);
-        String pRad =  sharedPreferences.getString(ActivityLogin.currentUserID + "." + ActivitySetLocation.RADIUS, null);
-
-        if(pLat == null || pLng == null) return null;
-        assert pRad != null;
-
-        PositionSettings ps = new PositionSettings();
-        ps.position = new LatLng(Double.parseDouble(pLat), Double.parseDouble(pLng));
-        ps.radius = Double.parseDouble(pRad);
-        return ps;
-    }
-
-    /**
      * This is triggered by ActivitySetLocation upon setting the new preferred position and radius
      */
     public void onNewPositionSet(){
 
         if(positionSettings == null){ //never set before
-            positionSettings = getPositionSettings();
+            positionSettings = Position.getPositionSettings(getContext());
             sync();
         }
         else{
-            positionSettings = getPositionSettings();
+            positionSettings = Position.getPositionSettings(getContext());
             readAllRelevantMatches(); //read all over with new preferences.
         }
 
