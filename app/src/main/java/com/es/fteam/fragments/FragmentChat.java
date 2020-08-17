@@ -130,6 +130,7 @@ public class FragmentChat extends Fragment {
 
         //will be updated after
         endReached = true;
+        isDisplayed = true;
         chats = new ArrayList<>();
         messageAdapter = new MessageAdapter(context, chats);
         recyclerView.setAdapter(messageAdapter);
@@ -201,13 +202,6 @@ public class FragmentChat extends Fragment {
         }finally {
             mutex.unlock();
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        isDisplayed = false;
-        endReached = true;
     }
 
     private void sync(){

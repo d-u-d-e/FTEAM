@@ -137,6 +137,12 @@ public class ActivitySelectMatch extends MyActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        FragmentChat.isDisplayed = false;
+        super.onDestroy();
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         String action = intent.getAction();
@@ -147,12 +153,24 @@ public class ActivitySelectMatch extends MyActivity {
         }
         else if(action != null && action.equals("onNotificationClicked")){
             //in this case our firebase service started this activity, while this activity was running on foreground
-            finish();
             matchID = intent.getStringExtra("match");
-            Intent i = new Intent(ActivitySelectMatch.this, ActivitySelectMatch.class);
-            i.putExtra("match", intent.getStringExtra("match"));
-            i.putExtra("type", "notification");
-            startActivity(i);
+            DatabaseReference r = FirebaseDatabase.getInstance().getReference("matches/" + matchID);
+            r.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    Match m = snapshot.getValue(Match.class);
+                    assert m != null;
+                    String type = "booked";
+                    if(m.getCreatorID().equals(ActivityLogin.currentUserID))
+                        type = "yours";
+                    setTabLayout(m, type, 1);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+
+                }
+            });
         }
     }
 
