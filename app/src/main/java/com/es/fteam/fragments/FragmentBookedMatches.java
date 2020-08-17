@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.es.fteam.ActivityLogin;
 import com.es.fteam.ActivitySelectMatch;
+import com.es.fteam.MyFragmentManager;
 import com.es.fteam.R;
 import com.es.fteam.Utils;
 import com.es.fteam.adapter.MatchAdapter;
@@ -86,7 +87,9 @@ public class FragmentBookedMatches extends FragmentMatches {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if(!snapshot.exists()){
-                                String currentMatch = ActivitySelectMatch.matchID; //null if this activity is not running
+                                FragmentChat fragmentChat = MyFragmentManager.getFragmentChat();
+                                String currentMatch = null;
+                                if(fragmentChat != null) currentMatch = fragmentChat.getMatchID();
                                 if(currentMatch != null && currentMatch.equals(matchKey)){
                                     //this means the user is browsing a match which got deleted, so we notify him
                                     Intent i = new Intent(FragmentBookedMatches.this.getContext(), ActivitySelectMatch.class);

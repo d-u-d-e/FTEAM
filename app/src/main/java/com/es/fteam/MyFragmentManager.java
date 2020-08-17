@@ -44,7 +44,7 @@ public class MyFragmentManager {
         getInstance().fragmentChat = frag;
     }
 
-    static FragmentChat getFragmentChat(){
+    public static FragmentChat getFragmentChat(){
         return getInstance().fragmentChat;
     }
 

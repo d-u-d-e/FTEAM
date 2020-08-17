@@ -22,15 +22,12 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ActivitySelectMatch extends MyActivity {
 
-    public static String matchID = null;
-    private boolean onReplace;
+    private String matchID = null;
     ViewPager vp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        onReplace = false;
 
         Intent i = getIntent();
         Bundle extras = i.getExtras();
@@ -102,7 +99,7 @@ public class ActivitySelectMatch extends MyActivity {
         vp = findViewById(R.id.info_match_booked_vp);
         ViewPagerTabs adapter = new ViewPagerTabs(getSupportFragmentManager());
         adapter.addFragment(new FragmentInfoMatch(m, type), getString(R.string.info_frag_title));
-        final FragmentChat fragmentChat = new FragmentChat(this);
+        final FragmentChat fragmentChat = new FragmentChat(this, m.getMatchID());
         MyFragmentManager.setFragment(fragmentChat);
         adapter.addFragment(fragmentChat, getString(R.string.chat_frag_title));
         vp.setAdapter(adapter);
@@ -137,12 +134,6 @@ public class ActivitySelectMatch extends MyActivity {
     protected void onPause() {
         super.onPause();
         FragmentChat.isDisplayed = false;
-        if(onReplace){
-            Intent i = new Intent(this, ActivitySelectMatch.class);
-            i.putExtra("type", "notification");
-            i.putExtra("match", matchID);
-            startActivity(i);
-        }
     }
 
     @Override
@@ -156,9 +147,11 @@ public class ActivitySelectMatch extends MyActivity {
         }
         else if(action != null && action.equals("onNotificationClicked")){
             //in this case our firebase service started this activity, while this activity was running on foreground
-            matchID = intent.getStringExtra("match");
-            onReplace = true;
+            Intent i = new Intent(this, ActivitySelectMatch.class);
+            i.putExtra("type", "notification");
+            i.putExtra("match", intent.getStringExtra("match"));
             finish();
+            startActivity(i);
         }
     }
 

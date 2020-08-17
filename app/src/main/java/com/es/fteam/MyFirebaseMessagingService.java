@@ -15,6 +15,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import com.es.fteam.fragments.FragmentChat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -31,11 +32,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        String openedMatch = ActivitySelectMatch.matchID;
+        String browsedMatch = null;
+        FragmentChat fragmentChat = MyFragmentManager.getFragmentChat();
+        if(fragmentChat != null)
+            browsedMatch = fragmentChat.getMatchID();
 
         //If the current user sent the message or this match is currently browsed by the user do nothing
         if(!ActivityLogin.currentUserID.equals(remoteMessage.getData().get("sender")) &&
-                (openedMatch == null || !openedMatch.equals(remoteMessage.getData().get("match")))){
+                (browsedMatch == null || !browsedMatch.equals(remoteMessage.getData().get("match")))){
             final Intent intent = new Intent(this, ActivitySelectMatch.class);
             intent.putExtra("type", "notification");
             intent.setAction("onNotificationClicked");

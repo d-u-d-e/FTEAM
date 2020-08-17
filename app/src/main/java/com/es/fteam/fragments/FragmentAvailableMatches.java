@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.es.fteam.ActivityLogin;
 import com.es.fteam.ActivitySelectMatch;
 import com.es.fteam.ActivitySetLocation;
+import com.es.fteam.MyFragmentManager;
 import com.es.fteam.R;
 import com.es.fteam.Utils;
 import com.es.fteam.adapter.MatchAdapter;
@@ -203,7 +205,11 @@ public class FragmentAvailableMatches extends FragmentMatches {
                 Match m = dataSnapshot.getValue(Match.class);
                 assert m != null;
                 FragmentAvailableMatches.this.removeUI(m.getMatchID()); //delete entry if exists
-                String matchBrowsed = ActivitySelectMatch.matchID; //non null if this activity is running
+                FragmentChat fragmentChat = MyFragmentManager.getFragmentChat();
+                String matchBrowsed = null;
+                if(fragmentChat != null)
+                    matchBrowsed = fragmentChat.getMatchID();
+
                 if(matchBrowsed != null && matchBrowsed.equals(m.getMatchID()) && !ActivityLogin.currentUserID.equals(m.getCreatorID())){
                     //this means the user is browsing a match which got deleted, so we notify him
                     Intent i = new Intent(FragmentAvailableMatches.this.getContext(), ActivitySelectMatch.class);

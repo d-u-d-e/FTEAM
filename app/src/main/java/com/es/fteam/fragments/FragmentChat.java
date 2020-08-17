@@ -80,9 +80,12 @@ public class FragmentChat extends Fragment {
     //counter for already seen messages
     private int counter = 0;
 
-    public FragmentChat(Context context){
+    private String matchID;
+
+    public FragmentChat(Context context, String matchID){
         super();
         this.context = context;
+        this.matchID = matchID;
     }
 
 
@@ -111,7 +114,7 @@ public class FragmentChat extends Fragment {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         //preferences are set for each user used to log in with
         lastViewedMessage = preferences.getString(ActivityLogin.currentUserID + "." +
-                ActivitySelectMatch.matchID + "." + LAST_VIEWED_MESSAGE, null);
+                matchID + "." + LAST_VIEWED_MESSAGE, null);
 
         //will be updated after
         endReached = true;
@@ -124,7 +127,7 @@ public class FragmentChat extends Fragment {
             seenMsgRetrieved = true;
 
         NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(ActivitySelectMatch.matchID, 1);
+        notificationManager.cancel(matchID, 1);
         sync();
     }
 
@@ -157,7 +160,7 @@ public class FragmentChat extends Fragment {
      * @param message string to send
      */
     private void sendMessage(String message){
-        DatabaseReference ref = db.getReference("chats").child(ActivitySelectMatch.matchID);
+        DatabaseReference ref = db.getReference("chats").child(matchID);
         String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         SharedPreferences.Editor editor = preferences.edit();
 
@@ -166,7 +169,7 @@ public class FragmentChat extends Fragment {
         r.setValue(m);
         //this information is cleared when any booked match is deleted from any user
         editor.putString(ActivityLogin.currentUserID + "." +
-                ActivitySelectMatch.matchID + "." + LAST_VIEWED_MESSAGE, m.getMessageID());
+                matchID + "." + LAST_VIEWED_MESSAGE, m.getMessageID());
         lastViewedMessage = m.getMessageID();
         editor.apply();
 
@@ -178,16 +181,16 @@ public class FragmentChat extends Fragment {
             notificationBody.put("title", Utils.getPreviewDescription(username));
             notificationBody.put("body", Utils.getPreviewDescription(message));
             notificationBody.put("sender", ActivityLogin.currentUserID);
-            notificationBody.put("match", ActivitySelectMatch.matchID);
+            notificationBody.put("match", matchID);
 
             //Notification data used by the System
-            notificationNoti.put("tag", ActivitySelectMatch.matchID);
+            notificationNoti.put("tag", matchID);
             notificationNoti.put("title", Utils.getPreviewDescription(username));
             notificationNoti.put("body", Utils.getPreviewDescription(message));
             notificationNoti.put("icon", "ic_message");
 
             //Construct of the JSONObject fields
-            notification.put("to", "/topics/" + ActivitySelectMatch.matchID);
+            notification.put("to", "/topics/" + matchID);
             notification.put("notification", notificationNoti);
             notification.put("data", notificationBody);
 
@@ -211,7 +214,7 @@ public class FragmentChat extends Fragment {
     }
 
     private void sync(){
-        DatabaseReference ref = db.getReference("chats").child(ActivitySelectMatch.matchID);
+        DatabaseReference ref = db.getReference("chats").child(matchID);
         final SharedPreferences.Editor editor = preferences.edit();
         //Cancel the notification if we open the related chat
 
@@ -243,7 +246,7 @@ public class FragmentChat extends Fragment {
                         else{
                             messageAdapter.incrementNewMessagesCounter();
                             editor.putString(ActivityLogin.currentUserID + "." +
-                                    ActivitySelectMatch.matchID + "." + LAST_VIEWED_MESSAGE, m.getMessageID());
+                                    matchID + "." + LAST_VIEWED_MESSAGE, m.getMessageID());
                             lastViewedMessage = m.getMessageID();
                             editor.apply();
                             if(isDisplayed && endReached)
@@ -276,6 +279,10 @@ public class FragmentChat extends Fragment {
             }
         };
         ref.orderByKey().addChildEventListener(listener);
+    }
+
+    public String getMatchID() {
+        return matchID;
     }
 
     /**
