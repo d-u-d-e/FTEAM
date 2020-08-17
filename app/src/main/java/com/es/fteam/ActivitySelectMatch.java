@@ -71,12 +71,6 @@ public class ActivitySelectMatch extends MyActivity {
         }
     }
 
-    @Override
-    protected void onPause() {
-        FragmentChat.isDisplayed = false;
-        super.onPause();
-    }
-
     /**
      * If the user selects a match from the available matches only, then a layout without tabs is created
      * @param m the Match Object selected
@@ -137,9 +131,9 @@ public class ActivitySelectMatch extends MyActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        matchID = null;
+    protected void onPause() {
+        FragmentChat.isDisplayed = false;
+        super.onPause();
     }
 
     @Override
@@ -153,10 +147,11 @@ public class ActivitySelectMatch extends MyActivity {
         }
         else if(action != null && action.equals("onNotificationClicked")){
             //in this case our firebase service started this activity, while this activity was running on foreground
+            finish();
+            matchID = intent.getStringExtra("match");
             Intent i = new Intent(ActivitySelectMatch.this, ActivitySelectMatch.class);
             i.putExtra("match", intent.getStringExtra("match"));
             i.putExtra("type", "notification");
-            finish();
             startActivity(i);
         }
     }
