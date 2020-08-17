@@ -45,6 +45,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         newMsgStartingPosition = position;
     }
 
+    public int getNewMsgStartingPosition(){
+        return newMsgStartingPosition;
+    }
+
     public void incrementNewMessagesCounter(){
         newMsgCount++;
 

@@ -201,7 +201,7 @@ public class FragmentChat extends Fragment {
         editor.putString(ActivityLogin.currentUserID + "." +
                 matchID + "." + LAST_VIEWED_MESSAGE, lastViewedMessage);
         editor.apply();
-    } 
+    }
 
     /**
      * When this method is called, all new messages are cleared
@@ -247,8 +247,9 @@ public class FragmentChat extends Fragment {
 
                         messageAdapter.notifyItemInserted(chats.size() - 1);
 
-                        if(chats.size() == seenCounter + 1)
-                            recyclerView.scrollToPosition(seenCounter);
+                        int newPos = messageAdapter.getNewMsgStartingPosition();
+                        if(chats.size() == newPos + 1)
+                            recyclerView.scrollToPosition(newPos);
 
                         //sending a message will "clear" all new (unread) messages
                         if (m.getSenderID().equals(ActivityLogin.currentUserID))

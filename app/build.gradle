@@ -8,7 +8,7 @@ android {
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
         applicationId "com.es.fteam"
-        minSdkVersion 24
+        minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
