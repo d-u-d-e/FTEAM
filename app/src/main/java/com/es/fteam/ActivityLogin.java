@@ -63,6 +63,7 @@ public class ActivityLogin extends MyActivity{
             else{
                 currentUserID = autUser.getUid();
                 Intent intent = new Intent(ActivityLogin.this, ActivitySelectMatch.class);
+                intent.setAction("onNotificationClicked");
                 intent.putExtra("type", "notification");
                 intent.putExtra("match", match);
                 startActivity(intent);

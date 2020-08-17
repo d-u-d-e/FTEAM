@@ -22,7 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ActivitySelectMatch extends MyActivity {
 
-    private String matchID = null;
     ViewPager vp;
 
     @Override
@@ -35,6 +34,7 @@ public class ActivitySelectMatch extends MyActivity {
         String type = i.getStringExtra("type");
         assert type != null;
 
+        String matchID = null;
         if(type.equals("available")){
             Match m = extras.getParcelable("match");
             assert m != null;
