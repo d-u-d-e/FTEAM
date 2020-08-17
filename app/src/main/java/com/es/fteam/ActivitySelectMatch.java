@@ -155,6 +155,7 @@ public class ActivitySelectMatch extends MyActivity {
             //in this case our firebase service started this activity, while this activity was running on foreground
             Intent i = new Intent(ActivitySelectMatch.this, ActivitySelectMatch.class);
             i.putExtra("match", intent.getStringExtra("match"));
+            i.putExtra("type", "notification");
             finish();
             startActivity(i);
         }

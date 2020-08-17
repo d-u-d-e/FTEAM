@@ -206,8 +206,6 @@ public class FragmentChat extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        DatabaseReference ref = db.getReference("chats").child(ActivitySelectMatch.matchID);
-        ref.removeEventListener(listener);
         isDisplayed = false;
         endReached = true;
     }
