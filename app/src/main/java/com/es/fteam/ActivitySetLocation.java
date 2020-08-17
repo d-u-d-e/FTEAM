@@ -375,15 +375,24 @@ public class ActivitySetLocation extends  MyActivity implements OnMapReadyCallba
 
     @Override
     public void onBackPressed() {
-        if(currentPosSettings != null){
-            if(isTracking){
-                Position.stopTrackingPosition(fusedLocationClient, locationCallback);
-                isTracking = false;
-            }
-            super.onBackPressed();
-        }
-        else{
+        if(currentPosSettings == null)
             Utils.showToast(ActivitySetLocation.this, R.string.complete_pos_preferences, true);
-        }
+        else
+            super.onBackPressed();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(isTracking)
+            Position.stopTrackingPosition(fusedLocationClient, locationCallback);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isTracking) //actually was tracking
+            Position.startTrackingPosition(fusedLocationClient, locationCallback);
+    }
+
 }

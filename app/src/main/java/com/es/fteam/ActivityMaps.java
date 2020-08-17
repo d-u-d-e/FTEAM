@@ -417,4 +417,18 @@ public class ActivityMaps extends MyActivity implements OnMapReadyCallback {
             position_fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.blue)));
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(isTracking)
+            Position.stopTrackingPosition(fusedLocationClient, locationCallback);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isTracking) //actually was tracking
+            Position.startTrackingPosition(fusedLocationClient, locationCallback);
+    }
 }
